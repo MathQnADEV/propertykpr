@@ -1,5 +1,7 @@
 <?php
 
+// START EDIT
+
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\ProfileController;
