@@ -16,13 +16,13 @@ class AdminSeeder extends Seeder
     {
 
         $user = User::create([
-            'name' => 'admin1',
-            'email' => 'admin1@admin.com',
+            'name' => 'master1',
+            'email' => 'master1@master.com',
             'phone' => '081280946366',
             'photo' => 'mantap.png',
-            'password' => bcrypt('123123123123'),
+            'password' => bcrypt('master123'),
         ]);
 
-        $user->assignRole('admin');
+        $user->assignRole('master');
     }
 }

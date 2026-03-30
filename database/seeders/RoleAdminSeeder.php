@@ -14,30 +14,30 @@ class RoleAdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminRole = Role::create([
-            'name' => 'admin',
+        $masterRole = Role::create([
+            'name' => 'master',
         ]);
 
-        $lenderRole = Role::create([
-            'name' => 'lender',
+        $adminRole = Role::create([
+            'name' => 'admin',
         ]);
 
         $agentRole = Role::create([
             'name' => 'agent',
         ]);
 
-        $customerRole = Role::create([
-            'name' => 'customer',
+        $investorRole = Role::create([
+            'name' => 'investor',
         ]);
 
         $user = User::create([
-            'name' => 'admin',
-            'email' => 'admin@admin.com',
+            'name' => 'master',
+            'email' => 'master@master.com',
             'phone' => '081280946366',
             'photo' => 'mantap.png',
-            'password' => bcrypt('123456'),
+            'password' => bcrypt('123456789'),
         ]);
 
-        $user->assignRole($adminRole);
+        $user->assignRole($masterRole);
     }
 }
