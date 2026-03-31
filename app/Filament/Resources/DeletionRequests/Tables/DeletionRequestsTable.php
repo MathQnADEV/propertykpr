@@ -15,6 +15,7 @@ class DeletionRequestsTable
 {
     public static function configure(Table $table): Table
     {
+        $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
@@ -54,9 +55,10 @@ class DeletionRequestsTable
                     ->label('Setujui & Hapus')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
+                    ->authorize($isMaster)
                     ->visible(
                         fn($record) =>
-                        $record->status === 'pending' && auth()->user()->hasRole('master')
+                        $record->status === 'pending' && $isMaster
                     )
                     ->form([
                         Textarea::make('note')
@@ -65,11 +67,18 @@ class DeletionRequestsTable
                     ])
                     ->requiresConfirmation()
                     ->action(function ($record, array $data) {
-                        DeletionRequestService::approve($record, $data['note'] ?? '');
-                        Notification::make()
-                            ->title('Permintaan disetujui. Data telah dihapus (soft delete).')
-                            ->success()
-                            ->send();
+                        $success = DeletionRequestService::approve($record, $data['note'] ?? '');
+                        if ($success) {
+                            Notification::make()
+                                ->title('Permintaan disetujui. Data telah dihapus (soft delete).')
+                                ->success()
+                                ->send();
+                        } else {
+                            Notification::make()
+                                ->title('Gagal: Data target tidak ditemukan.')
+                                ->danger()
+                                ->send();
+                        }
                     }),
 
                 // ── Tolak: hanya master ──
@@ -77,9 +86,10 @@ class DeletionRequestsTable
                     ->label('Tolak')
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
+                    ->authorize($isMaster)
                     ->visible(
                         fn($record) =>
-                        $record->status === 'pending' && auth()->user()->hasRole('master')
+                        $record->status === 'pending' && $isMaster
                     )
                     ->form([
                         Textarea::make('note')

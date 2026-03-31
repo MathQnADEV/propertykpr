@@ -52,9 +52,12 @@ class DeletionRequestService
         $record = $request->getModelRecord();
         if (! $record) return false;
 
-        NotificationService::$skipLogging = true;  // ← skip
-        $record->delete();                          // ←  trigger deleted event
-        NotificationService::$skipLogging = false;  // ← back to skip
+        NotificationService::$skipLogging = true;
+        try {
+            $record->delete();
+        } finally {
+            NotificationService::$skipLogging = false;
+        }
 
 
 

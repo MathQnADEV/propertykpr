@@ -12,9 +12,12 @@ class ListSystemNotifications extends ListRecords
 
     protected function getHeaderActions(): array
     {
+        $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
+
         return [
             CreateAction::make()
-                ->visible(fn() => auth()->user()->hasRole('master')),
+                ->authorize($isMaster)
+                ->visible($isMaster),
         ];
     }
 }

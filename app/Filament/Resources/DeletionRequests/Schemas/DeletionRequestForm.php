@@ -25,7 +25,12 @@ class DeletionRequestForm
                 TextInput::make('model_name'),
                 Textarea::make('reason')
                     ->columnSpanFull(),
-                TextInput::make('status')
+                Select::make('status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'approved' => 'Approved',
+                        'rejected' => 'Rejected',
+                    ])
                     ->required()
                     ->default('pending'),
                 Select::make('reviewer_id')

@@ -13,15 +13,19 @@ class EditBank extends EditRecord
 {
     protected static string $resource = BankResource::class;
 
-    protected function getHeaderActions(): array
+    protected function getHeaderActions():   array
     {
+        $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
         return [
             DeleteAction::make()
-                ->visible(fn() => auth()->user()->hasRole('master')),
+                ->authorize($isMaster)
+                ->visible($isMaster),
             ForceDeleteAction::make()
-                ->visible(fn() => auth()->user()->hasRole('master')),
+                ->authorize($isMaster)
+                ->visible($isMaster),
             RestoreAction::make()
-                ->visible(fn() => auth()->user()->hasRole('master')),
+                ->authorize($isMaster)
+                ->visible($isMaster),
         ];
     }
 }

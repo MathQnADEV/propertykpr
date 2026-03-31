@@ -22,6 +22,8 @@ class HousesTable
 {
     public static function configure(Table $table): Table
     {
+        $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
+
         return $table
             ->columns([
                 ImageColumn::make('thumbnail'),
@@ -42,16 +44,16 @@ class HousesTable
                     ->label('Hapus')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
-                    ->visible(fn() => auth()->user()->hasRole('master'))
-                    ->requiresConfirmation()
+                    ->authorize($isMaster)
+                    ->visible($isMaster)->requiresConfirmation()
                     ->action(fn($record) => $record->delete()),
 
                 Action::make('request_delete')
                     ->label('Ajukan Penghapusan')
                     ->icon('heroicon-o-exclamation-triangle')
                     ->color('warning')
-                    ->visible(fn() => auth()->user()->hasRole('admin'))
-                    ->form([
+                    ->authorize($isMaster)
+                    ->visible($isMaster)->form([
                         Textarea::make('reason')
                             ->label('Alasan Penghapusan')
                             ->required()
@@ -68,11 +70,14 @@ class HousesTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
-                        ->visible(fn() => auth()->user()->hasRole('master')),
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
                     ForceDeleteBulkAction::make()
-                        ->visible(fn() => auth()->user()->hasRole('master')),
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
                     RestoreBulkAction::make()
-                        ->visible(fn() => auth()->user()->hasRole('master')),
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
                 ]),
             ]);
     }

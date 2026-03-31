@@ -20,6 +20,8 @@ class SystemNotificationsTable
 {
     public static function configure(Table $table): Table
     {
+        $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
+
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
@@ -95,21 +97,25 @@ class SystemNotificationsTable
                             ->title('Ditandai sudah dibaca')
                             ->success()
                             ->send();
-                    })->visible(fn() => auth()->user()->hasRole('master')),
+                    })->visible($isMaster)->authorize($isMaster),
 
                 // Hapus notifikasi: hanya master
                 DeleteAction::make()
-                    ->visible(fn() => auth()->user()->hasRole('master')),
+                    ->authorize($isMaster)
+                    ->visible($isMaster),
 
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
-                        ->visible(fn() => auth()->user()->hasRole('master')),
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
                     ForceDeleteBulkAction::make()
-                        ->visible(fn() => auth()->user()->hasRole('master')),
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
                     RestoreBulkAction::make()
-                        ->visible(fn() => auth()->user()->hasRole('master')),
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
                 ]),
             ]);
     }

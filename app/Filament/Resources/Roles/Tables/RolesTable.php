@@ -15,6 +15,8 @@ class RolesTable
 {
     public static function configure(Table $table): Table
     {
+        $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
+
         return $table
             ->columns([
                 TextColumn::make('name')
@@ -25,16 +27,20 @@ class RolesTable
             ])
             ->recordActions([
                 EditAction::make()
-                    ->visible(fn() => auth()->user()->hasRole('master')),
+                    ->authorize($isMaster)
+                    ->visible($isMaster),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
-                        ->visible(fn() => auth()->user()->hasRole('master')),
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
                     ForceDeleteBulkAction::make()
-                        ->visible(fn() => auth()->user()->hasRole('master')),
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
                     RestoreBulkAction::make()
-                        ->visible(fn() => auth()->user()->hasRole('master')),
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
                 ]),
             ]);
     }

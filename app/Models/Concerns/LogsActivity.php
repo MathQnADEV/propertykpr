@@ -18,7 +18,8 @@ trait LogsActivity
             if (!Auth::check()) return;
             if ($model->wasRecentlyCreated) return;
             if (!$model->isDirty()) return;
-            if ($model->isDirty('deleted_at')) return; // jangan log soft delete sebagai "updated"
+            // Skip logging if ONLY deleted_at changed (soft delete)
+            if ($model->isDirty('deleted_at') && count($model->getDirty()) === 1) return;
             NotificationService::log('updated', $model);
         });
 

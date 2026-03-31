@@ -65,7 +65,7 @@ class NotificationService
         if (in_array($type, ['created', 'updated'])) {
             $route = self::$resourceRoutes[$model::class] ?? null;
             if ($route) {
-                $url = env('APP_URL')."{$route}/{$model->id}/edit";
+                $url = config('APP_URL')."{$route}/{$model->id}/edit";
             }
         }
 

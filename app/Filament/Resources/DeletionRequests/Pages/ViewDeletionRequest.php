@@ -12,8 +12,11 @@ class ViewDeletionRequest extends ViewRecord
 
     protected function getHeaderActions(): array
     {
+        $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
         return [
-            EditAction::make(),
+            EditAction::make()
+                ->authorize($isMaster)
+                ->visible($isMaster),
         ];
     }
 }

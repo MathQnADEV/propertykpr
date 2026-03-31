@@ -21,6 +21,7 @@ class FacilitiesTable
 {
     public static function configure(Table $table): Table
     {
+        $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
         return $table
             ->columns([
                 ImageColumn::make('photo'),
@@ -37,7 +38,8 @@ class FacilitiesTable
                     ->label('Hapus')
                     ->icon('heroicon-o-trash')
                     ->color('danger')
-                    ->visible(fn() => auth()->user()->hasRole('master'))
+                    ->authorize($isMaster)
+                    ->visible($isMaster)
                     ->requiresConfirmation()
                     ->action(fn($record) => $record->delete()),
 
@@ -45,7 +47,8 @@ class FacilitiesTable
                     ->label('Ajukan Penghapusan')
                     ->icon('heroicon-o-exclamation-triangle')
                     ->color('warning')
-                    ->visible(fn() => auth()->user()->hasRole('admin'))
+                    ->authorize($isMaster)
+                    ->visible($isMaster)
                     ->form([
                         Textarea::make('reason')
                             ->label('Alasan Penghapusan')
@@ -63,11 +66,14 @@ class FacilitiesTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()
-                        ->visible(fn() => auth()->user()->hasRole('master')),
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
                     ForceDeleteBulkAction::make()
-                        ->visible(fn() => auth()->user()->hasRole('master')),
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
                     RestoreBulkAction::make()
-                        ->visible(fn() => auth()->user()->hasRole('master')),
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
                 ]),
             ]);
     }
