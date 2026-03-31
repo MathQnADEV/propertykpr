@@ -16,6 +16,8 @@ class UsersTable
 {
     public static function configure(Table $table): Table
     {
+        $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
+
         return $table
             ->columns([
                 ImageColumn::make('photo'),
@@ -26,13 +28,21 @@ class UsersTable
                 // TrashedFilter::make(),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->authorize($isMaster)
+                    ->visible($isMaster),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
+                    ForceDeleteBulkAction::make()
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
+                    RestoreBulkAction::make()
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
                 ]),
             ]);
     }

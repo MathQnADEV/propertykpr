@@ -2,12 +2,16 @@
 
 namespace App\Filament\Resources\Banks\Tables;
 
+use App\Services\DeletionRequestService;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Textarea;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
@@ -17,6 +21,7 @@ class BanksTable
 {
     public static function configure(Table $table): Table
     {
+        $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
         return $table
             ->columns([
                 ImageColumn::make('photo'),
@@ -29,12 +34,50 @@ class BanksTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
+                // ── Master: hapus langsung ──
+                Action::make('direct_delete')
+                    ->label('Hapus')
+                    ->icon('heroicon-o-trash')
+                    ->color('danger')
+                    ->authorize($isMaster)
+                    ->visible($isMaster)
+                    ->requiresConfirmation()
+                    ->action(fn($record) => $record->delete()),
+
+                // ── Admin: ajukan hapus ──
+                Action::make('request_delete')
+                    ->label('Ajukan Penghapusan')
+                    ->icon('heroicon-o-exclamation-triangle')
+                    ->color('warning')
+                    ->authorize($isMaster)
+                    ->visible($isMaster)
+                    ->form([
+                        Textarea::make('reason')
+                            ->label('Alasan Penghapusan')
+                            ->required()
+                            ->maxLength(500)
+                            ->placeholder('Jelaskan alasan mengapa data ini perlu dihapus...'),
+                    ])
+                    ->action(function ($record, array $data) {
+                        DeletionRequestService::requestDeletion($record, $data['reason']);
+                        Notification::make()
+                            ->title('Permintaan penghapusan telah dikirim ke Master')
+                            ->success()
+                            ->send();
+                    }),
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
+                    ForceDeleteBulkAction::make()
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
+                    RestoreBulkAction::make()
+                        ->authorize($isMaster)
+                        ->visible($isMaster),
                 ]),
             ]);
     }

@@ -12,8 +12,12 @@ class ListUsers extends ListRecords
 
     protected function getHeaderActions(): array
     {
+        $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
+
         return [
-            CreateAction::make(),
+            CreateAction::make()
+                ->authorize($isMaster)
+                ->visible($isMaster),
         ];
     }
 }

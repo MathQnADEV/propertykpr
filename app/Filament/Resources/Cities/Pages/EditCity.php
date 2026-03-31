@@ -14,10 +14,17 @@ class EditCity extends EditRecord
 
     protected function getHeaderActions(): array
     {
+        $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
         return [
-            DeleteAction::make(),
-            ForceDeleteAction::make(),
-            RestoreAction::make(),
+            DeleteAction::make()
+                ->authorize($isMaster)
+                ->visible($isMaster),
+            ForceDeleteAction::make()
+                ->authorize($isMaster)
+                ->visible($isMaster),
+            RestoreAction::make()
+                ->authorize($isMaster)
+                ->visible($isMaster),
         ];
     }
 }

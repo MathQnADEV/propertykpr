@@ -8,6 +8,7 @@ use App\Filament\Resources\Categories\Pages\ListCategories;
 use App\Filament\Resources\Categories\Schemas\CategoryForm;
 use App\Filament\Resources\Categories\Tables\CategoriesTable;
 use App\Models\Category;
+use App\Services\NotificationService;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
