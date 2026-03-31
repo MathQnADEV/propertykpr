@@ -15,9 +15,12 @@ class EditUser extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            DeleteAction::make(),
-            ForceDeleteAction::make(),
-            RestoreAction::make(),
+            DeleteAction::make()
+                ->visible(fn() => auth()->user()->hasRole('master')),
+            ForceDeleteAction::make()
+                ->visible(fn() => auth()->user()->hasRole('master')),
+            RestoreAction::make()
+                ->visible(fn() => auth()->user()->hasRole('master')),
         ];
     }
 }

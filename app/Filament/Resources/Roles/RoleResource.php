@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Roles;
 
+use App\Filament\Concerns\ViewOnly;
 use App\Filament\Resources\Roles\Pages\CreateRole;
 use App\Filament\Resources\Roles\Pages\EditRole;
 use App\Filament\Resources\Roles\Pages\ListRoles;
 use App\Filament\Resources\Roles\Schemas\RoleForm;
 use App\Filament\Resources\Roles\Tables\RolesTable;
+use App\Services\NotificationService;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -19,6 +21,7 @@ use UnitEnum;
 
 class RoleResource extends Resource
 {
+    use ViewOnly;
     protected static ?string $model = Role::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAdjustmentsVertical;

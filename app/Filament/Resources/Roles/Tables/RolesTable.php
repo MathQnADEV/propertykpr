@@ -24,13 +24,17 @@ class RolesTable
                 // TrashedFilter::make(),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->visible(fn() => auth()->user()->hasRole('master')),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->visible(fn() => auth()->user()->hasRole('master')),
+                    ForceDeleteBulkAction::make()
+                        ->visible(fn() => auth()->user()->hasRole('master')),
+                    RestoreBulkAction::make()
+                        ->visible(fn() => auth()->user()->hasRole('master')),
                 ]),
             ]);
     }

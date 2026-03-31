@@ -8,6 +8,7 @@ use App\Filament\Resources\Interests\Pages\ListInterests;
 use App\Filament\Resources\Interests\Schemas\InterestForm;
 use App\Filament\Resources\Interests\Tables\InterestsTable;
 use App\Models\Interest;
+use App\Services\NotificationService;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;

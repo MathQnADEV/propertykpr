@@ -8,6 +8,7 @@ use App\Filament\Resources\Houses\Pages\ListHouses;
 use App\Filament\Resources\Houses\Schemas\HouseForm;
 use App\Filament\Resources\Houses\Tables\HousesTable;
 use App\Models\House;
+use App\Services\NotificationService;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
