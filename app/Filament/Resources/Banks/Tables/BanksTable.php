@@ -22,6 +22,7 @@ class BanksTable
     public static function configure(Table $table): Table
     {
         $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
+        $isAdmin = fn(): bool => auth()->check() && auth()->user()->hasRole('admin');
         return $table
             ->columns([
                 ImageColumn::make('photo'),
@@ -49,8 +50,8 @@ class BanksTable
                     ->label('Ajukan Penghapusan')
                     ->icon('heroicon-o-exclamation-triangle')
                     ->color('warning')
-                    ->authorize($isMaster)
-                    ->visible($isMaster)
+                    ->authorize($isAdmin)
+                    ->visible($isAdmin)
                     ->form([
                         Textarea::make('reason')
                             ->label('Alasan Penghapusan')

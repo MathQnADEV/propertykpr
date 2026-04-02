@@ -23,6 +23,7 @@ class InterestsTable
     public static function configure(Table $table): Table
     {
         $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
+        $isAdmin = fn(): bool => auth()->check() && auth()->user()->hasRole('admin');
 
         return $table
             ->columns([
@@ -54,8 +55,9 @@ class InterestsTable
                     ->label('Ajukan Penghapusan')
                     ->icon('heroicon-o-exclamation-triangle')
                     ->color('warning')
-                    ->authorize($isMaster)
-                    ->visible($isMaster)->form([
+                    ->authorize($isAdmin)
+                    ->visible($isAdmin)
+                    ->form([
                         Textarea::make('reason')
                             ->label('Alasan Penghapusan')
                             ->required()
