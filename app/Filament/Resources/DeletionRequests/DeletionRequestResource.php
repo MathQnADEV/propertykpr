@@ -27,11 +27,14 @@ class DeletionRequestResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTrash;
 
-    protected static string | UnitEnum | null $navigationGroup = 'System';
+    protected static ?string $navigationLabel = 'Permintaan Hapus';
+    protected static ?string $modelLabel = 'Permintaan Hapus';
+    protected static ?string $pluralModelLabel = 'Permintaan Hapus';
+    protected static string | UnitEnum | null $navigationGroup = 'Sistem';
 
     protected static ?int $navigationSort = 100;
 
-    protected static ?string $recordTitleAttribute = 'Deletion Request';
+    protected static ?string $recordTitleAttribute = 'Permintaan Hapus';
 
     public static function form(Schema $schema): Schema
     {

@@ -24,7 +24,10 @@ class BankResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Vendors';
+    protected static ?string $navigationLabel = 'Bank';
+    protected static ?string $modelLabel = 'Bank';
+    protected static ?string $pluralModelLabel = 'Bank';
+    protected static string | UnitEnum | null $navigationGroup = 'Mitra';
 
     protected static ?string $recordTitleAttribute = 'Bank';
 

@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Details Installment PropertyKpr')
+@section('title', 'Details Installment - X-Pro')
 
 @section('content')
 <div class="flex min-h-screen">
@@ -8,7 +8,7 @@
             <div class="flex h-full w-full flex-col gap-[40px] pt-[40px]">
                 <div class="pl-[30px]">
                     <a href="overview.html" class="shrink-0">
-                        <img src="{{ asset('assets/images/logos/logo-white.svg') }}" alt="icon" />
+                        <img src="{{ asset('assets/images/logos/XPRO-Favicon.svg') }}" alt="XPRO" class="h-10 w-10 rounded-xl" />
                     </a>
                 </div>
                 <nav class="flex flex-col gap-[40px] pb-[40px] pl-[30px]">

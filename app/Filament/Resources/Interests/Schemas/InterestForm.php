@@ -32,7 +32,7 @@ class InterestForm
                 TextInput::make('duration')
                     ->required()
                     ->numeric()
-                    ->prefix('Years'),
+                    ->prefix('Tahun'),
             ]);
     }
 }

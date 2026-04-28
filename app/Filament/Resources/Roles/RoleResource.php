@@ -26,9 +26,12 @@ class RoleResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAdjustmentsVertical;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Management';
+    protected static ?string $navigationLabel = 'Peran';
+    protected static ?string $modelLabel = 'Peran';
+    protected static ?string $pluralModelLabel = 'Peran';
+    protected static string | UnitEnum | null $navigationGroup = 'Manajemen';
 
-    protected static ?string $recordTitleAttribute = 'Role';
+    protected static ?string $recordTitleAttribute = 'Peran';
 
     public static function form(Schema $schema): Schema
     {

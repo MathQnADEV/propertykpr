@@ -3,21 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\City;
 use App\Models\House;
-use App\Models\Interest;
+use App\Models\User;
 use App\Services\HouseService;
-use App\Services\MortgageService;
 use Illuminate\Http\Request;
 
 class FrontController extends Controller
 {
     protected $houseService;
-    protected $mortgageService;
 
-    public function __construct(HouseService $houseService, MortgageService $mortgageService)
+    public function __construct(HouseService $houseService)
     {
         $this->houseService = $houseService;
-        $this->mortgageService = $mortgageService;
     }
 
     public function index()
@@ -26,41 +24,66 @@ class FrontController extends Controller
         return view('front.index', $data);
     }
 
+    public function browse(Request $request)
+    {
+        $validated = $request->validate([
+            'category' => 'nullable|integer|exists:categories,id',
+            'city'     => 'nullable|integer|exists:cities,id',
+            'search'   => 'nullable|string|max:100',
+        ]);
+
+        $query = House::query()
+            ->where('is_available', true)
+            ->with(['category', 'city']);
+
+        if (!empty($validated['category'])) {
+            $query->where('category_id', $validated['category']);
+        }
+
+        if (!empty($validated['city'])) {
+            $query->where('city_id', $validated['city']);
+        }
+
+        if (!empty($validated['search'])) {
+            $query->where('name', 'like', '%' . $validated['search'] . '%');
+        }
+
+        $houses     = $query->latest()->paginate(12);
+        $categories = Category::select('id', 'name', 'slug')->get();
+        $cities     = City::select('id', 'name')->get();
+
+        return view('front.browse', compact('houses', 'categories', 'cities'));
+    }
+
     public function search(Request $request)
     {
-        $data = $this->houseService->searchHouses($request->all());
+        $validated = $request->validate([
+            'category' => 'required|integer|exists:categories,id',
+            'city'     => 'required|integer|exists:cities,id',
+        ]);
+
+        $data = $this->houseService->searchHouses($validated);
         return view('front.search', $data);
     }
 
     public function category(Category $category)
     {
-        $category->load(['houses']);
+        $category->load(['availableHouses']);
         return view('front.category', compact('category'));
     }
 
     public function details(House $house)
     {
-        $houseDetails = $this->houseService->getHouseDetails($house);
-        return view('front.details', compact('houseDetails'));
-    }
-
-    public function interest(Interest $interest)
-    {
-        return view('customer.mortgages.request_mortgage', compact('interest'));
-    }
-
-    public function request_interest(Request $request){
-        $this->mortgageService->handleInterestRequest($request);
-        return redirect()->route('front.request_success');
-    }
-
-    public function request_success(){
-        $interest = $this->mortgageService->getInterestFromSession();
-
-        if(!$interest){
-            return redirect()->route('front.index')->with('error', 'Invalid request. Please try again.');
+        if (!$house->is_available) {
+            abort(404);
         }
 
-        return view('customer.mortgages.success_request', compact('interest'));
+        $houseDetails = $this->houseService->getHouseDetails($house);
+        $agents       = $house->agent
+            ? collect([$house->agent])
+            : collect();
+        $mapsApiKey   = config('services.google.maps_api_key');
+
+        return view('front.details', compact('houseDetails', 'agents', 'mapsApiKey'));
     }
 }

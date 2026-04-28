@@ -24,9 +24,12 @@ class CityResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Management';
+    protected static ?string $navigationLabel = 'Kota';
+    protected static ?string $modelLabel = 'Kota';
+    protected static ?string $pluralModelLabel = 'Kota';
+    protected static string | UnitEnum | null $navigationGroup = 'Manajemen';
 
-    protected static ?string $recordTitleAttribute = 'City';
+    protected static ?string $recordTitleAttribute = 'Kota';
 
     public static function form(Schema $schema): Schema
     {

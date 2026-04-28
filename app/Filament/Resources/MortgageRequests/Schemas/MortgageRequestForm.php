@@ -10,7 +10,7 @@ use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
-use App\Models\User;
+use App\Models\Customer;
 use Filament\Forms\Components\FileUpload;
 
 class MortgageRequestForm
@@ -21,14 +21,14 @@ class MortgageRequestForm
             ->components([
                 Wizard::make([
 
-                    Step::make('Product and Price')
+                    Step::make('Produk dan Harga')
                         ->schema(
                             [
                                 Grid::make(3)
                                     ->schema([
                                         Select::make('house_id')
-                                            ->label('House')
-                                            ->options(House::query()->pluck('name', 'id'))
+                                            ->label('Properti')
+                                            ->options(House::query()->where('is_available', true)->pluck('name', 'id'))
                                             ->searchable()
                                             ->preload()
                                             ->required()
@@ -42,7 +42,7 @@ class MortgageRequestForm
 
                                         // Then Select Interest Based On Selected House
                                         Select::make('interest_id')
-                                            ->label('Annual Interest in %')
+                                            ->label('Suku Bunga Tahunan (%)')
                                             ->options(function (callable $get) {
                                                 $houseId = $get('house_id');
                                                 if ($houseId) {
@@ -66,33 +66,33 @@ class MortgageRequestForm
                                             }),
 
                                         TextInput::make('bank_name')
-                                            ->label('Bank Name')
+                                            ->label('Nama Bank')
                                             ->readonly()
                                             ->required(),
 
                                         TextInput::make('duration')
-                                            ->label('Duration in Years')
+                                            ->label('Durasi (Tahun)')
                                             ->readonly()
                                             ->numeric()
-                                            ->suffix('Years')
+                                            ->suffix('Tahun')
                                             ->required(),
 
                                         TextInput::make('interest')
-                                            ->label('Interest Rate')
+                                            ->label('Suku Bunga')
                                             ->readonly()
                                             ->numeric()
                                             ->suffix('%')
                                             ->required(),
 
                                         TextInput::make('house_price')
-                                            ->label('House Price')
+                                            ->label('Harga Properti')
                                             ->readonly()
                                             ->numeric()
                                             ->prefix('IDR')
                                             ->required(),
 
                                         Select::make('dp_percentage')
-                                            ->label('Down Payment (%)')
+                                            ->label('Uang Muka (%)')
                                             ->options([
                                                 5 => '5%',
                                                 10 => '10%',
@@ -140,20 +140,20 @@ class MortgageRequestForm
 
                                         // Down Payment Amount (Read-only)
                                         TextInput::make('dp_total_amount')
-                                            ->label('Down Payment Total Amount')
+                                            ->label('Jumlah Uang Muka')
                                             ->readonly()
                                             ->numeric()
                                             ->prefix('IDR'),
 
                                         TextInput::make('loan_total_amount')
-                                            ->label('Loan Total Amount')
+                                            ->label('Jumlah Pinjaman')
                                             ->readonly()
                                             ->numeric()
                                             ->prefix('IDR')
                                             ->required(),
 
                                         TextInput::make('monthly_amount')
-                                            ->label('Monthly Payment Amount')
+                                            ->label('Cicilan Bulanan')
                                             ->readonly()
                                             ->numeric()
                                             ->prefix('IDR')
@@ -161,7 +161,7 @@ class MortgageRequestForm
 
                                         // Total Payment Amount Field (Read-only)
                                         TextInput::make('loan_interest_total_amount')
-                                            ->label('Total Payment Amount (with Interest)')
+                                            ->label('Total Pembayaran (+ Bunga)')
                                             ->readonly()
                                             ->numeric()
                                             ->prefix('IDR')
@@ -172,48 +172,79 @@ class MortgageRequestForm
                             ]
                         ),
 
-                    Step::make('Customer Information')
+                    Step::make('Informasi Nasabah')
                         ->schema([
-                            Select::make('user_id')
-                                ->relationship('customer', 'email')
-                                ->searchable()
-                                ->preload()
-                                ->required()
-                                ->live()
-                                // Data baru
-                                ->afterStateUpdated(function ($state, callable $set) {
-                                    $user = User::find($state);
+                            Grid::make(2)
+                                ->schema([
+                                    Select::make('customer_id')
+                                        ->label('Customer')
+                                        ->relationship('customer', 'nama_lengkap')
+                                        ->searchable()
+                                        ->preload()
+                                        ->required()
+                                        ->live()
+                                        ->columnSpanFull()
+                                        ->afterStateUpdated(function ($state, callable $set) {
+                                            $customer = Customer::find($state);
+                                            if ($customer) {
+                                                $set('_customer_nik', $customer->nik);
+                                                $set('_customer_phone', $customer->phone);
+                                                $set('_customer_email', $customer->email ?? '-');
+                                                $set('_customer_pekerjaan', $customer->pekerjaan);
+                                                $set('_customer_penghasilan', $customer->penghasilan_bulanan);
+                                                $set('_customer_alamat', $customer->alamat);
+                                            }
+                                        })
+                                        ->afterStateHydrated(function (callable $set, $state) {
+                                            if ($state) {
+                                                $customer = Customer::find($state);
+                                                if ($customer) {
+                                                    $set('_customer_nik', $customer->nik);
+                                                    $set('_customer_phone', $customer->phone);
+                                                    $set('_customer_email', $customer->email ?? '-');
+                                                    $set('_customer_pekerjaan', $customer->pekerjaan);
+                                                    $set('_customer_penghasilan', $customer->penghasilan_bulanan);
+                                                    $set('_customer_alamat', $customer->alamat);
+                                                }
+                                            }
+                                        }),
 
-                                    $name = $user->name;
-                                    $email = $user->email;
+                                    TextInput::make('_customer_nik')
+                                        ->label('NIK')
+                                        ->readonly()
+                                        ->dehydrated(false),
 
-                                    $set('name', $name);
-                                    $set('email', $email);
-                                })
-                                // Data baru setelah dihydrate
-                                ->afterStateHydrated(function (callable $set, $state) {
-                                    $userId = $state;
-                                    if ($userId) {
-                                        $user = User::find($userId);
-                                        $name = $user->name;
-                                        $email = $user->email;
-                                        $set('name', $name);
-                                        $set('email', $email);
-                                    }
-                                }),
+                                    TextInput::make('_customer_phone')
+                                        ->label('No. HP')
+                                        ->readonly()
+                                        ->dehydrated(false),
 
-                            TextInput::make('name')
-                                ->readonly()
-                                ->required()
-                                ->maxLength(255),
+                                    TextInput::make('_customer_email')
+                                        ->label('Email')
+                                        ->readonly()
+                                        ->dehydrated(false),
 
-                            TextInput::make('email')
-                                ->readonly()
-                                ->required()
-                                ->maxLength(255),
+                                    TextInput::make('_customer_pekerjaan')
+                                        ->label('Pekerjaan')
+                                        ->readonly()
+                                        ->dehydrated(false),
+
+                                    TextInput::make('_customer_penghasilan')
+                                        ->label('Penghasilan Bulanan')
+                                        ->readonly()
+                                        ->numeric()
+                                        ->prefix('IDR')
+                                        ->dehydrated(false),
+
+                                    TextInput::make('_customer_alamat')
+                                        ->label('Alamat')
+                                        ->readonly()
+                                        ->columnSpanFull()
+                                        ->dehydrated(false),
+                                ]),
                         ]),
 
-                    Step::make('Bank Approval')
+                    Step::make('Persetujuan Bank')
                         ->schema([
                             FileUpload::make('documents')
                                 ->acceptedFileTypes(['application/pdf'])
@@ -221,11 +252,11 @@ class MortgageRequestForm
                                 ->required(),
 
                             Select::make('status')
-                                ->label('Approval Status')
+                                ->label('Status Persetujuan')
                                 ->options([
-                                    'Waiting for Bank' => 'Waiting for Bank',
-                                    'Approved' => 'Approved',
-                                    'Rejected' => 'Rejected',
+                                    'Waiting for Bank' => 'Menunggu Bank',
+                                    'Approved' => 'Disetujui',
+                                    'Rejected' => 'Ditolak',
                                 ])
                                 ->required(),
                         ]),

@@ -27,8 +27,8 @@ class SystemNotificationResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBell;
 
-    protected static string | UnitEnum | null $navigationGroup = 'System';
-    protected static ?string $recordTitleAttribute = 'System Notification';
+    protected static string | UnitEnum | null $navigationGroup = 'Sistem';
+    protected static ?string $recordTitleAttribute = 'Notifikasi';
 
     protected static ?int $navigationSort = 90;
 

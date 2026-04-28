@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
@@ -11,6 +12,10 @@ class House extends Model
 {
     use SoftDeletes;
     use LogsActivity;
+
+    protected $casts = [
+        'is_available' => 'boolean',
+    ];
 
     protected $fillable = [
         'name',
@@ -24,14 +29,21 @@ class House extends Model
         'electric',
         'land_area',
         'building_area',
+        'is_available',
         'category_id',
-        'city_id'
+        'city_id',
+        'agent_id',
     ];
 
     public function setNameAttribute($value)
     {
         $this->attributes['name'] = $value;
         $this->attributes['slug'] = Str::slug($value);
+    }
+
+    public function agent()
+    {
+        return $this->belongsTo(User::class, 'agent_id');
     }
 
     public function category()

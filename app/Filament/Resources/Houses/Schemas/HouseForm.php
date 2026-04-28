@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Houses\Schemas;
 
 use App\Models\Facility;
+use App\Models\User;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -17,7 +18,7 @@ class HouseForm
     {
         return $schema
             ->components([
-                Fieldset::make('Details')
+                Fieldset::make('Detail')
                     ->components([
                         TextInput::make('name')
                             ->required()
@@ -33,6 +34,7 @@ class HouseForm
                                 'Patches' => 'Patches',
                             ])
                             ->required(),
+
                         FileUpload::make('thumbnail')
                             ->image()
                             ->visibility('public')
@@ -59,8 +61,15 @@ class HouseForm
 
                     ])->columnSpanFull(),
 
-                Fieldset::make('Additional')
+                Fieldset::make('Informasi Tambahan')
                     ->components([
+                        Select::make('agent_id')
+                            ->label('Agent')
+                            ->options(fn() => User::role('agent')->pluck('name', 'id'))
+                            ->searchable()
+                            ->nullable()
+                            ->placeholder('Belum ditugaskan'),
+
                         Textarea::make('about')
                             ->required(),
 
@@ -100,6 +109,12 @@ class HouseForm
                             ->required()
                             ->numeric()
                             ->prefix('Unit'),
+                        Select::make('is_available')
+                            ->options([
+                                1 => 'Tersedia',
+                                0 => 'Tidak Tersedia',
+                            ])
+                            ->required(),
 
                     ])->columnSpanFull(),
             ]);

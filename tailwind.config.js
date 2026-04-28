@@ -12,7 +12,16 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Poppins', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                'tedja-black':     '#060922',
+                'tedja-blue':      '#3F52FF',
+                'tedja-green':     '#CEF27F',
+                'tedja-orange':    '#FF9F47',
+                'tedja-red':       '#FF3E3E',
+                'tedja-border':    '#F2F2F4',
+                'tedja-secondary': '#8F91A2',
             },
         },
     },

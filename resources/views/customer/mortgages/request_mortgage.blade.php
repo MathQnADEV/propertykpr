@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Request Mortgage PropertyKpr')
+@section('title', 'Request Mortgage - X-Pro')
 
 @section('content')
     <x-nav-front />

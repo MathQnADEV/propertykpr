@@ -36,16 +36,16 @@ class InstallmentsRelationManager extends RelationManager
             ->components([
 
                 Wizard::make([
-                    Step::make('Installments')
+                    Step::make('Angsuran')
                         ->schema([
                             TextInput::make('no_of_payment')
-                                ->label('No. Payment')
+                                ->label('No. Angsuran')
                                 ->helperText('Pembayaran cicilan ke berapa')
                                 ->numeric()
                                 ->required(),
 
                             Select::make('sub_total_amount')
-                                ->label('Monthly Payment')
+                                ->label('Cicilan Bulanan')
                                 ->options(
                                     function () {
                                         $mortgageRequest = $this->getOwnerRecord();
@@ -84,43 +84,43 @@ class InstallmentsRelationManager extends RelationManager
                                 }),
 
                             TextInput::make('total_tax_amount')
-                                ->label('Tax 11%')
+                                ->label('Pajak 11%')
                                 ->readOnly()
                                 ->required()
                                 ->numeric()
                                 ->prefix('IDR'),
 
                             TextInput::make('insurance_amount')
-                                ->label('Additional Insurance')
+                                ->label('Asuransi Tambahan')
                                 ->readOnly()
                                 ->default(900000)
                                 ->numeric()
                                 ->prefix('IDR'),
 
                             TextInput::make('grand_total_amount')
-                                ->label('Total Payment')
+                                ->label('Total Pembayaran')
                                 ->readOnly()
                                 ->required()
                                 ->numeric()
                                 ->prefix('IDR'),
 
                             TextInput::make('remaining_loan_amount_before_payment')
-                                ->label('Remaining Loan Amount Before Payemnt')
+                                ->label('Sisa Pinjaman Sebelum Pembayaran')
                                 ->readOnly()
                                 ->numeric()
                                 ->prefix('IDR'),
 
                             TextInput::make('remaining_loan_amount')
-                                ->label('Remaining Loan Amount After Payment')
+                                ->label('Sisa Pinjaman Setelah Pembayaran')
                                 ->readOnly()
                                 ->numeric()
                                 ->prefix('IDR'),
                         ]),
 
-                    Step::make('Payment Method')
+                    Step::make('Metode Pembayaran')
                         ->schema([
                             ToggleButtons::make('is_paid')
-                                ->label('Payment Status')
+                                ->label('Status Pembayaran')
                                 ->boolean()
                                 ->grouped()
                                 ->icons([
@@ -130,7 +130,7 @@ class InstallmentsRelationManager extends RelationManager
                                 ->required(),
 
                             Select::make('payment_type')
-                                ->label('Payment Type')
+                                ->label('Tipe Pembayaran')
                                 ->options([
                                     'Midtrans' => 'Midtrans',
                                     'Manual' => 'Manual',
@@ -138,7 +138,7 @@ class InstallmentsRelationManager extends RelationManager
                                 ->required(),
 
                             FileUpload::make('proof')
-                                ->label('Payment Proof')
+                                ->label('Bukti Pembayaran')
                                 ->visibility('public')
                                 ->image(),
                         ]),
@@ -166,7 +166,7 @@ class InstallmentsRelationManager extends RelationManager
                         ->falseColor('danger')
                         ->trueIcon('heroicon-o-check-circle')
                         ->falseIcon('heroicon-o-x-circle')
-                        ->label('Verified'),
+                        ->label('Terverifikasi'),
             ])
             ->filters([
                 // ...

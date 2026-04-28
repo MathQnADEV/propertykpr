@@ -6,6 +6,7 @@ namespace App\Models;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\MortgageRequest;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -54,5 +55,15 @@ class User extends Authenticatable implements FilamentUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function houses()
+    {
+        return $this->hasMany(House::class, 'agent_id');
+    }
+
+    public function mortgageRequests()
+    {
+        return $this->hasManyThrough(MortgageRequest::class, House::class, 'agent_id', 'house_id');
     }
 }

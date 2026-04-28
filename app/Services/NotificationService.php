@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Bank;
+use App\Models\BankApproval;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\Facility;
@@ -13,7 +14,6 @@ use App\Models\Interest;
 use App\Models\MortgageRequest;
 use App\Models\SystemNotification;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Env;
 use Illuminate\Support\Facades\Auth;
 
 class NotificationService
@@ -31,6 +31,7 @@ class NotificationService
         HousePhoto::class      => 'Foto Rumah',
         MortgageRequest::class => 'Permohonan KPR',
         Installment::class     => 'Cicilan',
+        BankApproval::class    => 'Persetujuan Bank',
     ];
 
     private static array $resourceRoutes = [
@@ -43,6 +44,7 @@ class NotificationService
         HousePhoto::class      => '/admin/house-photos',
         MortgageRequest::class => '/admin/mortgage-requests',
         Installment::class     => '/admin/installments',
+        BankApproval::class    => '/admin/bank-approvals',
     ];
 
     public static function log(string $type, Model $model, string $customTitle = ''): ?SystemNotification
@@ -65,7 +67,7 @@ class NotificationService
         if (in_array($type, ['created', 'updated'])) {
             $route = self::$resourceRoutes[$model::class] ?? null;
             if ($route) {
-                $url = config('APP_URL')."{$route}/{$model->id}/edit";
+                $url = config('APP_URL') . "{$route}/{$model->id}/edit";
             }
         }
 

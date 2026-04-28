@@ -24,9 +24,12 @@ class FacilityResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingLibrary;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Products';
+    protected static ?string $navigationLabel = 'Fasilitas';
+    protected static ?string $modelLabel = 'Fasilitas';
+    protected static ?string $pluralModelLabel = 'Fasilitas';
+    protected static string | UnitEnum | null $navigationGroup = 'Produk';
 
-    protected static ?string $recordTitleAttribute = 'Facility';
+    protected static ?string $recordTitleAttribute = 'Fasilitas';
 
     public static function form(Schema $schema): Schema
     {

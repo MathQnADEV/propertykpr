@@ -24,9 +24,12 @@ class HouseResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedHomeModern;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Products';
+    protected static ?string $navigationLabel = 'Properti';
+    protected static ?string $modelLabel = 'Properti';
+    protected static ?string $pluralModelLabel = 'Properti';
+    protected static string | UnitEnum | null $navigationGroup = 'Produk';
 
-    protected static ?string $recordTitleAttribute = 'House';
+    protected static ?string $recordTitleAttribute = 'Properti';
 
     public static function form(Schema $schema): Schema
     {

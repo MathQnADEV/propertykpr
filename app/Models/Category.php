@@ -27,4 +27,8 @@ class Category extends Model
     public function houses(){
         return $this->hasMany(House::class);
     }
+
+    public function availableHouses(){
+        return $this->hasMany(House::class)->where('is_available', true);
+    }
 }
