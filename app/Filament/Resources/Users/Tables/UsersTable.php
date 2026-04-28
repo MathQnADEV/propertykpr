@@ -23,6 +23,15 @@ class UsersTable
                 ImageColumn::make('photo'),
                 TextColumn::make('name')
                     ->searchable(),
+            TextColumn::make('roles.name')
+                ->label('Role')
+                ->badge()
+                ->color(fn($state) => match ($state) {
+                    'master' => 'danger',
+                    'admin'  => 'warning',
+                    default  => 'gray',
+                })
+                ->searchable(),
             ])
             ->filters([
                 // TrashedFilter::make(),

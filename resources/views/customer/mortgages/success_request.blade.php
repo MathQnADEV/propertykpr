@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Success Request PropertyKpr')
+@section('title', 'Success Request - X-Pro')
 
 @section('content')
     <x-nav-front />

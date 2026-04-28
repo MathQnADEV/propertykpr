@@ -8,38 +8,37 @@ use App\Models\House;
 
 class HouseService
 {
-
-    public function getCategoriesAndCities()
+    public function getCategoriesAndCities(): array
     {
         return [
-            'categories' => Category::latest()->get(),
-            'cities' => City::latest()->get(),
+            'categories' => Category::with('availableHouses')->latest()->get(),
+            'cities'     => City::latest()->get(),
         ];
     }
 
-    public function searchHouses($filters)
+    public function searchHouses(array $filters): array
     {
-        $query = House::query();
+        $query = House::query()->where('is_available', true)->with(['category', 'city']);
 
         if (!empty($filters['city'])) {
             $query->where('city_id', $filters['city']);
         }
-        
+
         if (!empty($filters['category'])) {
             $query->where('category_id', $filters['category']);
         }
 
-        $houses = $query->get();
-        $category = Category::findOrFail($filters['category'] ?? null);
-        $city = City::findOrFail($filters['city'] ?? null);
+        $houses   = $query->get();
+        // Validated upstream so these always exist — but guard anyway
+        $category = Category::find($filters['category'] ?? null);
+        $city     = City::find($filters['city'] ?? null);
 
         return compact('houses', 'category', 'city');
     }
 
-    public function getHouseDetails($house)
+    public function getHouseDetails(House $house): House
     {
-        // eager loading laravel
-        $house->load(['photos', 'facilities', 'facilities.facility']);
+        $house->load(['photos', 'facilities', 'facilities.facility', 'interest.bank']);
         return $house;
     }
 }

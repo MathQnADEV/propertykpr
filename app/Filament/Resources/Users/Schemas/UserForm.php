@@ -27,14 +27,14 @@ class UserForm
                     ->required(),
 
                 TextInput::make('password')
-                    ->helperText('Minimum 9 charcters')
+                    ->helperText('Minimal 9 karakter')
                     ->password()
                     ->required()
                     ->minLength(9)
                     ->maxLength(255),
 
                 Select::make('role')
-                    ->label('Role')
+                    ->label('Peran')
                     ->relationship('roles', 'name')
                     ->required(),
 

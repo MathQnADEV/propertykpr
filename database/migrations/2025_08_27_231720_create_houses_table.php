@@ -20,12 +20,13 @@ return new class extends Migration
 
             $table->text('about');
 
-            $table->integer('price');
+            $table->bigInteger('price');
             $table->integer('bedroom');
             $table->integer('bathroom');
             $table->integer('electric');
             $table->integer('land_area');
             $table->integer('building_area');
+            $table->boolean('is_available')->default(true);
 
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->foreignId('city_id')->constrained()->cascadeOnDelete();

@@ -29,7 +29,8 @@ class MortgageRequestsTable
         return $table
             ->columns([
                 ImageColumn::make('house.thumbnail'),
-                TextColumn::make('customer.name')
+                TextColumn::make('customer.nama_lengkap')
+                    ->label('Nasabah')
                     ->searchable(),
 
                 TextColumn::make('house.name'),
@@ -42,7 +43,7 @@ class MortgageRequestsTable
                 EditAction::make(),
                 ViewAction::make(),
                 Action::make('download')
-                    ->label('Download')
+                    ->label('Unduh')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->url(fn(MortgageRequest $record) => asset('storage/' . $record->documents))
                     ->openUrlInNewTab(),

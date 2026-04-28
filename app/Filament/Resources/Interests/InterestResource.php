@@ -23,9 +23,13 @@ class InterestResource extends Resource
     protected static ?string $model = Interest::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
-    protected static string | UnitEnum | null $navigationGroup = 'Vendors';
 
-    protected static ?string $recordTitleAttribute = 'Interest';
+    protected static ?string $navigationLabel = 'Bunga KPR';
+    protected static ?string $modelLabel = 'Bunga KPR';
+    protected static ?string $pluralModelLabel = 'Bunga KPR';
+    protected static string | UnitEnum | null $navigationGroup = 'Mitra';
+
+    protected static ?string $recordTitleAttribute = 'Bunga KPR';
 
     public static function form(Schema $schema): Schema
     {

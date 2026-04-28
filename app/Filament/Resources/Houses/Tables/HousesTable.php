@@ -13,6 +13,7 @@ use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Textarea;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\View;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
@@ -30,9 +31,15 @@ class HousesTable
                 ImageColumn::make('thumbnail'),
                 TextColumn::make('name')
                     ->searchable(),
-
+                TextColumn::make('agent.name')
+                    ->label('Agent')
+                    ->placeholder('—')
+                    ->searchable(),
                 TextColumn::make('category.name'),
                 TextColumn::make('city.name'),
+                IconColumn::make('is_available')
+                    ->boolean()
+                    ->label('Tersedia'),
 
             ])
             ->filters([
