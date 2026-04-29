@@ -30,7 +30,7 @@
                             placeholder="Masukkan kata sandi Anda">
                     </label>
                     <x-input-error :messages="$errors->get('password')" class="text-sm text-tedja-red" />
-                    <a href="#" class="hover:underline text-sm text-tedja-secondary">Lupa kata sandi</a>
+                    {{-- <a href="#" class="hover:underline text-sm text-tedja-secondary">Lupa kata sandi</a> --}}
                 </div>
                 <button type="submit"
                     class="rounded-full py-3 md:py-[14px] px-5 bg-tedja-green w-full text-center font-semibold text-sm md:text-base">
@@ -52,7 +52,7 @@
                             <img src="{{ asset('assets/images/icons/Star 1.svg') }}" class="flex shrink-0" alt="star">
                             <img src="{{ asset('assets/images/icons/Star 1.svg') }}" class="flex shrink-0" alt="star">
                         </div>
-                        <p class="font-semibold leading-[28px]">Tedja by Angga membantu kami mendapatkan rumah idaman dengan interest yang rendah, gaji UMR juga bisa hidup bahagia!</p>
+                        <p class="font-semibold leading-[28px]">X-PRO membantu kami mendapatkan rumah idaman dengan interest yang rendah, gaji UMR juga bisa hidup bahagia!</p>
                         <div class="flex items-center gap-[14px]">
                             <div class="flex size-[60px] rounded-full overflow-hidden">
                                 <img src="{{ asset('assets/images/photos/profile.png') }}" class="w-full h-full object-cover" alt="photo profile">
