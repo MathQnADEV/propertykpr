@@ -6,7 +6,7 @@
         {{-- Logo --}}
         <a href="{{ route('front.index') }}" class="flex shrink-0 items-center gap-2">
             <div class="inline-flex items-center justify-center bg-[#060922] rounded-xl p-1.5 shadow-sm">
-                <img src="{{ asset('assets/images/logos/XPRO-Favicon.svg') }}" alt="XPRO" class="h-7 w-7 rounded-lg">
+                <img src="{{ asset('assets/images/logos/XPRO-Favicon.svg') }}" alt="XPRO" class="h-auto w-12 rounded-lg">
             </div>
         </a>
 
