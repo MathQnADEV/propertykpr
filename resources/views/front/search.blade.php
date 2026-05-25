@@ -8,7 +8,7 @@
         <h1 class="font-bold text-2xl md:text-4xl leading-tight md:leading-[54px]">{{ $category->name }} in {{ $city->name }} City</h1>
         <div class="flex items-center gap-[6px]">
             <img src="{{ asset('assets/images/icons/building-3.svg') }}" class="size-6 flex shrink-0" alt="icon">
-            <p class="font-semibold text-sm md:text-base">Available {{ $houses->count() }} House Properties</p>
+            <p class="font-semibold text-sm md:text-base">Available {{ $houses->total() }} House Properties</p>
         </div>
     </div>
     <main class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-[1280px] px-4 md:px-[75px] gap-4 md:gap-[30px] mx-auto my-[40px] md:my-[50px]">
@@ -64,4 +64,10 @@
             </div>
         @endforelse
     </main>
+
+    @if($houses->hasPages())
+        <div class="flex justify-center pb-[50px]">
+            {{ $houses->withQueryString()->links() }}
+        </div>
+    @endif
 @endsection

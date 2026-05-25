@@ -1,4 +1,4 @@
-@extends('agent.layouts.app')
+﻿@extends('agent.layouts.app')
 
 @section('title', 'Dashboard - Agent Panel')
 
@@ -20,14 +20,14 @@
         <div class="stat-card bg-[#060922] text-white p-5 rounded-2xl">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-                    <svg class="w-5 h-5 text-[#CEF27F]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                 </div>
-                <span class="text-xs text-[#CEF27F] font-semibold bg-[#CEF27F]/10 px-2 py-1 rounded-lg">Total</span>
+                <span class="text-xs text-white font-semibold bg-white/10 px-2 py-1 rounded-lg">Total</span>
             </div>
             <p class="text-2xl lg:text-3xl font-bold">{{ $totalListings }}</p>
             <p class="text-xs text-white/60 mt-1">Listings Aktif</p>
         </div>
-        <div class="stat-card bg-[#3F52FF] text-white p-5 rounded-2xl">
+        <div class="stat-card bg-[#333333] text-white p-5 rounded-2xl"> {{-- was: bg-[#3F52FF] --}}
             <div class="flex items-center justify-between mb-3">
                 <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -35,9 +35,9 @@
                 <span class="text-xs font-semibold bg-white/10 px-2 py-1 rounded-lg">Terjual</span>
             </div>
             <p class="text-2xl lg:text-3xl font-bold">{{ $totalSold }}</p>
-            <p class="text-xs text-white/60 mt-1">Deals Selesai</p>
+            <p class="text-xs text-white/60 mt-1">Transaksi Selesai</p>
         </div>
-        <div class="stat-card bg-[#FF9F47] text-white p-5 rounded-2xl">
+        <div class="stat-card bg-[#888888] text-white p-5 rounded-2xl">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -47,7 +47,7 @@
             <p class="text-2xl lg:text-3xl font-bold">{{ $totalInProcess }}</p>
             <p class="text-xs text-white/60 mt-1">Dalam Proses</p>
         </div>
-        <div class="stat-card bg-[#FF3E3E] text-white p-5 rounded-2xl">
+        <div class="stat-card bg-[#444444] text-white p-5 rounded-2xl">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -55,7 +55,7 @@
                 <span class="text-xs font-semibold bg-white/10 px-2 py-1 rounded-lg">Gagal</span>
             </div>
             <p class="text-2xl lg:text-3xl font-bold">{{ $totalFailed }}</p>
-            <p class="text-xs text-white/60 mt-1">Deals Gagal</p>
+            <p class="text-xs text-white/60 mt-1">Transaksi Gagal</p>
         </div>
     </div>
 
@@ -64,11 +64,11 @@
         <div class="lg:col-span-2 bg-white rounded-2xl p-5 border border-[#F2F2F4]">
             <div class="flex items-center justify-between mb-5">
                 <h2 class="font-bold text-lg text-[#060922]">Listing Terbaru</h2>
-                <a href="{{ route('agent.listings') }}" class="text-sm text-[#3F52FF] font-semibold hover:underline">Lihat Semua</a>
+                <a href="{{ route('agent.listings') }}" class="text-sm text-[#111111] font-semibold hover:underline">Lihat Semua</a>
             </div>
             <div class="space-y-3">
                 @forelse($recentListings as $listing)
-                    <div class="agent-card flex items-center gap-4 p-3 rounded-xl border border-[#F2F2F4] hover:border-[#3F52FF]/20 cursor-pointer" onclick="window.location='{{ route('agent.listings.edit', $listing) }}'">
+                    <div class="agent-card flex items-center gap-4 p-3 rounded-xl border border-[#F2F2F4] hover:border-[#111111]/20 cursor-pointer" onclick="window.location='{{ route('agent.listings.edit', $listing) }}'">
                         <div class="w-14 h-14 lg:w-16 lg:h-16 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
                             @if($listing->thumbnail)
                                 <img src="{{ Storage::url($listing->thumbnail) }}" alt="{{ $listing->name }}" class="w-full h-full object-cover">
@@ -82,7 +82,7 @@
                             <h3 class="font-semibold text-sm text-[#060922] truncate">{{ $listing->name }}</h3>
                             <p class="text-xs text-[#8F91A2] mt-0.5">{{ $listing->category->name ?? '-' }} &bull; {{ $listing->city->name ?? '-' }}</p>
                         </div>
-                        <p class="text-sm font-bold text-[#3F52FF] hidden sm:block">Rp {{ number_format($listing->price, 0, '', '.') }}</p>
+                        <p class="text-sm font-bold text-[#111111] hidden sm:block">Rp {{ number_format($listing->price, 0, '', '.') }}</p>
                         <svg class="w-5 h-5 text-[#8F91A2] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </div>
                 @empty
@@ -97,28 +97,28 @@
         {{-- Recent Deals --}}
         <div class="bg-white rounded-2xl p-5 border border-[#F2F2F4]">
             <div class="flex items-center justify-between mb-5">
-                <h2 class="font-bold text-lg text-[#060922]">Deals Terbaru</h2>
-                <a href="{{ route('agent.deals') }}" class="text-sm text-[#3F52FF] font-semibold hover:underline">Semua</a>
+                <h2 class="font-bold text-lg text-[#060922]">Transaksi Terbaru</h2>
+                <a href="{{ route('agent.deals') }}" class="text-sm text-[#111111] font-semibold hover:underline">Semua</a>
             </div>
             <div class="space-y-3">
                 @forelse($recentDeals as $deal)
-                    <div class="agent-card flex items-center gap-3 p-3 rounded-xl border border-[#F2F2F4] hover:border-[#3F52FF]/20 cursor-pointer" onclick="window.location='{{ route('agent.deals.show', $deal) }}'">
+                    <div class="agent-card flex items-center gap-3 p-3 rounded-xl border border-[#F2F2F4] hover:border-[#111111]/20 cursor-pointer" onclick="window.location='{{ route('agent.deals.show', $deal) }}'">
                         <div class="flex-1 min-w-0">
                             <h3 class="font-semibold text-sm text-[#060922] truncate">{{ $deal->house->name ?? 'N/A' }}</h3>
                             <p class="text-xs text-[#8F91A2] mt-0.5">{{ $deal->customer->nama_lengkap ?? 'N/A' }}</p>
                         </div>
                         @if($deal->status === 'Approved')
-                            <span class="text-[10px] font-semibold bg-[#3F52FF] text-white px-2 py-1 rounded-lg flex-shrink-0">Terjual</span>
+                            <span class="text-[10px] font-semibold bg-[#111111] text-white px-2 py-1 rounded-lg flex-shrink-0">Terjual</span>
                         @elseif($deal->status === 'Waiting for Bank')
-                            <span class="text-[10px] font-semibold bg-[#FF9F47] text-white px-2 py-1 rounded-lg flex-shrink-0">Proses</span>
+                            <span class="text-[10px] font-semibold bg-[#888888] text-white px-2 py-1 rounded-lg flex-shrink-0">Proses Bank</span>
                         @else
-                            <span class="text-[10px] font-semibold bg-[#FF3E3E] text-white px-2 py-1 rounded-lg flex-shrink-0">Gagal</span>
+                            <span class="text-[10px] font-semibold bg-[#444444] text-white px-2 py-1 rounded-lg flex-shrink-0">Gagal</span>
                         @endif
                     </div>
                 @empty
                     <div class="text-center py-8">
                         <svg class="w-12 h-12 text-[#8F91A2]/30 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-                        <p class="text-sm text-[#8F91A2]">Belum ada deals</p>
+                        <p class="text-sm text-[#8F91A2]">Belum ada transaksi</p>
                     </div>
                 @endforelse
             </div>
@@ -129,23 +129,23 @@
     <div class="mt-6 bg-white rounded-2xl p-5 border border-[#F2F2F4]">
         <h2 class="font-bold text-lg text-[#060922] mb-4">Aksi Cepat</h2>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <a href="{{ route('agent.listings.create') }}" class="agent-card flex flex-col items-center gap-3 p-5 rounded-xl border border-[#F2F2F4] hover:border-[#CEF27F] hover:bg-[#CEF27F]/5 text-center group">
-                <div class="w-12 h-12 rounded-xl bg-[#CEF27F]/20 flex items-center justify-center group-hover:bg-[#CEF27F]/30 transition-colors">
+            <a href="{{ route('agent.listings.create') }}" class="agent-card flex flex-col items-center gap-3 p-5 rounded-xl border border-[#F2F2F4] hover:border-[#111111] hover:bg-[#F0F0F0] text-center group">
+                <div class="w-12 h-12 rounded-xl bg-[#F0F0F0] flex items-center justify-center group-hover:bg-[#EBEBEB] transition-colors">
                     <svg class="w-6 h-6 text-[#060922]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                 </div>
                 <span class="text-sm font-semibold text-[#060922]">Unggah Listing</span>
             </a>
-            <a href="{{ route('agent.payments') }}" class="agent-card flex flex-col items-center gap-3 p-5 rounded-xl border border-[#F2F2F4] hover:border-[#3F52FF] hover:bg-[#3F52FF]/5 text-center group">
-                <div class="w-12 h-12 rounded-xl bg-[#3F52FF]/10 flex items-center justify-center group-hover:bg-[#3F52FF]/15 transition-colors">
-                    <svg class="w-6 h-6 text-[#3F52FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <a href="{{ route('agent.payments') }}" class="agent-card flex flex-col items-center gap-3 p-5 rounded-xl border border-[#F2F2F4] hover:border-[#111111] hover:bg-[#111111]/5 text-center group">
+                <div class="w-12 h-12 rounded-xl bg-[#111111]/10 flex items-center justify-center group-hover:bg-[#111111]/15 transition-colors">
+                    <svg class="w-6 h-6 text-[#111111]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                 </div>
-                <span class="text-sm font-semibold text-[#060922]">Permintaan Pembayaran</span>
+                <span class="text-sm font-semibold text-[#060922]">Pengajuan KPR</span>
             </a>
-            <a href="{{ route('agent.documents') }}" class="agent-card flex flex-col items-center gap-3 p-5 rounded-xl border border-[#F2F2F4] hover:border-[#FF9F47] hover:bg-[#FF9F47]/5 text-center group">
-                <div class="w-12 h-12 rounded-xl bg-[#FF9F47]/10 flex items-center justify-center group-hover:bg-[#FF9F47]/15 transition-colors">
-                    <svg class="w-6 h-6 text-[#FF9F47]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <a href="{{ route('agent.documents') }}" class="agent-card flex flex-col items-center gap-3 p-5 rounded-xl border border-[#F2F2F4] hover:border-[#888888] hover:bg-[#888888]/5 text-center group">
+                <div class="w-12 h-12 rounded-xl bg-[#888888]/10 flex items-center justify-center group-hover:bg-[#888888]/15 transition-colors">
+                    <svg class="w-6 h-6 text-[#888888]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 </div>
-                <span class="text-sm font-semibold text-[#060922]">Upload Bukti</span>
+                <span class="text-sm font-semibold text-[#060922]">Upload Dokumen</span>
             </a>
             <a href="{{ route('agent.reports') }}" class="agent-card flex flex-col items-center gap-3 p-5 rounded-xl border border-[#F2F2F4] hover:border-[#060922] hover:bg-[#060922]/5 text-center group">
                 <div class="w-12 h-12 rounded-xl bg-[#060922]/10 flex items-center justify-center group-hover:bg-[#060922]/15 transition-colors">

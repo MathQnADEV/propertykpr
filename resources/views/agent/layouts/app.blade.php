@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="id">
 
 <head>
@@ -13,6 +13,19 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
+        /*
+         * ── B&W COLOR THEME ─────────────────────────────────────────────
+         * Original → Replaced
+         * #3F52FF  (blue accent)   → #111111  (black)
+         * #CEF27F  (lime green)    → #111111  (buttons/FAB) / #ffffff (text on dark / avatar bg)
+         * #FF9F47  (orange)        → #888888  (medium gray)
+         * #FF3E3E  (red)           → #444444  (dark gray)
+         * #b8dc5f  (lime hover)    → #333333
+         * #16a34a  (green)         → #444444
+         * #7c3aed  (purple)        → #555555
+         * nav-item::before         → #ffffff  (was: #CEF27F)
+         * ────────────────────────────────────────────────────────────────
+         */
         * { font-family: 'Poppins', sans-serif; }
         body { background: #F8F8FA; }
 
@@ -88,7 +101,7 @@
             transform: translateY(-50%);
             width: 3px;
             height: 60%;
-            background: #CEF27F;
+            background: #ffffff; /* was: #CEF27F */
             border-radius: 3px 0 0 3px;
         }
 
@@ -151,7 +164,7 @@
                 <img src="{{ asset('assets/images/logos/XPRO-Favicon.svg') }}" alt="XPRO" class="h-10 w-10 rounded-xl" />
             </a>
             <div class="mt-4 flex items-center gap-3 p-3 rounded-2xl bg-white/5">
-                <div class="w-10 h-10 rounded-full bg-[#CEF27F] flex items-center justify-center text-[#060922] font-bold text-sm">
+                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#111111] font-bold text-sm"> {{-- avatar: was bg-[#CEF27F] text-[#060922] --}}
                     {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                 </div>
                 <div class="flex-1 min-w-0">
@@ -165,21 +178,21 @@
             <p class="text-[11px] font-semibold tracking-wider text-[#8F91A2] uppercase mb-3 px-2">Menu Utama</p>
             <ul class="flex flex-col gap-1 mb-6">
                 <li>
-                    <a href="{{ route('agent.dashboard') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.dashboard') ? 'active bg-white/10 text-[#CEF27F] font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
+                    <a href="{{ route('agent.dashboard') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.dashboard') ? 'active bg-white/10 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 13a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/></svg>
                         <span class="text-sm">Dashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('agent.listings') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.listings*') ? 'active bg-white/10 text-[#CEF27F] font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
+                    <a href="{{ route('agent.listings') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.listings*') ? 'active bg-white/10 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                         <span class="text-sm">Unggah Listing</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('agent.payments') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.payments*') ? 'active bg-white/10 text-[#CEF27F] font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
+                    <a href="{{ route('agent.payments') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.payments*') ? 'active bg-white/10 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                        <span class="text-sm">Permintaan Pembayaran</span>
+                        <span class="text-sm">Pengajuan KPR</span>
                     </a>
                 </li>
             </ul>
@@ -187,27 +200,33 @@
             <p class="text-[11px] font-semibold tracking-wider text-[#8F91A2] uppercase mb-3 px-2">Kelola</p>
             <ul class="flex flex-col gap-1 mb-6">
                 <li>
-                    <a href="{{ route('agent.documents') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.documents*') ? 'active bg-white/10 text-[#CEF27F] font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
+                    <a href="{{ route('agent.documents') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.documents*') ? 'active bg-white/10 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                        <span class="text-sm">Unggah Bukti & Dokumen</span>
+                        <span class="text-sm">Dokumen</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('agent.deals') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.deals*') ? 'active bg-white/10 text-[#CEF27F] font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
+                    <a href="{{ route('agent.deals') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.deals*') ? 'active bg-white/10 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                        <span class="text-sm">Deals</span>
-                        @php
-                            $pendingDeals = \App\Models\MortgageRequest::where('status', 'Waiting for Bank')->count();
-                        @endphp
-                        @if($pendingDeals > 0)
-                            <span class="badge-pulse ml-auto bg-[#FF9F47] text-[#060922] text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $pendingDeals }}</span>
+                        <span class="text-sm">Transaksi</span>
+                        @if($sidebarPendingDeals > 0)
+                            <span class="badge-pulse ml-auto bg-white text-[#111111] text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $sidebarPendingDeals }}</span>
                         @endif
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('agent.reports') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.reports*') ? 'active bg-white/10 text-[#CEF27F] font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
+                    <a href="{{ route('agent.reports') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.reports*') ? 'active bg-white/10 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                        <span class="text-sm">Laporan Agent</span>
+                        <span class="text-sm">Laporan</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('agent.commissions') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.commissions*') ? 'active bg-white/10 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+                        <span class="text-sm">Komisi & Pendapatan</span>
+                        @if($sidebarPendingCommReqs > 0)
+                            <span class="badge-pulse ml-auto bg-white text-[#111111] text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $sidebarPendingCommReqs }}</span>
+                        @endif
                     </a>
                 </li>
             </ul>
@@ -215,7 +234,7 @@
             <p class="text-[11px] font-semibold tracking-wider text-[#8F91A2] uppercase mb-3 px-2">Lainnya</p>
             <ul class="flex flex-col gap-1">
                 <li>
-                    <a href="{{ route('agent.profile') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.profile*') ? 'active bg-white/10 text-[#CEF27F] font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
+                    <a href="{{ route('agent.profile') }}" class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 {{ request()->routeIs('agent.profile*') ? 'active bg-white/10 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                         <span class="text-sm">Profile</span>
                     </a>
@@ -229,7 +248,7 @@
                 <li>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="nav-item w-full relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200">
+                        <button type="submit" class="nav-item w-full relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:bg-[#444444]/10 hover:text-[#666666] transition-all duration-200">
                             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                             <span class="text-sm">Logout</span>
                         </button>
@@ -252,12 +271,12 @@
                 {{-- Search --}}
                 <div class="hidden md:block relative flex-1 max-w-md">
                     <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8F91A2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <input type="text" placeholder="Cari listing, deals..." class="w-full pl-12 pr-4 py-2.5 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#3F52FF]/20 focus:border-[#3F52FF] transition-all duration-200" />
+                    <input type="text" placeholder="Cari listing, transaksi..." class="w-full pl-12 pr-4 py-2.5 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all duration-200" />
                 </div>
 
                 {{-- Right actions --}}
                 <div class="flex items-center gap-3">
-                    <a href="{{ route('agent.listings.create') }}" class="hidden sm:flex items-center gap-2 bg-[#CEF27F] text-[#060922] font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-[#b8dc5f] transition-colors">
+                    <a href="{{ route('agent.listings.create') }}" class="hidden sm:flex items-center gap-2 bg-[#111111] text-white font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-[#333333] transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         <span>Tambah Listing</span>
                     </a>
@@ -270,7 +289,7 @@
                             <p class="text-sm font-semibold text-[#060922]">{{ Auth::user()->name }}</p>
                         </div>
                         <div id="profileDropdown" class="relative">
-                            <button onclick="toggleProfileDropdown()" class="w-10 h-10 rounded-full bg-[#060922] flex items-center justify-center text-[#CEF27F] font-bold text-sm hover:ring-2 hover:ring-[#3F52FF] transition-all">
+                            <button onclick="toggleProfileDropdown()" class="w-10 h-10 rounded-full bg-[#060922] flex items-center justify-center text-white font-bold text-sm hover:ring-2 hover:ring-[#111111] transition-all">
                                 {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                             </button>
                             <div id="profileMenu" class="dropdown-menu hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-[#F2F2F4] py-2 z-50">
@@ -285,7 +304,7 @@
                                 <hr class="my-1 border-[#F2F2F4]">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                                    <button type="submit" class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#444444] hover:bg-[#F0F0F0] transition-colors">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                                         Keluar
                                     </button>
@@ -300,7 +319,7 @@
         {{-- FLASH MESSAGES --}}
         @if(session('success'))
             <div id="toast" class="toast fixed top-6 right-6 z-[100] bg-[#060922] text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 max-w-sm">
-                <div class="w-8 h-8 rounded-full bg-[#CEF27F] flex items-center justify-center flex-shrink-0">
+                <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0"> {{-- was: bg-[#CEF27F] --}}
                     <svg class="w-4 h-4 text-[#060922]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                 </div>
                 <p class="text-sm font-medium">{{ session('success') }}</p>
@@ -309,9 +328,9 @@
         @endif
 
         @if(session('error'))
-            <div id="toast" class="toast fixed top-6 right-6 z-[100] bg-red-600 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 max-w-sm">
+            <div id="toast" class="toast fixed top-6 right-6 z-[100] bg-[#444444] text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 max-w-sm">
                 <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0">
-                    <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <svg class="w-4 h-4 text-[#444444]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
                 </div>
                 <p class="text-sm font-medium">{{ session('error') }}</p>
                 <button onclick="closeToast()" class="ml-auto text-white/60 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
@@ -327,22 +346,22 @@
     {{-- MOBILE BOTTOM NAV --}}
     <nav class="mobile-bottom-nav fixed bottom-0 left-0 right-0 bg-white z-40 lg:hidden safe-area-bottom">
         <div class="flex items-center justify-around py-2 px-2">
-            <a href="{{ route('agent.dashboard') }}" class="flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl {{ request()->routeIs('agent.dashboard') ? 'text-[#3F52FF]' : 'text-[#8F91A2]' }}">
+            <a href="{{ route('agent.dashboard') }}" class="flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl {{ request()->routeIs('agent.dashboard') ? 'text-[#111111]' : 'text-[#8F91A2]' }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 13a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/></svg>
                 <span class="text-[10px] font-semibold">Beranda</span>
             </a>
-            <a href="{{ route('agent.listings') }}" class="flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl {{ request()->routeIs('agent.listings*') ? 'text-[#3F52FF]' : 'text-[#8F91A2]' }}">
+            <a href="{{ route('agent.listings') }}" class="flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl {{ request()->routeIs('agent.listings*') ? 'text-[#111111]' : 'text-[#8F91A2]' }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                 <span class="text-[10px] font-semibold">Listing</span>
             </a>
-            <a href="{{ route('agent.listings.create') }}" class="flex items-center justify-center -mt-4 w-12 h-12 bg-[#CEF27F] rounded-2xl shadow-lg shadow-[#CEF27F]/30">
-                <svg class="w-6 h-6 text-[#060922]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+            <a href="{{ route('agent.listings.create') }}" class="flex items-center justify-center -mt-4 w-12 h-12 bg-[#111111] rounded-2xl shadow-lg shadow-black/10"> {{-- was: bg-[#CEF27F] --}}
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
             </a>
-            <a href="{{ route('agent.deals') }}" class="flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl {{ request()->routeIs('agent.deals*') ? 'text-[#3F52FF]' : 'text-[#8F91A2]' }}">
+            <a href="{{ route('agent.deals') }}" class="flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl {{ request()->routeIs('agent.deals*') ? 'text-[#111111]' : 'text-[#8F91A2]' }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                <span class="text-[10px] font-semibold">Deals</span>
+                <span class="text-[10px] font-semibold">Transaksi</span>
             </a>
-            <a href="{{ route('agent.reports') }}" class="flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl {{ request()->routeIs('agent.reports*') ? 'text-[#3F52FF]' : 'text-[#8F91A2]' }}">
+            <a href="{{ route('agent.reports') }}" class="flex flex-col items-center gap-1 py-1.5 px-3 rounded-xl {{ request()->routeIs('agent.reports*') ? 'text-[#111111]' : 'text-[#8F91A2]' }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                 <span class="text-[10px] font-semibold">Laporan</span>
             </a>

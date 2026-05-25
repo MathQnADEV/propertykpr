@@ -29,6 +29,7 @@ class BankApprovalResource extends Resource
     protected static ?string $recordTitleAttribute = 'Persetujuan Bank';
 
     protected static string | UnitEnum | null $navigationGroup = 'Transaksi';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

@@ -68,8 +68,14 @@ class FrontController extends Controller
 
     public function category(Category $category)
     {
-        $category->load(['availableHouses']);
-        return view('front.category', compact('category'));
+        // Paginate instead of loading all houses — city is needed by the card
+        $houses = House::where('category_id', $category->id)
+            ->where('is_available', true)
+            ->with(['city'])
+            ->latest()
+            ->paginate(12);
+
+        return view('front.category', compact('category', 'houses'));
     }
 
     public function details(House $house)

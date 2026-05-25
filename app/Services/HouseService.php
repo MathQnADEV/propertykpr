@@ -11,7 +11,8 @@ class HouseService
     public function getCategoriesAndCities(): array
     {
         return [
-            'categories' => Category::with('availableHouses')->latest()->get(),
+            // withCount instead of with — only load the count, not all house records
+            'categories' => Category::withCount('availableHouses')->latest()->get(),
             'cities'     => City::latest()->get(),
         ];
     }
@@ -28,7 +29,8 @@ class HouseService
             $query->where('category_id', $filters['category']);
         }
 
-        $houses   = $query->get();
+        // Paginate to avoid loading unbounded results into memory
+        $houses   = $query->latest()->paginate(12);
         // Validated upstream so these always exist — but guard anyway
         $category = Category::find($filters['category'] ?? null);
         $city     = City::find($filters['city'] ?? null);

@@ -37,10 +37,15 @@ class MortgageService
         $totalPayments = $durationYears * 12; // total of monthly
         $monthlyInterestRate = $interest->interest / 100 / 12;
 
-        // amortization formula
-        $numerator = $loanTotalAmount * $monthlyInterestRate * pow(1 + $monthlyInterestRate, $totalPayments);
-        $denominator = pow(1 + $monthlyInterestRate, $totalPayments) - 1;
-        $monthlyAmount = $denominator > 0 ? $numerator / $denominator : 0;
+        // amortization formula (standard KPR amortization)
+        if ($monthlyInterestRate > 0) {
+            $numerator     = $loanTotalAmount * $monthlyInterestRate * pow(1 + $monthlyInterestRate, $totalPayments);
+            $denominator   = pow(1 + $monthlyInterestRate, $totalPayments) - 1;
+            $monthlyAmount = $numerator / $denominator;
+        } else {
+            // 0% interest: straight-line division
+            $monthlyAmount = $totalPayments > 0 ? $loanTotalAmount / $totalPayments : 0;
+        }
 
         $loanInterestTotalAmount = $monthlyAmount * $totalPayments;
 

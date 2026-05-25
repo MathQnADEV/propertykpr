@@ -1,6 +1,6 @@
-@extends('agent.layouts.app')
+﻿@extends('agent.layouts.app')
 
-@section('title', 'Detail Deal - Agent Panel')
+@section('title', 'Detail Transaksi - Agent Panel')
 
 @section('content')
     <div class="flex items-center gap-3 mb-6">
@@ -8,15 +8,15 @@
             <svg class="w-5 h-5 text-[#060922]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
         </a>
         <div class="flex-1">
-            <h1 class="text-2xl font-bold text-[#060922]">Detail Deal</h1>
+            <h1 class="text-2xl font-bold text-[#060922]">Detail Transaksi</h1>
             <p class="text-sm text-[#8F91A2] mt-0.5">{{ $mortgageRequest->house->name ?? 'N/A' }}</p>
         </div>
         @if($mortgageRequest->status === 'Approved')
-            <span class="text-xs font-semibold bg-[#3F52FF] text-white px-4 py-2 rounded-xl">Sold</span>
+            <span class="text-xs font-semibold bg-[#111111] text-white px-4 py-2 rounded-xl">Terjual</span>
         @elseif($mortgageRequest->status === 'Waiting for Bank')
-            <span class="text-xs font-semibold bg-[#FF9F47] text-white px-4 py-2 rounded-xl">In Process</span>
+            <span class="text-xs font-semibold bg-[#888888] text-white px-4 py-2 rounded-xl">Proses Bank</span>
         @else
-            <span class="text-xs font-semibold bg-[#FF3E3E] text-white px-4 py-2 rounded-xl">Failed</span>
+            <span class="text-xs font-semibold bg-[#444444] text-white px-4 py-2 rounded-xl">Gagal</span>
         @endif
     </div>
 
@@ -80,7 +80,7 @@
                         <span class="font-bold text-[#060922]">Rp {{ number_format($mortgageRequest->house_price, 0, '', '.') }}</span>
                     </div>
                     <div class="flex items-center justify-between py-3 border-b border-[#F2F2F4]">
-                        <span class="text-sm text-[#8F91A2]">Down Payment ({{ $mortgageRequest->dp_percentage }}%)</span>
+                        <span class="text-sm text-[#8F91A2]">Uang Muka / DP ({{ $mortgageRequest->dp_percentage }}%)</span>
                         <span class="font-semibold text-[#060922]">Rp {{ number_format($mortgageRequest->dp_total_amount, 0, '', '.') }}</span>
                     </div>
                     <div class="flex items-center justify-between py-3 border-b border-[#F2F2F4]">
@@ -93,7 +93,7 @@
                     </div>
                     <div class="flex items-center justify-between py-3">
                         <span class="text-sm font-semibold text-[#060922]">Total + Bunga</span>
-                        <span class="font-bold text-xl text-[#3F52FF]">Rp {{ number_format($mortgageRequest->loan_interest_total_amount, 0, '', '.') }}</span>
+                        <span class="font-bold text-xl text-[#111111]">Rp {{ number_format($mortgageRequest->loan_interest_total_amount, 0, '', '.') }}</span>
                     </div>
                 </div>
             </div>
@@ -104,12 +104,12 @@
                     <h3 class="font-bold text-[#060922] mb-4">Riwayat Cicilan ({{ $mortgageRequest->installments->count() }})</h3>
                     <div class="space-y-2">
                         @foreach($mortgageRequest->installments as $inst)
-                            <div class="flex items-center gap-4 p-3 rounded-xl {{ $inst->is_paid ? 'bg-[#CEF27F]/10' : 'bg-[#F8F8FA]' }}">
-                                <div class="w-10 h-10 rounded-lg {{ $inst->is_paid ? 'bg-[#CEF27F]/30' : 'bg-[#FF9F47]/20' }} flex items-center justify-center flex-shrink-0">
+                            <div class="flex items-center gap-4 p-3 rounded-xl {{ $inst->is_paid ? 'bg-white/10' : 'bg-[#F8F8FA]' }}">
+                                <div class="w-10 h-10 rounded-lg {{ $inst->is_paid ? 'bg-[#EBEBEB]' : 'bg-[#888888]/20' }} flex items-center justify-center flex-shrink-0">
                                     @if($inst->is_paid)
-                                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        <svg class="w-5 h-5 text-[#333333]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                                     @else
-                                        <svg class="w-5 h-5 text-[#FF9F47]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        <svg class="w-5 h-5 text-[#888888]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                     @endif
                                 </div>
                                 <div class="flex-1 min-w-0">
@@ -118,7 +118,7 @@
                                 </div>
                                 <div class="text-right flex-shrink-0">
                                     <p class="font-bold text-sm text-[#060922]">Rp {{ number_format($inst->grand_total_amount, 0, '', '.') }}</p>
-                                    <p class="text-[10px] {{ $inst->is_paid ? 'text-green-600' : 'text-[#FF9F47]' }} font-semibold">{{ $inst->is_paid ? 'Lunas' : 'Belum bayar' }}</p>
+                                    <p class="text-[10px] {{ $inst->is_paid ? 'text-[#333333]' : 'text-[#888888]' }} font-semibold">{{ $inst->is_paid ? 'Lunas' : 'Belum bayar' }}</p>
                                 </div>
                             </div>
                         @endforeach
@@ -144,9 +144,9 @@
         <div class="space-y-6">
             {{-- Customer Info --}}
             <div class="bg-white rounded-2xl p-5 border border-[#F2F2F4]">
-                <h3 class="font-bold text-[#060922] mb-4">Customer</h3>
+                <h3 class="font-bold text-[#060922] mb-4">Data Pembeli</h3>
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="w-12 h-12 rounded-full bg-[#3F52FF] flex items-center justify-center text-white font-bold text-lg">
+                    <div class="w-12 h-12 rounded-full bg-[#111111] flex items-center justify-center text-white font-bold text-lg">
                         {{ strtoupper(substr($mortgageRequest->customer->nama_lengkap ?? 'N', 0, 1)) }}
                     </div>
                     <div>
@@ -185,7 +185,7 @@
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-[#8F91A2]">Sisa Pinjaman</span>
-                        <span class="font-bold text-[#FF9F47]">Rp {{ number_format($mortgageRequest->remaining_loan_amount, 0, '', '.') }}</span>
+                        <span class="font-bold text-[#888888]">Rp {{ number_format($mortgageRequest->remaining_loan_amount, 0, '', '.') }}</span>
                     </div>
                 </div>
             </div>
@@ -194,19 +194,19 @@
             <div class="bg-white rounded-2xl p-5 border border-[#F2F2F4]">
                 <h3 class="font-bold text-[#060922] mb-4">Dokumen</h3>
                 @if($mortgageRequest->documents)
-                    <div class="flex items-center gap-3 p-3 rounded-xl bg-[#CEF27F]/10 border border-[#CEF27F]/20">
-                        <svg class="w-8 h-8 text-green-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <div class="flex items-center gap-3 p-3 rounded-xl bg-white/10 border border-[#E8E8E8]">
+                        <svg class="w-8 h-8 text-[#333333] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <div class="flex-1 min-w-0">
                             <p class="text-sm font-semibold text-[#060922]">Dokumen tersedia</p>
-                            <a href="{{ Storage::url($mortgageRequest->documents) }}" target="_blank" class="text-xs text-[#3F52FF] hover:underline">Lihat dokumen</a>
+                            <a href="{{ Storage::url($mortgageRequest->documents) }}" target="_blank" class="text-xs text-[#111111] hover:underline">Lihat dokumen</a>
                         </div>
                     </div>
                 @else
-                    <div class="flex items-center gap-3 p-3 rounded-xl bg-[#FF9F47]/10 border border-[#FF9F47]/20">
-                        <svg class="w-8 h-8 text-[#FF9F47] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <div class="flex items-center gap-3 p-3 rounded-xl bg-[#888888]/10 border border-[#888888]/20">
+                        <svg class="w-8 h-8 text-[#888888] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <div>
                             <p class="text-sm font-semibold text-[#060922]">Belum ada dokumen</p>
-                            <a href="{{ route('agent.documents') }}" class="text-xs text-[#3F52FF] hover:underline">Upload sekarang</a>
+                            <a href="{{ route('agent.documents') }}" class="text-xs text-[#111111] hover:underline">Upload sekarang</a>
                         </div>
                     </div>
                 @endif

@@ -34,7 +34,21 @@ class MortgageRequestsTable
                     ->searchable(),
 
                 TextColumn::make('house.name'),
-                TextColumn::make('status'),
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'Waiting for Bank' => 'Proses Bank',
+                        'Approved'         => 'Disetujui',
+                        'Rejected'         => 'Ditolak',
+                        default            => $state,
+                    })
+                    ->color(fn($state) => match ($state) {
+                        'Waiting for Bank' => 'warning',
+                        'Approved'         => 'success',
+                        'Rejected'         => 'danger',
+                        default            => 'gray',
+                    }),
             ])
             ->filters([
                 TrashedFilter::make(),

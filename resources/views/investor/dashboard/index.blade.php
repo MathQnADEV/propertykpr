@@ -1,4 +1,4 @@
-@extends('investor.layouts.app')
+﻿@extends('investor.layouts.app')
 
 @section('title', 'Statistik Penjualan - Investor Panel')
 
@@ -28,9 +28,9 @@
             {{-- Dropdown --}}
             <div class="relative w-full sm:w-72" id="agentDropdownWrap">
                 <button type="button" id="agentDropdownBtn" onclick="toggleAgentDropdown()"
-                    class="w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-[#F8F8FA] border border-[#F2F2F4] rounded-xl text-sm font-semibold text-[#060922] hover:border-[#3F52FF]/40 transition-colors">
+                    class="w-full flex items-center justify-between gap-2 px-4 py-2.5 bg-[#F8F8FA] border border-[#F2F2F4] rounded-xl text-sm font-semibold text-[#060922] hover:border-[#111111]/40 transition-colors">
                     <div class="flex items-center gap-2 min-w-0">
-                        <div class="w-6 h-6 rounded-full bg-[#060922] flex items-center justify-center text-[#CEF27F] font-bold text-[10px] flex-shrink-0">
+                        <div class="w-6 h-6 rounded-full bg-[#060922] flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0">
                             {{ $agentName ? strtoupper(substr($agentName, 0, 1)) : '★' }}
                         </div>
                         <span class="truncate">{{ $agentName ?? 'Semua Agent' }}</span>
@@ -52,31 +52,31 @@
                             </svg>
                             <input type="text" id="agentSearch" oninput="filterAgents(this.value)"
                                 placeholder="Cari agent..."
-                                class="w-full pl-9 pr-3 py-2 text-sm border border-[#F2F2F4] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#3F52FF]/20 focus:border-[#3F52FF] transition-all" />
+                                class="w-full pl-9 pr-3 py-2 text-sm border border-[#F2F2F4] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
                         </div>
                     </div>
 
                     {{-- List --}}
                     <div class="max-h-56 overflow-y-auto" id="agentList">
                         <a href="{{ route('investor.dashboard') }}"
-                           class="flex items-center gap-2.5 px-4 py-2.5 text-sm hover:bg-[#F8F8FA] transition-colors {{ is_null($agentId) ? 'bg-[#3F52FF]/5 font-semibold text-[#3F52FF]' : 'text-[#060922]' }}"
+                           class="flex items-center gap-2.5 px-4 py-2.5 text-sm hover:bg-[#F8F8FA] transition-colors {{ is_null($agentId) ? 'bg-[#111111]/5 font-semibold text-[#111111]' : 'text-[#060922]' }}"
                            data-name="semua agent">
-                            <div class="w-7 h-7 rounded-full bg-[#060922] flex items-center justify-center text-[#CEF27F] font-bold text-[10px] flex-shrink-0">★</div>
+                            <div class="w-7 h-7 rounded-full bg-[#060922] flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0">★</div>
                             <span>Semua Agent</span>
                             @if(is_null($agentId))
-                                <svg class="w-4 h-4 ml-auto text-[#3F52FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <svg class="w-4 h-4 ml-auto text-[#111111]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                             @endif
                         </a>
                         @foreach($agents as $agent)
                             <a href="{{ route('investor.dashboard', ['agent_id' => $agent->id]) }}"
-                               class="flex items-center gap-2.5 px-4 py-2.5 text-sm hover:bg-[#F8F8FA] transition-colors {{ $agentId === $agent->id ? 'bg-[#3F52FF]/5 font-semibold text-[#3F52FF]' : 'text-[#060922]' }}"
+                               class="flex items-center gap-2.5 px-4 py-2.5 text-sm hover:bg-[#F8F8FA] transition-colors {{ $agentId === $agent->id ? 'bg-[#111111]/5 font-semibold text-[#111111]' : 'text-[#060922]' }}"
                                data-name="{{ strtolower($agent->name) }}">
-                                <div class="w-7 h-7 rounded-full bg-[#060922] flex items-center justify-center text-[#CEF27F] font-bold text-[10px] flex-shrink-0">
+                                <div class="w-7 h-7 rounded-full bg-[#060922] flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0">
                                     {{ strtoupper(substr($agent->name, 0, 1)) }}
                                 </div>
                                 <span>{{ $agent->name }}</span>
                                 @if($agentId === $agent->id)
-                                    <svg class="w-4 h-4 ml-auto text-[#3F52FF]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                    <svg class="w-4 h-4 ml-auto text-[#111111]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                                 @endif
                             </a>
                         @endforeach
@@ -87,7 +87,7 @@
 
             {{-- Active badge --}}
             @if($agentName)
-                <div class="flex items-center gap-2 text-sm text-[#3F52FF] bg-[#3F52FF]/5 px-3 py-2 rounded-xl">
+                <div class="flex items-center gap-2 text-sm text-[#111111] bg-[#111111]/5 px-3 py-2 rounded-xl">
                     <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                     </svg>
@@ -106,17 +106,17 @@
         <div class="stat-card text-white p-5 rounded-2xl" style="background-color:#060922;">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(255,255,255,0.1)">
-                    <svg class="w-5 h-5" style="color:#CEF27F" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-5 h-5" style="color:#E0E0E0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                     </svg>
                 </div>
-                <span class="text-xs font-semibold px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.1);color:#CEF27F;">Total</span>
+                <span class="text-xs font-semibold px-2 py-1 rounded-lg" style="background:rgba(255,255,255,0.1);color:#E0E0E0;">Total</span> {{-- was: color:#CEF27F --}}
             </div>
             <p class="text-2xl lg:text-3xl font-bold">{{ number_format($stats['total_listings']) }}</p>
             <p class="text-xs mt-1" style="color:rgba(255,255,255,0.6)">Total Properti</p>
         </div>
 
-        <div class="stat-card text-white p-5 rounded-2xl" style="background-color:#3F52FF;">
+        <div class="stat-card text-white p-5 rounded-2xl" style="background-color:#111111;">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(255,255,255,0.1)">
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +129,7 @@
             <p class="text-xs mt-1" style="color:rgba(255,255,255,0.6)">Total KPR Masuk</p>
         </div>
 
-        <div class="stat-card text-white p-5 rounded-2xl" style="background-color:#16a34a;">
+        <div class="stat-card text-white p-5 rounded-2xl" style="background-color:#444444;">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(255,255,255,0.1)">
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,7 +142,7 @@
             <p class="text-xs mt-1" style="color:rgba(255,255,255,0.6)">KPR Disetujui</p>
         </div>
 
-        <div class="stat-card text-white p-5 rounded-2xl" style="background-color:#FF9F47;">
+        <div class="stat-card text-white p-5 rounded-2xl" style="background-color:#888888;">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(255,255,255,0.1)">
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -155,7 +155,7 @@
             <p class="text-xs mt-1" style="color:rgba(255,255,255,0.6)">KPR Pending</p>
         </div>
 
-        <div class="stat-card text-white p-5 rounded-2xl" style="background-color:#FF3E3E;">
+        <div class="stat-card text-white p-5 rounded-2xl" style="background-color:#666666;"> {{-- was: #FF3E3E --}}
             <div class="flex items-center justify-between mb-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(255,255,255,0.1)">
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -168,7 +168,7 @@
             <p class="text-xs mt-1" style="color:rgba(255,255,255,0.6)">KPR Ditolak</p>
         </div>
 
-        <div class="stat-card text-white p-5 rounded-2xl col-span-2 lg:col-span-1" style="background-color:#7c3aed;">
+        <div class="stat-card text-white p-5 rounded-2xl col-span-2 lg:col-span-1" style="background-color:#555555;">
             <div class="flex items-center justify-between mb-3">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:rgba(255,255,255,0.1)">
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -191,7 +191,7 @@
             <div>
                 <h2 class="font-bold text-lg text-[#060922]">Rekap Per Agent</h2>
                 @if($agentName)
-                    <p class="text-xs mt-0.5" style="color:#3F52FF">Difilter: {{ $agentName }}</p>
+                    <p class="text-xs mt-0.5" style="color:#111111">Difilter: {{ $agentName }}</p>
                 @else
                     <p class="text-xs text-[#8F91A2] mt-0.5">Menampilkan semua agent</p>
                 @endif
@@ -200,7 +200,7 @@
                 <a href="{{ route('investor.export.excel', ['agent_id' => $agentId]) }}"
                    target="_blank"
                    class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl text-white transition-colors"
-                   style="background-color:#16a34a;" onmouseover="this.style.backgroundColor='#15803d'" onmouseout="this.style.backgroundColor='#16a34a'">
+                   style="background-color:#444444;" onmouseover="this.style.backgroundColor='#333333'" onmouseout="this.style.backgroundColor='#444444'">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                     </svg>
@@ -208,7 +208,7 @@
                 </a>
                 <a href="{{ route('investor.export.pdf', ['agent_id' => $agentId]) }}"
                    target="_blank"
-                   class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl text-white transition-colors bg-[#FF3E3E] hover:bg-red-600">
+                   class="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl text-white transition-colors bg-[#444444] hover:bg-[#333333]">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
@@ -224,24 +224,24 @@
                         <th class="text-left px-5 py-3 text-xs font-semibold text-[#8F91A2] uppercase tracking-wider">Agent</th>
                         <th class="text-center px-4 py-3 text-xs font-semibold text-[#8F91A2] uppercase tracking-wider">Properti</th>
                         <th class="text-center px-4 py-3 text-xs font-semibold text-[#8F91A2] uppercase tracking-wider">Total KPR</th>
-                        <th class="text-center px-4 py-3 text-xs font-semibold uppercase tracking-wider" style="color:#16a34a">Disetujui</th>
-                        <th class="text-center px-4 py-3 text-xs font-semibold text-[#FF9F47] uppercase tracking-wider">Pending</th>
-                        <th class="text-center px-4 py-3 text-xs font-semibold text-[#FF3E3E] uppercase tracking-wider">Ditolak</th>
-                        <th class="text-right px-5 py-3 text-xs font-semibold uppercase tracking-wider" style="color:#7c3aed">Total Pinjaman</th>
+                        <th class="text-center px-4 py-3 text-xs font-semibold uppercase tracking-wider" style="color:#444444">Disetujui</th>
+                        <th class="text-center px-4 py-3 text-xs font-semibold text-[#888888] uppercase tracking-wider">Pending</th>
+                        <th class="text-center px-4 py-3 text-xs font-semibold text-[#444444] uppercase tracking-wider">Ditolak</th>
+                        <th class="text-right px-5 py-3 text-xs font-semibold uppercase tracking-wider" style="color:#555555">Total Pinjaman</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[#F2F2F4]">
                     @forelse($breakdown as $row)
-                        <tr class="hover:bg-[#F8F8FA] transition-colors {{ $agentId === $row['id'] ? 'bg-[#3F52FF]/5' : '' }}">
+                        <tr class="hover:bg-[#F8F8FA] transition-colors {{ $agentId === $row['id'] ? 'bg-[#111111]/5' : '' }}">
                             <td class="px-5 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-9 h-9 rounded-full bg-[#060922] flex items-center justify-center text-[#CEF27F] font-bold text-xs flex-shrink-0">
+                                    <div class="w-9 h-9 rounded-full bg-[#060922] flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
                                         {{ strtoupper(substr($row['name'], 0, 1)) }}
                                     </div>
                                     <div>
                                         <p class="font-semibold text-[#060922]">{{ $row['name'] }}</p>
                                         @if($agentId === $row['id'])
-                                            <p class="text-[10px] font-semibold" style="color:#3F52FF">&#10003; Difilter</p>
+                                            <p class="text-[10px] font-semibold" style="color:#111111">&#10003; Difilter</p>
                                         @endif
                                     </div>
                                 </div>
@@ -250,23 +250,23 @@
                             <td class="px-4 py-4 text-center font-semibold text-[#060922]">{{ $row['total_kpr'] }}</td>
                             <td class="px-4 py-4 text-center">
                                 <span class="inline-flex items-center justify-center min-w-[2rem] px-2.5 py-0.5 rounded-full text-xs font-bold"
-                                    style="{{ $row['total_approved'] > 0 ? 'background:#dcfce7;color:#15803d' : 'background:#F2F2F4;color:#8F91A2' }}">
+                                    style="{{ $row['total_approved'] > 0 ? 'background:#F0F0F0;color:#333333' : 'background:#F2F2F4;color:#8F91A2' }}">
                                     {{ $row['total_approved'] }}
                                 </span>
                             </td>
                             <td class="px-4 py-4 text-center">
                                 <span class="inline-flex items-center justify-center min-w-[2rem] px-2.5 py-0.5 rounded-full text-xs font-bold
-                                    {{ $row['total_pending'] > 0 ? 'bg-orange-100 text-orange-600' : 'bg-[#F2F2F4] text-[#8F91A2]' }}">
+                                    {{ $row['total_pending'] > 0 ? 'bg-[#F0F0F0] text-[#666666]' : 'bg-[#F2F2F4] text-[#8F91A2]' }}">
                                     {{ $row['total_pending'] }}
                                 </span>
                             </td>
                             <td class="px-4 py-4 text-center">
                                 <span class="inline-flex items-center justify-center min-w-[2rem] px-2.5 py-0.5 rounded-full text-xs font-bold
-                                    {{ $row['total_rejected'] > 0 ? 'bg-red-100 text-red-600' : 'bg-[#F2F2F4] text-[#8F91A2]' }}">
+                                    {{ $row['total_rejected'] > 0 ? 'bg-[#F0F0F0] text-[#444444]' : 'bg-[#F2F2F4] text-[#8F91A2]' }}">
                                     {{ $row['total_rejected'] }}
                                 </span>
                             </td>
-                            <td class="px-5 py-4 text-right font-semibold text-xs whitespace-nowrap" style="color:#7c3aed">
+                            <td class="px-5 py-4 text-right font-semibold text-xs whitespace-nowrap" style="color:#555555">
                                 Rp {{ number_format($row['total_loan_approved'], 0, ',', '.') }}
                             </td>
                         </tr>
@@ -298,10 +298,10 @@
                         <td class="px-5 py-3.5 text-sm">Total Keseluruhan</td>
                         <td class="px-4 py-3.5 text-center">{{ $totals['total_listings'] }}</td>
                         <td class="px-4 py-3.5 text-center">{{ $totals['total_kpr'] }}</td>
-                        <td class="px-4 py-3.5 text-center" style="color:#CEF27F">{{ $totals['total_approved'] }}</td>
-                        <td class="px-4 py-3.5 text-center" style="color:#FF9F47">{{ $totals['total_pending'] }}</td>
-                        <td class="px-4 py-3.5 text-center" style="color:#ff8080">{{ $totals['total_rejected'] }}</td>
-                        <td class="px-5 py-3.5 text-right text-xs whitespace-nowrap" style="color:#CEF27F">
+                        <td class="px-4 py-3.5 text-center" style="color:#E0E0E0">{{ $totals['total_approved'] }}</td>
+                        <td class="px-4 py-3.5 text-center" style="color:#888888">{{ $totals['total_pending'] }}</td>
+                        <td class="px-4 py-3.5 text-center" style="color:#BBBBBB">{{ $totals['total_rejected'] }}</td>
+                        <td class="px-5 py-3.5 text-right text-xs whitespace-nowrap" style="color:#E0E0E0">
                             Rp {{ number_format($totals['total_loan_approved'], 0, ',', '.') }}
                         </td>
                     </tr>

@@ -19,55 +19,50 @@ class DashboardController extends Controller
         $this->paymentService = $paymentService;
     }
 
-    public function index(){
-        $userId = Auth::id();
-        $mortgages = $this->mortgageService->getUserMortgages($userId);
+    // [CUSTOMER DASHBOARD - DISABLED] Uncomment to re-enable customer mortgage pages
+    // public function index(){
+    //     $userId = Auth::id();
+    //     $mortgages = $this->mortgageService->getUserMortgages($userId);
+    //     return view('customer.mortgages.index', compact('mortgages'));
+    // }
 
-        return view('customer.mortgages.index', compact('mortgages'));
-    }
+    // public function details(MortgageRequest $mortgageRequest)
+    // {
+    //     $details = $this->mortgageService->getMortgageDetails($mortgageRequest);
+    //     return view('customer.mortgages.details', $details);
+    // }
 
-    public function details(MortgageRequest $mortgageRequest)
-    {
-        $details = $this->mortgageService->getMortgageDetails($mortgageRequest);
+    // public function installment_details(Installment $installment)
+    // {
+    //     $installmentDetails = $this->mortgageService->getInstallmentDetails($installment);
+    //     return view('customer.installments.index', compact('installmentDetails'));
+    // }
 
-        return view('customer.mortgages.details', $details);
-    }
+    // public function installment_payment(MortgageRequest $mortgageRequest)
+    // {
+    //     $paymentDetails = $this->mortgageService->getInstallmentPaymentDetails($mortgageRequest);
+    //     return view('customer.installments.pay_installment', $paymentDetails);
+    // }
 
-    public function installment_details(Installment $installment)
-    {
-        $installmentDetails = $this->mortgageService->getInstallmentDetails($installment);
+    // [MIDTRANS - DISABLED] Uncomment to re-enable Midtrans payment processing
+    // public function paymentStoreMidtrans(Request $request)
+    // {
+    //     try{
+    //         $mortgageRequest = $this->mortgageService->getMortgageRequest($request->input('mortgage_request_id'));
+    //         $snapToken = $this->paymentService->createPayment($mortgageRequest);
+    //         return response()->json(['snap_token' => $snapToken], 200);
+    //     }catch(\Exception $e){
+    //         return response()->json(['error' => 'Payment failed: '. $e->getMessage()], 500);
+    //     }
+    // }
 
-        return view('customer.installments.index', compact('installmentDetails'));
-    }
-
-    public function installment_payment(MortgageRequest $mortgageRequest)
-    {
-        $paymentDetails = $this->mortgageService->getInstallmentPaymentDetails($mortgageRequest);
-
-        return view('customer.installments.pay_installment', $paymentDetails);
-    }
-
-    public function paymentStoreMidtrans(Request $request)
-    {
-        try{
-            $mortgageRequest = $this->mortgageService->getMortgageRequest($request->input('mortgage_request_id'));
-
-            $snapToken = $this->paymentService->createPayment($mortgageRequest);
-
-            return response()->json(['snap_token' => $snapToken], 200);
-        }catch(\Exception $e){
-            return response()->json(['error' => 'Payment failed: '. $e->getMessage()], 500);
-        }
-    }
-
-    public function paymentMidtransNotification(Request $request)
-    {
-        try{
-            $this->paymentService->processNotification();
-
-            return response()->json(['status' => 'success'], 200);
-        }catch(\Exception $e){
-            return response()->json(['error' => 'Failed to process notification: '. $e->getMessage()], 500);
-        }
-    }
+    // public function paymentMidtransNotification(Request $request)
+    // {
+    //     try{
+    //         $this->paymentService->processNotification();
+    //         return response()->json(['status' => 'success'], 200);
+    //     }catch(\Exception $e){
+    //         return response()->json(['error' => 'Failed to process notification: '. $e->getMessage()], 500);
+    //     }
+    // }
 }

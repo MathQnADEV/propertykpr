@@ -32,6 +32,12 @@ class BankApprovalInfolist
                 TextEntry::make('status')
                     ->label('Status Bank Approval')
                     ->badge()
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'Waiting for Bank' => 'Proses Bank',
+                        'Approved'         => 'Disetujui',
+                        'Rejected'         => 'Ditolak',
+                        default            => $state,
+                    })
                     ->color(fn($state) => match ($state) {
                         'Waiting for Bank' => 'warning',
                         'Approved'         => 'success',

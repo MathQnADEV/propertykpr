@@ -31,6 +31,7 @@ class MortgageRequestResource extends Resource
     protected static ?string $recordTitleAttribute = 'Pengajuan KPR';
 
     protected static string | UnitEnum | null $navigationGroup = 'Transaksi';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
     {
@@ -45,7 +46,8 @@ class MortgageRequestResource extends Resource
     public static function getRelations(): array
     {
         return [
-            InstallmentsRelationManager::class,
+            // [INSTALLMENTS - DISABLED] Aktifkan kembali saat Midtrans dipakai
+            // InstallmentsRelationManager::class,
         ];
     }
 

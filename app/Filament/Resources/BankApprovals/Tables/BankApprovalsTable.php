@@ -49,6 +49,12 @@ class BankApprovalsTable
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
+                    ->formatStateUsing(fn($state) => match ($state) {
+                        'Waiting for Bank' => 'Proses Bank',
+                        'Approved'         => 'Disetujui',
+                        'Rejected'         => 'Ditolak',
+                        default            => $state,
+                    })
                     ->color(fn($state) => match ($state) {
                         'Waiting for Bank' => 'warning',
                         'Approved'         => 'success',
@@ -79,7 +85,7 @@ class BankApprovalsTable
                 SelectFilter::make('status')
                     ->label('Status')
                     ->options([
-                        'Waiting for Bank' => 'Menunggu Bank',
+                        'Waiting for Bank' => 'Proses Bank',
                         'Approved'         => 'Disetujui',
                         'Rejected'         => 'Ditolak',
                     ]),

@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use AlizHarb\ActivityLog\ActivityLogPlugin;
+use Filament\Auth\Http\Responses\LogoutResponse;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -22,6 +23,17 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
 {
+    public function register(): void
+    {
+        parent::register();
+        $this->app->bind(LogoutResponse::class, fn () => new class implements \Filament\Auth\Http\Responses\Contracts\LogoutResponse {
+            public function toResponse($request): \Illuminate\Http\RedirectResponse
+            {
+                return redirect('/');
+            }
+        });
+    }
+
     public function panel(Panel $panel): Panel
     {
         return $panel

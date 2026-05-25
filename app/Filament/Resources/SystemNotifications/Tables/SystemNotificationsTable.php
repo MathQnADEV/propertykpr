@@ -83,21 +83,24 @@ class SystemNotificationsTable
                 TernaryFilter::make('is_read')
                     ->label('Status Baca')
                     ->trueLabel('Sudah Dibaca')
-                    ->falseLabel('Belum Dibaca'),
+                    ->falseLabel('Belum Dibaca')
+                    ->default(false),
             ])
             ->recordActions([
                 ViewAction::make(),
                 Action::make('mark_read')
                     ->label('Tandai Dibaca')
                     ->icon('heroicon-o-check')
-                    ->visible(fn($record) => ! $record->is_read)
+                    ->visible(fn($record): bool =>
+                        ! $record->is_read && auth()->user()?->hasRole('master')
+                    )
                     ->action(function ($record) {
                         NotificationService::markAsRead($record);
                         Notification::make()
                             ->title('Ditandai sudah dibaca')
                             ->success()
                             ->send();
-                    })->visible($isMaster)->authorize($isMaster),
+                    }),
 
                 // Hapus notifikasi: hanya master
                 DeleteAction::make()

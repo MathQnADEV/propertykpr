@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="id">
 
 <head>
@@ -12,6 +12,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
+        /*
+         * ── B&W COLOR THEME ─────────────────────────────────────────────
+         * Original → Replaced
+         * #3F52FF  (blue accent)   → #111111  (black)
+         * #CEF27F  (lime green)    → #111111  (buttons) / #ffffff (avatar bg / text on dark)
+         * #FF9F47  (orange)        → #888888  (medium gray)
+         * #FF3E3E  (red)           → #444444  (dark gray)
+         * #16a34a  (green)         → #444444
+         * #7c3aed  (purple)        → #555555
+         * nav-item::before         → #ffffff  (was: #CEF27F)
+         * ────────────────────────────────────────────────────────────────
+         */
         * { font-family: 'Poppins', sans-serif; }
         body { background: #F8F8FA; }
 
@@ -48,7 +60,7 @@
 
         .nav-item.active::before {
             content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-            width: 3px; height: 60%; background: #CEF27F; border-radius: 3px 0 0 3px;
+            width: 3px; height: 60%; background: #ffffff; /* was: #CEF27F */ border-radius: 3px 0 0 3px;
         }
 
         .mobile-bottom-nav { box-shadow: 0 -4px 20px rgba(6,9,34,0.08); }
@@ -77,7 +89,7 @@
                 <img src="{{ asset('assets/images/logos/XPRO-Favicon.svg') }}" alt="XPRO" class="h-10 w-10 rounded-xl" />
             </a>
             <div class="mt-4 flex items-center gap-3 p-3 rounded-2xl bg-white/5">
-                <div class="w-10 h-10 rounded-full bg-[#CEF27F] flex items-center justify-center text-[#060922] font-bold text-sm">
+                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#111111] font-bold text-sm"> {{-- avatar: was bg-[#CEF27F] text-[#060922] --}}
                     {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                 </div>
                 <div class="flex-1 min-w-0">
@@ -93,7 +105,7 @@
                 <li>
                     <a href="{{ route('investor.dashboard') }}"
                        class="nav-item relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200
-                              {{ request()->routeIs('investor.dashboard') ? 'active bg-white/10 text-[#CEF27F] font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
+                              {{ request()->routeIs('investor.dashboard') ? 'active bg-white/10 text-white font-semibold' : 'text-white/70 hover:bg-white/5 hover:text-white' }}">
                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                         </svg>
@@ -115,7 +127,7 @@
                 <li>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="nav-item w-full relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200">
+                        <button type="submit" class="nav-item w-full relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:bg-[#444444]/10 hover:text-[#666666] transition-all duration-200">
                             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
                             </svg>
@@ -151,7 +163,7 @@
                         <p class="text-sm font-semibold text-[#060922]">{{ Auth::user()->name }}</p>
                     </div>
                     <div id="profileDropdown" class="relative">
-                        <button onclick="toggleProfileDropdown()" class="w-10 h-10 rounded-full bg-[#060922] flex items-center justify-center text-[#CEF27F] font-bold text-sm hover:ring-2 hover:ring-[#3F52FF] transition-all">
+                        <button onclick="toggleProfileDropdown()" class="w-10 h-10 rounded-full bg-[#060922] flex items-center justify-center text-white font-bold text-sm hover:ring-2 hover:ring-[#111111] transition-all">
                             {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                         </button>
                         <div id="profileMenu" class="dropdown-menu hidden absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-[#F2F2F4] py-2 z-50">
@@ -162,7 +174,7 @@
                             <hr class="my-1 border-[#F2F2F4]">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                                <button type="submit" class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-[#444444] hover:bg-[#F0F0F0] transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                                     Logout
                                 </button>
@@ -176,7 +188,7 @@
         {{-- FLASH --}}
         @if(session('success'))
             <div id="toast" class="toast fixed top-6 right-6 z-[100] bg-[#060922] text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 max-w-sm">
-                <div class="w-8 h-8 rounded-full bg-[#CEF27F] flex items-center justify-center flex-shrink-0">
+                <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0"> {{-- was: bg-[#CEF27F] --}}
                     <svg class="w-4 h-4 text-[#060922]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                 </div>
                 <p class="text-sm font-medium">{{ session('success') }}</p>
@@ -194,7 +206,7 @@
     <nav class="mobile-bottom-nav fixed bottom-0 left-0 right-0 bg-white z-40 lg:hidden">
         <div class="flex items-center justify-around py-2 px-2">
             <a href="{{ route('investor.dashboard') }}"
-               class="flex flex-col items-center gap-1 py-1.5 px-5 rounded-xl {{ request()->routeIs('investor.dashboard') ? 'text-[#3F52FF]' : 'text-[#8F91A2]' }}">
+               class="flex flex-col items-center gap-1 py-1.5 px-5 rounded-xl {{ request()->routeIs('investor.dashboard') ? 'text-[#111111]' : 'text-[#8F91A2]' }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                 <span class="text-[10px] font-semibold">Statistik</span>
             </a>

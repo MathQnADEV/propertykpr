@@ -14,18 +14,20 @@ Route::get('/search', [FrontController::class, 'search'])->middleware('throttle:
 Route::get('/category/{category:slug}', [FrontController::class, 'category'])->name('front.category');
 Route::get('/details/{house:slug}', [FrontController::class, 'details'])->name('front.details');
 
-Route::match(['get', 'post'], '/mortgage/interest/payment/midtrans/notification', [DashboardController::class, 'paymentMidtransNotification'])->name('front.payment_midtrans_notification');
+// [MIDTRANS - DISABLED] Uncomment to re-enable Midtrans payment notification webhook
+// Route::match(['get', 'post'], '/mortgage/interest/payment/midtrans/notification', [DashboardController::class, 'paymentMidtransNotification'])->name('front.payment_midtrans_notification');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/dashboard/mortgage/{mortgageRequest}/installment/payment', [DashboardController::class, 'installment_payment'])->name('dashboard.installment.payment');
-    Route::post('/dashboard/mortgage/installment/payment', [DashboardController::class, 'paymentStoreMidtrans'])->name('dashboard.installment.payment_store_midtrans');
-    Route::get('/dashboard/mortgages', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/dashboard/mortgage/{mortgageRequest}', [DashboardController::class, 'details'])->name('dashboard.mortgage.details');
-    Route::get('/dashboard/mortgage/installment/{installment}', [DashboardController::class, 'installment_details'])->name('dashboard.installment.details');
+    // [CUSTOMER DASHBOARD - DISABLED] Uncomment to re-enable customer mortgage & installment pages
+    // Route::get('/dashboard/mortgage/{mortgageRequest}/installment/payment', [DashboardController::class, 'installment_payment'])->name('dashboard.installment.payment');
+    // Route::post('/dashboard/mortgage/installment/payment', [DashboardController::class, 'paymentStoreMidtrans'])->name('dashboard.installment.payment_store_midtrans');
+    // Route::get('/dashboard/mortgages', [DashboardController::class, 'index'])->name('dashboard');
+    // Route::get('/dashboard/mortgage/{mortgageRequest}', [DashboardController::class, 'details'])->name('dashboard.mortgage.details');
+    // Route::get('/dashboard/mortgage/installment/{installment}', [DashboardController::class, 'installment_details'])->name('dashboard.installment.details');
 });
 
 Route::middleware(['auth', 'role:admin|master'])->prefix('admin')->name('admin.')->group(function () {

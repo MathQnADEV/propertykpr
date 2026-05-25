@@ -109,7 +109,7 @@
                                     <div class="flex items-center gap-[6px]">
                                         <img src="{{ asset('assets/images/icons/house-2.svg') }}"
                                             class="size-5 flex shrink-0" loading="lazy" alt="icon">
-                                        <p class="font-semibold text-sm">{{ $category->availableHouses->count() }} Properti</p>
+                                        <p class="font-semibold text-sm">{{ $category->available_houses_count }} Properti</p>
                                     </div>
                                 </div>
                             </div>

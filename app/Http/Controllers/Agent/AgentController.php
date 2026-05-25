@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Agent;
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
 use App\Models\Category;
+use App\Models\Commission;
+use App\Models\CommissionRequest;
 use App\Models\City;
 use App\Models\Customer;
 use App\Models\Facility;
@@ -14,6 +16,7 @@ use App\Models\HousePhoto;
 use App\Models\Interest;
 use App\Models\MortgageRequest;
 use App\Models\SystemNotification;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -21,6 +24,30 @@ use Illuminate\Support\Str;
 
 class AgentController extends Controller
 {
+    // ─── SLUG HELPER ───
+    /**
+     * Generate a slug that is guaranteed to be unique in the houses table.
+     * Appends -1, -2, … until a free slot is found.
+     * Optionally excludes the given house ID (for updates).
+     */
+    private function generateUniqueSlug(string $name, ?int $excludeId = null): string
+    {
+        $base = Str::slug($name);
+        $slug = $base;
+        $i    = 1;
+
+        while (
+            House::withTrashed()
+                ->where('slug', $slug)
+                ->when($excludeId, fn ($q) => $q->where('id', '!=', $excludeId))
+                ->exists()
+        ) {
+            $slug = $base . '-' . $i++;
+        }
+
+        return $slug;
+    }
+
     // ─── DASHBOARD ───
     public function dashboard()
     {
@@ -44,11 +71,6 @@ class AgentController extends Controller
             ->take(5)
             ->get();
 
-        $notifications = SystemNotification::where('user_id', $agent->id)
-            ->latest()
-            ->take(5)
-            ->get();
-
         return view('agent.dashboard.index', compact(
             'agent',
             'totalListings',
@@ -56,8 +78,7 @@ class AgentController extends Controller
             'totalInProcess',
             'totalFailed',
             'recentListings',
-            'recentDeals',
-            'notifications'
+            'recentDeals'
         ));
     }
 
@@ -120,7 +141,7 @@ class AgentController extends Controller
 
         $house = House::create([
             'name'          => $request->name,
-            'slug'          => Str::slug($request->name),
+            'slug'          => $this->generateUniqueSlug($request->name),
             'price'         => $request->price,
             'about'         => $request->about,
             'certificate'   => $request->certificate,
@@ -227,7 +248,7 @@ class AgentController extends Controller
         ]);
 
         $data         = $request->except(['thumbnail', 'photos', 'facilities', 'remove_thumbnail', 'delete_photos']);
-        $data['slug'] = Str::slug($request->name);
+        $data['slug'] = $this->generateUniqueSlug($request->name, $house->id);
 
         if ($request->input('remove_thumbnail') == '1') {
             if ($house->thumbnail) {
@@ -326,73 +347,104 @@ class AgentController extends Controller
 
     public function storeMortgageRequest(Request $request)
     {
-        $request->validate([
-            // Properti & KPR
-            'house_id'           => 'required|exists:houses,id',
-            'interest_id'        => 'required|exists:interests,id',
-            'dp_percentage'      => 'required|integer|in:5,10,15,20,40,50,60,80',
-            'documents'          => 'required|file|mimes:pdf|max:5120',
-            // Data Customer
-            'nama_lengkap'       => 'required|string|max:255',
-            'phone'              => 'required|string|max:20',
-            'email'              => 'nullable|email|max:255',
-            'nik'                => 'required|string|size:16',
-            'tempat_lahir'       => 'nullable|string|max:100',
-            'tanggal_lahir'      => 'nullable|date',
-            'alamat'             => 'required|string',
-            'pekerjaan'          => 'required|string|max:100',
-            'penghasilan_bulanan'=> 'required|numeric|min:0',
-            'status_pernikahan'  => 'required|in:Belum Menikah,Menikah,Cerai',
-        ]);
+        $paymentType = $request->payment_type === 'cash' ? 'cash' : 'kpr';
 
-        $interest = Interest::with('bank', 'house')->findOrFail($request->interest_id);
-        $house    = $interest->house;
+        $commonCustomerRules = [
+            'house_id'            => 'required|exists:houses,id',
+            'documents'           => 'required|file|mimes:pdf|max:5120',
+            'nama_lengkap'        => 'required|string|max:255',
+            'phone'               => 'required|string|max:20',
+            'email'               => 'nullable|email|max:255',
+            'nik'                 => 'required|string|size:16',
+            'tempat_lahir'        => 'nullable|string|max:100',
+            'tanggal_lahir'       => 'nullable|date',
+            'alamat'              => 'required|string',
+            'pekerjaan'           => 'required|string|max:100',
+            'penghasilan_bulanan' => 'required|numeric|min:0',
+            'status_pernikahan'   => 'required|in:Belum Menikah,Menikah,Cerai',
+        ];
 
+        if ($paymentType === 'kpr') {
+            $request->validate(array_merge($commonCustomerRules, [
+                'interest_id'   => 'required|exists:interests,id',
+                'dp_percentage' => 'required|integer|in:5,10,15,20,40,50,60,80',
+            ]));
+        } else {
+            $request->validate($commonCustomerRules);
+        }
+
+        $house = House::findOrFail($request->house_id);
         abort_if($house->agent_id !== Auth::id(), 403);
 
         $customer = Customer::create([
-            'nama_lengkap'       => $request->nama_lengkap,
-            'phone'              => $request->phone,
-            'email'              => $request->email,
-            'nik'                => $request->nik,
-            'tempat_lahir'       => $request->tempat_lahir,
-            'tanggal_lahir'      => $request->tanggal_lahir,
-            'alamat'             => $request->alamat,
-            'pekerjaan'          => $request->pekerjaan,
-            'penghasilan_bulanan'=> $request->penghasilan_bulanan,
-            'status_pernikahan'  => $request->status_pernikahan,
+            'nama_lengkap'        => $request->nama_lengkap,
+            'phone'               => $request->phone,
+            'email'               => $request->email,
+            'nik'                 => $request->nik,
+            'tempat_lahir'        => $request->tempat_lahir,
+            'tanggal_lahir'       => $request->tanggal_lahir,
+            'alamat'              => $request->alamat,
+            'pekerjaan'           => $request->pekerjaan,
+            'penghasilan_bulanan' => $request->penghasilan_bulanan,
+            'status_pernikahan'   => $request->status_pernikahan,
         ]);
-
-        $dp           = $house->price * ($request->dp_percentage / 100);
-        $loan         = $house->price - $dp;
-        $n            = $interest->duration * 12;
-        $r            = $interest->interest / 100 / 12;
-        $monthly      = $r > 0
-            ? ($loan * $r * pow(1 + $r, $n)) / (pow(1 + $r, $n) - 1)
-            : $loan / $n;
-        $totalWithInt = $monthly * $n;
 
         $documentPath = $request->file('documents')->store('documents', 'public');
 
+        if ($paymentType === 'kpr') {
+            $interest     = Interest::with('bank')->findOrFail($request->interest_id);
+            $dp           = $house->price * ($request->dp_percentage / 100);
+            $loan         = $house->price - $dp;
+            $n            = $interest->duration * 12;
+            $r            = $interest->interest / 100 / 12;
+            $monthly      = $r > 0
+                ? ($loan * $r * pow(1 + $r, $n)) / (pow(1 + $r, $n) - 1)
+                : $loan / $n;
+            $totalWithInt = $monthly * $n;
+
+            MortgageRequest::create([
+                'payment_type'               => 'kpr',
+                'customer_id'                => $customer->id,
+                'house_id'                   => $house->id,
+                'interest_id'                => $interest->id,
+                'interest'                   => $interest->interest,
+                'duration'                   => $interest->duration,
+                'bank_name'                  => $interest->bank->name,
+                'dp_percentage'              => $request->dp_percentage,
+                'house_price'                => $house->price,
+                'dp_total_amount'            => (int) $dp,
+                'loan_total_amount'          => (int) $loan,
+                'monthly_amount'             => (int) $monthly,
+                'loan_interest_total_amount' => (int) $totalWithInt,
+                'status'                     => 'Waiting for Bank',
+                'documents'                  => $documentPath,
+            ]);
+
+            return redirect()->route('agent.payments')
+                ->with('success', 'Pengajuan KPR berhasil dibuat!');
+        }
+
+        // Cash path
         MortgageRequest::create([
+            'payment_type'               => 'cash',
             'customer_id'                => $customer->id,
             'house_id'                   => $house->id,
-            'interest_id'                => $interest->id,
-            'interest'                   => $interest->interest,
-            'duration'                   => $interest->duration,
-            'bank_name'                  => $interest->bank->name,
-            'dp_percentage'              => $request->dp_percentage,
+            'interest_id'                => null,
+            'interest'                   => 0,
+            'duration'                   => 0,
+            'bank_name'                  => 'Cash',
+            'dp_percentage'              => 100,
             'house_price'                => $house->price,
-            'dp_total_amount'            => (int) $dp,
-            'loan_total_amount'          => (int) $loan,
-            'monthly_amount'             => (int) $monthly,
-            'loan_interest_total_amount' => (int) $totalWithInt,
+            'dp_total_amount'            => $house->price,
+            'loan_total_amount'          => 0,
+            'monthly_amount'             => 0,
+            'loan_interest_total_amount' => $house->price,
             'status'                     => 'Waiting for Bank',
             'documents'                  => $documentPath,
         ]);
 
         return redirect()->route('agent.payments')
-            ->with('success', 'Pengajuan KPR berhasil dibuat!');
+            ->with('success', 'Pengajuan Cash berhasil dibuat!');
     }
 
     public function showPaymentRequest(MortgageRequest $mortgageRequest)
@@ -412,12 +464,36 @@ class AgentController extends Controller
             'notes'               => 'nullable|string|max:500',
         ]);
 
-        $mortgageRequest = MortgageRequest::findOrFail($request->mortgage_request_id);
+        $mortgageRequest = MortgageRequest::with('house')->findOrFail($request->mortgage_request_id);
         $agentHouseIds   = House::where('agent_id', Auth::id())->withTrashed()->pluck('id');
         abort_if(!$agentHouseIds->contains($mortgageRequest->house_id), 403);
+        abort_if($mortgageRequest->status !== 'Waiting for Bank', 422);
+
+        // Notify all master users that the agent is requesting a review
+        $houseName  = $mortgageRequest->house?->name ?? ('Properti #' . $mortgageRequest->house_id);
+        $agentName  = Auth::user()->name;
+        $notes      = $request->notes ? ' — ' . $request->notes : '';
+        $url        = '/admin/mortgage-requests/' . $mortgageRequest->id . '/edit';
+        $now        = now();
+
+        $masters = User::role('master')->select('id')->get();
+        if ($masters->isNotEmpty()) {
+            SystemNotification::insert(
+                $masters->map(fn ($m) => [
+                    'user_id'     => $m->id,
+                    'type'        => 'payment_submit',
+                    'title'       => 'Agent Minta Review Pengajuan',
+                    'description' => '[Submit] ' . $houseName . ' oleh ' . $agentName . $notes,
+                    'url'         => $url,
+                    'is_read'     => false,
+                    'created_at'  => $now,
+                    'updated_at'  => $now,
+                ])->toArray()
+            );
+        }
 
         return redirect()->route('agent.payments')
-            ->with('success', 'Payment request berhasil disubmit untuk review!');
+            ->with('success', 'Payment request berhasil disubmit. Admin akan segera meninjau!');
     }
 
     // ─── UPLOAD PROOF & DOCS ───
@@ -498,6 +574,144 @@ class AgentController extends Controller
         return view('agent.deals.show', compact('mortgageRequest'));
     }
 
+    // ─── COMMISSIONS & INCOME (unified) ───────────────────────────────────────
+    public function commissions(Request $request)
+    {
+        $tab           = $request->get('tab', 'income');
+        $period        = $request->get('period', 'monthly');
+        $agentId       = Auth::id();
+        $agentHouseIds = House::where('agent_id', $agentId)->withTrashed()->pluck('id');
+
+        $baseQuery = Commission::whereHas('mortgageRequest', fn ($q) => $q->whereIn('house_id', $agentHouseIds));
+
+        // ── Summary (always computed) ────────────────────────────────────────
+        $totalAllTime = (clone $baseQuery)->sum('commission_amount');
+        $totalDeals   = (clone $baseQuery)->count();
+
+        $periodLabel = match ($period) {
+            'weekly' => 'Minggu',
+            'yearly' => 'Tahun',
+            default  => 'Bulan',
+        };
+
+        $totalCurrentPeriod = match ($period) {
+            'weekly' => (clone $baseQuery)->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->sum('commission_amount'),
+            'yearly' => (clone $baseQuery)->whereYear('created_at', now()->year)->sum('commission_amount'),
+            default  => (clone $baseQuery)->whereMonth('created_at', now()->month)->whereYear('created_at', now()->year)->sum('commission_amount'),
+        };
+
+        // ── Income breakdown ─────────────────────────────────────────────────
+        $breakdown = match ($period) {
+            'weekly' => (clone $baseQuery)
+                ->selectRaw('YEARWEEK(created_at, 1) as period_key, MIN(created_at) as period_start, SUM(commission_amount) as total, COUNT(*) as deal_count')
+                ->groupByRaw('YEARWEEK(created_at, 1)')
+                ->orderByRaw('YEARWEEK(created_at, 1) DESC')
+                ->limit(12)->get()
+                ->map(fn ($r) => tap($r, fn ($r) => $r->period_label = 'Minggu ' . \Carbon\Carbon::parse($r->period_start)->format('d M Y'))),
+
+            'yearly' => (clone $baseQuery)
+                ->selectRaw('YEAR(created_at) as period_key, YEAR(created_at) as period_start, SUM(commission_amount) as total, COUNT(*) as deal_count')
+                ->groupByRaw('YEAR(created_at)')
+                ->orderByRaw('YEAR(created_at) DESC')
+                ->limit(5)->get()
+                ->map(fn ($r) => tap($r, fn ($r) => $r->period_label = 'Tahun ' . $r->period_start)),
+
+            default => (clone $baseQuery)
+                ->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as period_key, MIN(created_at) as period_start, SUM(commission_amount) as total, COUNT(*) as deal_count')
+                ->groupByRaw('DATE_FORMAT(created_at, "%Y-%m")')
+                ->orderByRaw('DATE_FORMAT(created_at, "%Y-%m") DESC')
+                ->limit(12)->get()
+                ->map(fn ($r) => tap($r, fn ($r) => $r->period_label = \Carbon\Carbon::parse($r->period_start)->translatedFormat('F Y'))),
+        };
+
+        // ── Commission history ───────────────────────────────────────────────
+        $commissions = (clone $baseQuery)
+            ->with(['mortgageRequest.house', 'mortgageRequest.customer'])
+            ->latest()
+            ->paginate(10, ['*'], 'history_page');
+
+        $totalCommission = $totalAllTime; // alias
+
+        // ── Commission requests ──────────────────────────────────────────────
+        $commissionRequests = CommissionRequest::where('agent_id', $agentId)
+            ->with(['mortgageRequest.house', 'mortgageRequest.customer'])
+            ->latest()
+            ->paginate(10, ['*'], 'req_page');
+
+        $pendingRequestCount = CommissionRequest::where('agent_id', $agentId)
+            ->where('status', 'pending')
+            ->count();
+
+        return view('agent.commissions.index', compact(
+            'tab', 'period', 'periodLabel',
+            'totalAllTime', 'totalCurrentPeriod', 'totalDeals', 'totalCommission',
+            'breakdown', 'commissions', 'commissionRequests', 'pendingRequestCount'
+        ));
+    }
+
+    // ─── COMMISSION REQUEST ───────────────────────────────────────────────────
+    public function requestCommission()
+    {
+        $agentHouseIds = House::where('agent_id', Auth::id())->withTrashed()->pluck('id');
+
+        // Eligible: Approved + no commission + no pending request
+        $eligibleDeals = MortgageRequest::whereIn('house_id', $agentHouseIds)
+            ->where('status', 'Approved')
+            ->doesntHave('commission')
+            ->whereDoesntHave('commissionRequests', fn ($q) => $q->where('status', 'pending'))
+            ->with(['house:id,name,thumbnail,house_price', 'customer:id,nama_lengkap'])
+            ->latest()
+            ->paginate(20, ['*'], 'eligible_page');
+
+        return view('agent.commissions.request', compact('eligibleDeals'));
+    }
+
+    public function storeCommissionRequest(Request $request)
+    {
+        $agentHouseIds = House::where('agent_id', Auth::id())->withTrashed()->pluck('id');
+
+        $request->validate([
+            'mortgage_request_id' => ['required', 'exists:mortgage_requests,id'],
+            'notes'               => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $mr = MortgageRequest::whereIn('house_id', $agentHouseIds)
+            ->where('id', $request->mortgage_request_id)
+            ->where('status', 'Approved')
+            ->doesntHave('commission')
+            ->whereDoesntHave('commissionRequests', fn ($q) => $q->where('status', 'pending'))
+            ->firstOrFail();
+
+        $commissionRequest = CommissionRequest::create([
+            'mortgage_request_id' => $mr->id,
+            'agent_id'            => Auth::id(),
+            'notes'               => $request->notes,
+            'status'              => 'pending',
+        ]);
+
+        // Notifikasi ke master — bulk insert (1 query, bukan N queries)
+        $houseName = $mr->house?->name ?? ('Properti #' . $mr->house_id);
+        $now       = now();
+        $masters   = User::role('master')->select('id')->get();
+        if ($masters->isNotEmpty()) {
+            SystemNotification::insert(
+                $masters->map(fn ($master) => [
+                    'user_id'     => $master->id,
+                    'type'        => 'commission_request',
+                    'title'       => 'Request Komisi Baru',
+                    'description' => '[Request] ' . $houseName . ' dari ' . auth()->user()->name,
+                    'url'         => '/admin/commission-requests',
+                    'is_read'     => false,
+                    'created_at'  => $now,
+                    'updated_at'  => $now,
+                ])->toArray()
+            );
+        }
+
+        return redirect()->route('agent.commissions', ['tab' => 'requests'])
+            ->with('success', 'Request komisi berhasil dikirim. Menunggu konfirmasi master.');
+    }
+
     // ─── REPORTS ───
     public function reports()
     {
@@ -510,11 +724,30 @@ class AgentController extends Controller
         $totalFailed    = MortgageRequest::whereIn('house_id', $agentHouseIds)->where('status', 'Rejected')->count();
         $totalRevenue   = MortgageRequest::whereIn('house_id', $agentHouseIds)->where('status', 'Approved')->sum('house_price');
 
+        // ── Commission stats ──────────────────────────────────────────────
+        $totalWithCommission    = MortgageRequest::whereIn('house_id', $agentHouseIds)
+            ->where('status', 'Approved')
+            ->has('commission')
+            ->count();
+
+        $totalWithoutCommission = MortgageRequest::whereIn('house_id', $agentHouseIds)
+            ->where('status', 'Approved')
+            ->doesntHave('commission')
+            ->count();
+
+        $totalCommissionAmount  = Commission::where('agent_id', $agent->id)->sum('commission_amount');
+
+        $pendingCommissionReqs  = CommissionRequest::where('agent_id', $agent->id)
+            ->where('status', 'pending')
+            ->count();
+
+        // Group by YEAR + MONTH and filter to current year to avoid cross-year data merging
         $monthlySales = MortgageRequest::whereIn('house_id', $agentHouseIds)
             ->where('status', 'Approved')
-            ->selectRaw('MONTH(created_at) as month, COUNT(*) as count, SUM(house_price) as revenue')
-            ->groupByRaw('MONTH(created_at)')
-            ->orderByRaw('MONTH(created_at)')
+            ->whereYear('created_at', now()->year)
+            ->selectRaw('YEAR(created_at) as year, MONTH(created_at) as month, COUNT(*) as count, SUM(house_price) as revenue')
+            ->groupByRaw('YEAR(created_at), MONTH(created_at)')
+            ->orderByRaw('YEAR(created_at), MONTH(created_at)')
             ->get();
 
         $topProperties = House::withCount(['mortgageRequests' => function ($q) {
@@ -538,6 +771,10 @@ class AgentController extends Controller
             'totalInProcess',
             'totalFailed',
             'totalRevenue',
+            'totalWithCommission',
+            'totalWithoutCommission',
+            'totalCommissionAmount',
+            'pendingCommissionReqs',
             'monthlySales',
             'topProperties',
             'recentTransactions'

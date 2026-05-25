@@ -22,155 +22,167 @@ class MortgageRequestForm
                 Wizard::make([
 
                     Step::make('Produk dan Harga')
-                        ->schema(
-                            [
-                                Grid::make(3)
-                                    ->schema([
-                                        Select::make('house_id')
-                                            ->label('Properti')
-                                            ->options(House::query()->where('is_available', true)->pluck('name', 'id'))
-                                            ->searchable()
-                                            ->preload()
-                                            ->required()
-                                            ->live() // live to trigger filtering of interests
-                                            ->afterStateUpdated(function ($state, callable $set) {
-                                                $house = House::find($state);
-                                                if ($house) {
-                                                    $set('house_price', $house->price ?? 0);
-                                                }
-                                            }),
+                        ->schema([
+                            Select::make('payment_type')
+                                ->label('Tipe Pembayaran')
+                                ->options([
+                                    'kpr'  => 'KPR (Kredit)',
+                                    'cash' => 'Cash (Tunai)',
+                                ])
+                                ->default('kpr')
+                                ->required()
+                                ->live()
+                                ->afterStateUpdated(function ($state, callable $set) {
+                                    if ($state === 'cash') {
+                                        $set('interest_id', null);
+                                        $set('bank_name', 'Cash');
+                                        $set('duration', 0);
+                                        $set('interest', 0);
+                                        $set('dp_percentage', 100);
+                                    } else {
+                                        $set('bank_name', '');
+                                        $set('duration', null);
+                                        $set('interest', null);
+                                        $set('dp_percentage', null);
+                                    }
+                                }),
 
-                                        // Then Select Interest Based On Selected House
-                                        Select::make('interest_id')
-                                            ->label('Suku Bunga Tahunan (%)')
-                                            ->options(function (callable $get) {
-                                                $houseId = $get('house_id');
-                                                if ($houseId) {
-                                                    return Interest::where('house_id', $houseId)
-                                                        ->get()
-                                                        ->pluck('interest', 'id');
-                                                }
-                                                return [];
-                                            })
-                                            ->searchable()
-                                            ->preload()
-                                            ->required()
-                                            ->live()
-                                            ->afterStateUpdated(function ($state, callable $set) {
-                                                $interest = Interest::find($state);
-                                                if ($interest) {
-                                                    $set('bank_name', $interest->bank->name ?? '');
-                                                    $set('interest', $interest->interest);
-                                                    $set('duration', $interest->duration);
-                                                }
-                                            }),
+                            Grid::make(3)
+                                ->schema([
+                                    Select::make('house_id')
+                                        ->label('Properti')
+                                        ->options(House::query()->where('is_available', true)->pluck('name', 'id'))
+                                        ->searchable()
+                                        ->preload()
+                                        ->required()
+                                        ->live()
+                                        ->afterStateUpdated(function ($state, callable $set) {
+                                            $house = House::find($state);
+                                            if ($house) {
+                                                $set('house_price', $house->price ?? 0);
+                                            }
+                                        }),
 
-                                        TextInput::make('bank_name')
-                                            ->label('Nama Bank')
-                                            ->readonly()
-                                            ->required(),
+                                    // Select Bank/KPR — options show "BankName — X% / Y Thn"
+                                    Select::make('interest_id')
+                                        ->label('Bank / KPR')
+                                        ->options(function (callable $get) {
+                                            $houseId = $get('house_id');
+                                            if ($houseId) {
+                                                return Interest::where('house_id', $houseId)
+                                                    ->with('bank')
+                                                    ->get()
+                                                    ->mapWithKeys(fn ($i) => [
+                                                        $i->id => ($i->bank->name ?? '-') . ' — ' . $i->interest . '% / ' . $i->duration . ' Thn',
+                                                    ]);
+                                            }
+                                            return [];
+                                        })
+                                        ->searchable()
+                                        ->preload()
+                                        ->required(fn (callable $get) => $get('payment_type') !== 'cash')
+                                        ->hidden(fn (callable $get) => $get('payment_type') === 'cash')
+                                        ->live()
+                                        ->afterStateUpdated(function ($state, callable $set) {
+                                            $interest = Interest::find($state);
+                                            if ($interest) {
+                                                $set('bank_name', $interest->bank->name ?? '');
+                                                $set('interest', $interest->interest);
+                                                $set('duration', $interest->duration);
+                                            }
+                                        }),
 
-                                        TextInput::make('duration')
-                                            ->label('Durasi (Tahun)')
-                                            ->readonly()
-                                            ->numeric()
-                                            ->suffix('Tahun')
-                                            ->required(),
+                                    TextInput::make('bank_name')
+                                        ->label('Nama Bank')
+                                        ->readonly()
+                                        ->required(),
 
-                                        TextInput::make('interest')
-                                            ->label('Suku Bunga')
-                                            ->readonly()
-                                            ->numeric()
-                                            ->suffix('%')
-                                            ->required(),
+                                    TextInput::make('duration')
+                                        ->label('Tenor KPR')
+                                        ->readonly()
+                                        ->numeric()
+                                        ->suffix('Tahun')
+                                        ->hidden(fn (callable $get) => $get('payment_type') === 'cash')
+                                        ->required(fn (callable $get) => $get('payment_type') !== 'cash')
+                                        ->dehydrated(true),
 
-                                        TextInput::make('house_price')
-                                            ->label('Harga Properti')
-                                            ->readonly()
-                                            ->numeric()
-                                            ->prefix('IDR')
-                                            ->required(),
+                                    TextInput::make('house_price')
+                                        ->label('Harga Properti')
+                                        ->readonly()
+                                        ->numeric()
+                                        ->prefix('IDR')
+                                        ->required(),
 
-                                        Select::make('dp_percentage')
-                                            ->label('Uang Muka (%)')
-                                            ->options([
-                                                5 => '5%',
-                                                10 => '10%',
-                                                15 => '15%',
-                                                20 => '20%',
-                                                40 => '40%',
-                                                50 => '50%',
-                                                60 => '60%',
-                                                80 => '80%',
-                                            ])
-                                            ->live()
-                                            ->required()
-                                            ->afterStateUpdated(function ($state, callable $get, callable $set) {
-                                                $housePrice = $get('house_price') ?? 0;
-                                                $dpAmount = ($state / 100) * $housePrice;   // Calculate Down Payment Amount
-                                                $loanAmount = max($housePrice - $dpAmount, 0);  // Calculate Loan Amount
+                                    Select::make('dp_percentage')
+                                        ->label('DP (%)')
+                                        ->options([
+                                            5 => '5%',
+                                            10 => '10%',
+                                            15 => '15%',
+                                            20 => '20%',
+                                            40 => '40%',
+                                            50 => '50%',
+                                            60 => '60%',
+                                            80 => '80%',
+                                        ])
+                                        ->hidden(fn (callable $get) => $get('payment_type') === 'cash')
+                                        ->required(fn (callable $get) => $get('payment_type') !== 'cash')
+                                        ->live()
+                                        ->afterStateUpdated(function ($state, callable $get, callable $set) {
+                                            $housePrice = $get('house_price') ?? 0;
+                                            $dpAmount = ($state / 100) * $housePrice;
+                                            $loanAmount = max($housePrice - $dpAmount, 0);
 
-                                                $set('dp_total_amount', round($dpAmount));
-                                                $set('loan_total_amount', round($loanAmount));
+                                            $set('dp_total_amount', round($dpAmount));
+                                            $set('loan_total_amount', round($loanAmount));
 
-                                                // Calculate monthly payment
-                                                $durationYears = $get('duration') ?? 0;
-                                                // Interest annual rate in %
-                                                $interestRate = $get('interest') ?? 0;
+                                            $durationYears = $get('duration') ?? 0;
+                                            $interestRate = $get('interest') ?? 0;
 
-                                                if ($durationYears > 0 && $loanAmount > 0 && $interestRate > 0) {
-                                                    $totalPayments = $durationYears * 12; // Total number of payments
-                                                    $monthlyInterestRate = $interestRate / 100 / 12; // Monthly interest rate
+                                            if ($durationYears > 0 && $loanAmount > 0 && $interestRate > 0) {
+                                                $totalPayments = $durationYears * 12;
+                                                $monthlyInterestRate = $interestRate / 100 / 12;
 
-                                                    // Amortization Formula, pow is exponentiation
-                                                    $numerator = $loanAmount * $monthlyInterestRate * pow(1 + $monthlyInterestRate, $totalPayments);
-                                                    $denominator = pow(1 + $monthlyInterestRate, $totalPayments) - 1;
-                                                    $monthlyPayment = $denominator > 0 ? $numerator / $denominator : 0;
+                                                // Amortization Formula
+                                                $numerator = $loanAmount * $monthlyInterestRate * pow(1 + $monthlyInterestRate, $totalPayments);
+                                                $denominator = pow(1 + $monthlyInterestRate, $totalPayments) - 1;
+                                                $monthlyPayment = $denominator > 0 ? $numerator / $denominator : 0;
 
-                                                    $set('monthly_amount', round($monthlyPayment));
+                                                $set('monthly_amount', round($monthlyPayment));
+                                                $set('loan_interest_total_amount', round($monthlyPayment * $totalPayments));
+                                            } else {
+                                                $set('monthly_amount', 0);
+                                                $set('loan_interest_total_amount', 0);
+                                            }
+                                        }),
 
-                                                    // Total loan with interest
-                                                    $totalLoanWithInterest = $monthlyPayment * $totalPayments;
-                                                    $set('loan_interest_total_amount', round($totalLoanWithInterest));
-                                                } else {
-                                                    $set('monthly_payment', 0);
-                                                    $set('loan_interest_total_amount', 0);
-                                                }
-                                            }),
+                                    // Hidden calculated fields — values set via afterStateUpdated, saved to DB
+                                    TextInput::make('interest')
+                                        ->hidden()
+                                        ->numeric()
+                                        ->dehydrated(true),
 
-                                        // Down Payment Amount (Read-only)
-                                        TextInput::make('dp_total_amount')
-                                            ->label('Jumlah Uang Muka')
-                                            ->readonly()
-                                            ->numeric()
-                                            ->prefix('IDR'),
+                                    TextInput::make('dp_total_amount')
+                                        ->hidden()
+                                        ->numeric()
+                                        ->dehydrated(true),
 
-                                        TextInput::make('loan_total_amount')
-                                            ->label('Jumlah Pinjaman')
-                                            ->readonly()
-                                            ->numeric()
-                                            ->prefix('IDR')
-                                            ->required(),
+                                    TextInput::make('loan_total_amount')
+                                        ->hidden()
+                                        ->numeric()
+                                        ->dehydrated(true),
 
-                                        TextInput::make('monthly_amount')
-                                            ->label('Cicilan Bulanan')
-                                            ->readonly()
-                                            ->numeric()
-                                            ->prefix('IDR')
-                                            ->required(),
+                                    TextInput::make('monthly_amount')
+                                        ->hidden()
+                                        ->numeric()
+                                        ->dehydrated(true),
 
-                                        // Total Payment Amount Field (Read-only)
-                                        TextInput::make('loan_interest_total_amount')
-                                            ->label('Total Pembayaran (+ Bunga)')
-                                            ->readonly()
-                                            ->numeric()
-                                            ->prefix('IDR')
-                                            ->required(),
-                                    ]),
-
-
-                            ]
-                        ),
+                                    TextInput::make('loan_interest_total_amount')
+                                        ->hidden()
+                                        ->numeric()
+                                        ->dehydrated(true),
+                                ]),
+                        ]),
 
                     Step::make('Informasi Nasabah')
                         ->schema([
@@ -254,7 +266,7 @@ class MortgageRequestForm
                             Select::make('status')
                                 ->label('Status Persetujuan')
                                 ->options([
-                                    'Waiting for Bank' => 'Menunggu Bank',
+                                    'Waiting for Bank' => 'Proses Bank',
                                     'Approved' => 'Disetujui',
                                     'Rejected' => 'Ditolak',
                                 ])
