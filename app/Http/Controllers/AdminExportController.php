@@ -9,7 +9,7 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AdminExportController extends Controller
 {
-    public function excel(int $agentId = null)
+    public function excel()
     {
         $agentId   = request()->integer('agent_id', 0) ?: null;
         $agentName = SalesStatsService::getAgentName($agentId);

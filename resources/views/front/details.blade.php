@@ -244,7 +244,7 @@
                                     data-interest="{{ $interest->interest }}"
                                     data-duration="{{ $interest->duration }}"
                                     onclick="selectBank(this)"
-                                    class="bank-btn flex items-center gap-3 rounded-[14px] border border-tedja-border px-4 py-3 text-left hover:border-tedja-blue hover:bg-[#F5F7FF] transition-all duration-200">
+                                    class="bank-btn flex items-center gap-3 rounded-[14px] border border-tedja-border px-4 py-3 text-left hover:border-tedja-blue hover:bg-[#F0F0F0] transition-all duration-200">
                                     <div class="shrink-0" style="width:40px;height:28px;overflow:hidden;display:flex;align-items:center;">
                                         <img src="{{ Storage::url($interest->bank->photo) }}"
                                             style="max-width:40px;max-height:28px;width:auto;height:auto;object-fit:contain;"
@@ -380,10 +380,10 @@
                 b.querySelector('.bank-radio').innerHTML = '';
             });
 
-            el.style.borderColor = '#3F52FF';
-            el.style.backgroundColor = '#F5F7FF';
+            el.style.borderColor = '#111111'; /* was: #3F52FF */
+            el.style.backgroundColor = '#F0F0F0'; /* was: #F5F7FF */
             el.querySelector('.bank-radio').innerHTML =
-                '<div style="width:8px;height:8px;border-radius:50%;background:#3F52FF;flex-shrink:0;"></div>';
+                '<div style="width:8px;height:8px;border-radius:50%;background:#111111;flex-shrink:0;"></div>'; /* was: #3F52FF */
 
             selectedInterest = parseFloat(el.dataset.interest);
             selectedDuration = parseInt(el.dataset.duration);

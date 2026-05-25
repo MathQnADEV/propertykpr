@@ -32,15 +32,44 @@ class SalesStatsService
 
     public static function getAgentBreakdown(): array
     {
-        return User::role('agent')
-            ->select('id', 'name')
-            ->orderBy('name')
+        $agents   = User::role('agent')->select('id', 'name')->orderBy('name')->get();
+        $agentIds = $agents->pluck('id')->all();
+
+        if (empty($agentIds)) return [];
+
+        // Listings count per agent — single query
+        $listings = House::selectRaw('agent_id, COUNT(*) as cnt')
+            ->whereIn('agent_id', $agentIds)
+            ->groupBy('agent_id')
+            ->pluck('cnt', 'agent_id');
+
+        // Mortgage aggregates per agent via JOIN — single query (replaces N×5 queries)
+        $mortgages = \DB::table('mortgage_requests as mr')
+            ->join('houses as h', 'h.id', '=', 'mr.house_id')
+            ->whereIn('h.agent_id', $agentIds)
+            ->whereNull('mr.deleted_at')
+            ->selectRaw('
+                h.agent_id,
+                COUNT(*) as total_kpr,
+                SUM(mr.status = "Approved") as total_approved,
+                SUM(mr.status = "Waiting for Bank") as total_pending,
+                SUM(mr.status = "Rejected") as total_rejected,
+                SUM(IF(mr.status = "Approved", mr.loan_total_amount, 0)) as total_loan_approved
+            ')
+            ->groupBy('h.agent_id')
             ->get()
-            ->map(fn ($agent) => array_merge(
-                ['id' => $agent->id, 'name' => $agent->name],
-                self::getStats($agent->id)
-            ))
-            ->all();
+            ->keyBy('agent_id');
+
+        return $agents->map(fn ($agent) => [
+            'id'                  => $agent->id,
+            'name'                => $agent->name,
+            'total_listings'      => (int) ($listings[$agent->id] ?? 0),
+            'total_kpr'           => (int) ($mortgages[$agent->id]->total_kpr ?? 0),
+            'total_approved'      => (int) ($mortgages[$agent->id]->total_approved ?? 0),
+            'total_pending'       => (int) ($mortgages[$agent->id]->total_pending ?? 0),
+            'total_rejected'      => (int) ($mortgages[$agent->id]->total_rejected ?? 0),
+            'total_loan_approved' => (int) ($mortgages[$agent->id]->total_loan_approved ?? 0),
+        ])->all();
     }
 
     public static function getAgentName(?int $agentId): ?string

@@ -35,6 +35,20 @@ class SystemNotificationResource extends Resource
     protected static ?string $label = 'Notifikasi';
     protected static ?string $pluralLabel = 'Notifikasi';
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getModel()::where('user_id', auth()->id())
+            ->where('is_read', false)
+            ->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        return 'danger';
+    }
+
     public static function form(Schema $schema): Schema
     {
         return SystemNotificationForm::configure($schema);

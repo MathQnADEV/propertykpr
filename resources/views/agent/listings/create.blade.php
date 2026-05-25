@@ -1,4 +1,4 @@
-@extends('agent.layouts.app')
+﻿@extends('agent.layouts.app')
 
 @section('title', 'Tambah Listing - Agent Panel')
 
@@ -14,12 +14,12 @@
     </div>
 
     @if($errors->any())
-        <div class="bg-[#FF3E3E]/5 border border-[#FF3E3E]/20 rounded-2xl p-4 mb-6">
+        <div class="bg-[#444444]/5 border border-[#444444]/20 rounded-2xl p-4 mb-6">
             <div class="flex items-start gap-3">
-                <svg class="w-5 h-5 text-[#FF3E3E] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                <svg class="w-5 h-5 text-[#444444] flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 <div>
-                    <p class="font-semibold text-sm text-[#FF3E3E]">Terdapat kesalahan:</p>
-                    <ul class="mt-1 text-sm text-[#FF3E3E]/80 space-y-0.5">
+                    <p class="font-semibold text-sm text-[#444444]">Terdapat kesalahan:</p>
+                    <ul class="mt-1 text-sm text-[#444444]/80 space-y-0.5">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -38,17 +38,17 @@
                     <h2 class="font-bold text-[#060922] mb-4">Informasi Properti</h2>
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-semibold text-[#060922] mb-1.5">Nama Properti <span class="text-[#FF3E3E]">*</span></label>
-                            <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#3F52FF]/20 focus:border-[#3F52FF] transition-all" placeholder="Masukkan nama properti" />
+                            <label class="block text-sm font-semibold text-[#060922] mb-1.5">Nama Properti <span class="text-[#444444]">*</span></label>
+                            <input type="text" name="name" value="{{ old('name') }}" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" placeholder="Masukkan nama properti" />
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Harga (IDR) <span class="text-[#FF3E3E]">*</span></label>
-                                <input type="number" name="price" value="{{ old('price') }}" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#3F52FF]/20 focus:border-[#3F52FF] transition-all" placeholder="0" />
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Harga (IDR) <span class="text-[#444444]">*</span></label>
+                                <input type="number" name="price" value="{{ old('price') }}" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" placeholder="0" />
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Sertifikat <span class="text-[#FF3E3E]">*</span></label>
-                                <select name="certificate" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#3F52FF]/20 focus:border-[#3F52FF] bg-white transition-all">
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Sertifikat <span class="text-[#444444]">*</span></label>
+                                <select name="certificate" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
                                     <option value="">Pilih Sertifikat</option>
                                     <option value="SHM" {{ old('certificate') === 'SHM' ? 'selected' : '' }}>SHM</option>
                                     <option value="SHGB" {{ old('certificate') === 'SHGB' ? 'selected' : '' }}>SHGB</option>
@@ -57,42 +57,42 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-[#060922] mb-1.5">Deskripsi <span class="text-[#FF3E3E]">*</span></label>
-                            <textarea name="about" rows="4" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#3F52FF]/20 focus:border-[#3F52FF] transition-all resize-none" placeholder="Tulis deskripsi properti...">{{ old('about') }}</textarea>
+                            <label class="block text-sm font-semibold text-[#060922] mb-1.5">Deskripsi <span class="text-[#444444]">*</span></label>
+                            <textarea name="about" rows="4" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all resize-none" placeholder="Tulis deskripsi properti...">{{ old('about') }}</textarea>
                         </div>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kamar Tidur <span class="text-[#FF3E3E]">*</span></label>
-                                <input type="number" name="bedroom" value="{{ old('bedroom') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#3F52FF]/20 focus:border-[#3F52FF] transition-all" />
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kamar Tidur <span class="text-[#444444]">*</span></label>
+                                <input type="number" name="bedroom" value="{{ old('bedroom') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kamar Mandi <span class="text-[#FF3E3E]">*</span></label>
-                                <input type="number" name="bathroom" value="{{ old('bathroom') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#3F52FF]/20 focus:border-[#3F52FF] transition-all" />
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kamar Mandi <span class="text-[#444444]">*</span></label>
+                                <input type="number" name="bathroom" value="{{ old('bathroom') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Luas Tanah (m²) <span class="text-[#FF3E3E]">*</span></label>
-                                <input type="number" name="land_area" value="{{ old('land_area') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#3F52FF]/20 focus:border-[#3F52FF] transition-all" />
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Luas Tanah (m²) <span class="text-[#444444]">*</span></label>
+                                <input type="number" name="land_area" value="{{ old('land_area') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Luas Bangunan (m²) <span class="text-[#FF3E3E]">*</span></label>
-                                <input type="number" name="building_area" value="{{ old('building_area') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#3F52FF]/20 focus:border-[#3F52FF] transition-all" />
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Luas Bangunan (m²) <span class="text-[#444444]">*</span></label>
+                                <input type="number" name="building_area" value="{{ old('building_area') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
                             </div>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Daya Listrik (Watt) <span class="text-[#FF3E3E]">*</span></label>
-                                <input type="number" name="electric" value="{{ old('electric') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#3F52FF]/20 focus:border-[#3F52FF] transition-all" />
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Daya Listrik (Watt) <span class="text-[#444444]">*</span></label>
+                                <input type="number" name="electric" value="{{ old('electric') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Status Ketersediaan <span class="text-[#FF3E3E]">*</span></label>
-                                <select name="is_available" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#3F52FF]/20 focus:border-[#3F52FF] bg-white transition-all">
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Status Ketersediaan <span class="text-[#444444]">*</span></label>
+                                <select name="is_available" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
                                     <option value="1" {{ old('is_available', '1') == '1' ? 'selected' : '' }}>Available</option>
                                     <option value="0" {{ old('is_available') == '0' ? 'selected' : '' }}>Not Available</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kategori <span class="text-[#FF3E3E]">*</span></label>
-                                <select name="category_id" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#3F52FF]/20 focus:border-[#3F52FF] bg-white transition-all">
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kategori <span class="text-[#444444]">*</span></label>
+                                <select name="category_id" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
                                     <option value="">Pilih Kategori</option>
                                     @foreach($categories as $cat)
                                         <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
@@ -100,8 +100,8 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kota <span class="text-[#FF3E3E]">*</span></label>
-                                <select name="city_id" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#3F52FF]/20 focus:border-[#3F52FF] bg-white transition-all">
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kota <span class="text-[#444444]">*</span></label>
+                                <select name="city_id" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
                                     <option value="">Pilih Kota</option>
                                     @foreach($cities as $city)
                                         <option value="{{ $city->id }}" {{ old('city_id') == $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
@@ -117,8 +117,8 @@
                     <h2 class="font-bold text-[#060922] mb-4">Fasilitas</h2>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                         @foreach($facilities as $facility)
-                            <label class="flex items-center gap-3 p-3 rounded-xl border border-[#F2F2F4] cursor-pointer hover:border-[#3F52FF]/30 has-[:checked]:border-[#3F52FF] has-[:checked]:bg-[#3F52FF]/5 transition-all">
-                                <input type="checkbox" name="facilities[]" value="{{ $facility->id }}" class="w-4 h-4 rounded border-gray-300 text-[#3F52FF] focus:ring-[#3F52FF]" {{ in_array($facility->id, old('facilities', [])) ? 'checked' : '' }}>
+                            <label class="flex items-center gap-3 p-3 rounded-xl border border-[#F2F2F4] cursor-pointer hover:border-[#111111]/30 has-[:checked]:border-[#111111] has-[:checked]:bg-[#111111]/5 transition-all">
+                                <input type="checkbox" name="facilities[]" value="{{ $facility->id }}" class="w-4 h-4 rounded border-gray-300 text-[#111111] focus:ring-[#111111]" {{ in_array($facility->id, old('facilities', [])) ? 'checked' : '' }}>
                                 <span class="text-sm text-[#060922]">{{ $facility->name }}</span>
                             </label>
                         @endforeach
@@ -129,8 +129,8 @@
             {{-- Sidebar - Images --}}
             <div class="space-y-6">
                 <div class="bg-white rounded-2xl p-5 border border-[#F2F2F4]">
-                    <h2 class="font-bold text-[#060922] mb-4">Thumbnail <span class="text-[#FF3E3E]">*</span></h2>
-                    <div id="thumbnailPreview" class="relative w-full h-40 rounded-xl border-2 border-dashed border-[#F2F2F4] flex items-center justify-center cursor-pointer hover:border-[#3F52FF]/30 transition-colors overflow-hidden" onclick="document.getElementById('thumbnailInput').click()">
+                    <h2 class="font-bold text-[#060922] mb-4">Thumbnail <span class="text-[#444444]">*</span></h2>
+                    <div id="thumbnailPreview" class="relative w-full h-40 rounded-xl border-2 border-dashed border-[#F2F2F4] flex items-center justify-center cursor-pointer hover:border-[#111111]/30 transition-colors overflow-hidden" onclick="document.getElementById('thumbnailInput').click()">
                         <div id="thumbnailPlaceholder" class="text-center">
                             <svg class="w-10 h-10 text-[#8F91A2]/30 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                             <p class="text-xs text-[#8F91A2]">Klik untuk upload</p>
@@ -143,7 +143,7 @@
                 <div class="bg-white rounded-2xl p-5 border border-[#F2F2F4]">
                     <h2 class="font-bold text-[#060922] mb-4">Foto Tambahan</h2>
                     <div id="photosPreview" class="grid grid-cols-2 gap-2 mb-3"></div>
-                    <label class="flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-[#F2F2F4] cursor-pointer hover:border-[#3F52FF]/30 transition-colors">
+                    <label class="flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-[#F2F2F4] cursor-pointer hover:border-[#111111]/30 transition-colors">
                         <svg class="w-5 h-5 text-[#8F91A2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                         <span class="text-sm text-[#8F91A2]">Tambah Foto</span>
                         <input type="file" name="photos[]" accept="image/*" multiple class="hidden" onchange="previewMultiple(this)" />

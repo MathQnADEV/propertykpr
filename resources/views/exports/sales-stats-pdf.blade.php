@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -25,10 +25,10 @@
 
         .c-blue   { color: #3b82f6; }
         .c-slate  { color: #475569; }
-        .c-green  { color: #16a34a; }
+        .c-green  { color: #444444; }
         .c-amber  { color: #d97706; }
         .c-red    { color: #dc2626; }
-        .c-purple { color: #7c3aed; }
+        .c-purple { color: #555555; }
 
         /* Breakdown table */
         table.breakdown { width: 100%; border-collapse: collapse; margin-top: 4px; }
@@ -110,10 +110,10 @@
             <th>Agent</th>
             <th class="text-center">Properti</th>
             <th class="text-center">Total KPR</th>
-            <th class="text-center" style="color:#16a34a;">Disetujui</th>
+            <th class="text-center" style="color:#444444;">Disetujui</th>
             <th class="text-center" style="color:#d97706;">Pending</th>
             <th class="text-center" style="color:#dc2626;">Ditolak</th>
-            <th class="text-right" style="color:#7c3aed;">Total Pinjaman (Approved)</th>
+            <th class="text-right" style="color:#555555;">Total Pinjaman (Approved)</th>
         </tr>
     </thead>
     <tbody>

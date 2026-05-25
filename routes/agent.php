@@ -39,4 +39,12 @@ Route::middleware(['auth', 'role:agent'])->prefix('agent')->name('agent.')->grou
 
     // Reports
     Route::get('/reports', [AgentController::class, 'reports'])->name('reports');
+
+    // Commissions, Income & Requests (unified)
+    Route::get('/commissions',         [AgentController::class, 'commissions'])->name('commissions');
+    Route::get('/commissions/request', [AgentController::class, 'requestCommission'])->name('commissions.request');
+    Route::post('/commissions/request',[AgentController::class, 'storeCommissionRequest'])->name('commissions.request.store');
+
+    // Legacy income redirect
+    Route::get('/income', fn () => redirect()->route('agent.commissions', ['tab' => 'income']))->name('income');
 });

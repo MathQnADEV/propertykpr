@@ -67,7 +67,7 @@ class NotificationService
         if (in_array($type, ['created', 'updated'])) {
             $route = self::$resourceRoutes[$model::class] ?? null;
             if ($route) {
-                $url = config('APP_URL') . "{$route}/{$model->id}/edit";
+                $url = rtrim(config('app.url'), '/') . "{$route}/{$model->id}/edit";
             }
         }
 
@@ -100,6 +100,8 @@ class NotificationService
 
     public static function markAllAsRead(): int
     {
-        return SystemNotification::where('is_read', false)->update(['is_read' => true]);
+        return SystemNotification::where('user_id', Auth::id())
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
     }
 }

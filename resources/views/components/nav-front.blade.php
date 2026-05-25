@@ -74,11 +74,11 @@
     <div id="mobile-menu"
         class="hidden flex-col bg-white border-b border-tedja-border px-4 py-3 gap-1 md:hidden">
         <a href="{{ route('front.index') }}"
-            class="flex items-center rounded-xl px-3 py-2.5 font-semibold text-sm {{ request()->routeIs('front.index') ? 'text-tedja-blue bg-[#F5F7FF]' : 'hover:bg-[#F5F5F7]' }} transition-colors">
+            class="flex items-center rounded-xl px-3 py-2.5 font-semibold text-sm {{ request()->routeIs('front.index') ? 'text-tedja-blue bg-[#F0F0F0]' : 'hover:bg-[#F5F5F7]' }} transition-colors">
             Beranda
         </a>
         <a href="{{ route('front.browse') }}"
-            class="flex items-center rounded-xl px-3 py-2.5 font-semibold text-sm {{ request()->routeIs('front.browse') ? 'text-tedja-blue bg-[#F5F7FF]' : 'hover:bg-[#F5F5F7]' }} transition-colors">
+            class="flex items-center rounded-xl px-3 py-2.5 font-semibold text-sm {{ request()->routeIs('front.browse') ? 'text-tedja-blue bg-[#F0F0F0]' : 'hover:bg-[#F5F5F7]' }} transition-colors">
             Jelajahi
         </a>
 
