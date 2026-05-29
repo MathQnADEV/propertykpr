@@ -301,7 +301,7 @@
                         {{-- Monthly highlight --}}
                         <div class="bg-tedja-black text-white px-6 py-5 text-center">
                             <p class="text-xs text-white/50 uppercase tracking-wider mb-2">Estimasi Cicilan / Bulan</p>
-                            <p class="font-bold text-[24px] md:text-[28px] leading-tight text-tedja-green" id="res-monthly">Rp 0</p>
+                            <p class="font-bold text-[24px] md:text-[28px] leading-tight text-white" id="res-monthly">Rp 0</p>
                         </div>
 
                         {{-- Detail rows --}}
