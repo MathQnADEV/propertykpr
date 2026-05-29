@@ -16,10 +16,10 @@ export default {
             },
             colors: {
                 'tedja-black':     '#060922',
-                'tedja-blue':      '#3F52FF',
-                'tedja-green':     '#CEF27F',
-                'tedja-orange':    '#FF9F47',
-                'tedja-red':       '#FF3E3E',
+                'tedja-blue':      '#111111', /* was: #3F52FF */
+                'tedja-green':     '#111111', /* was: #CEF27F */
+                'tedja-orange':    '#888888', /* was: #FF9F47 */
+                'tedja-red':       '#555555', /* was: #FF3E3E */
                 'tedja-border':    '#F2F2F4',
                 'tedja-secondary': '#8F91A2',
             },

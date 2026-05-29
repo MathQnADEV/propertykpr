@@ -74,7 +74,7 @@
             </div>
             <button type="submit"
                 class="group rounded-full border py-2.5 md:py-[14px] px-5 flex items-center justify-center bg-tedja-green md:mt-auto w-full md:w-auto">
-                <span class="font-semibold text-nowrap">Cari Rumah</span>
+                <span class="font-semibold text-nowrap text-white">Cari Rumah</span>
             </button>
         </form>
     </header>
