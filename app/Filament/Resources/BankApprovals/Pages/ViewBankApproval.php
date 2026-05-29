@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\BankApprovals\Pages;
 
 use App\Filament\Resources\BankApprovals\BankApprovalResource;
-use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewBankApproval extends ViewRecord
@@ -12,8 +11,6 @@ class ViewBankApproval extends ViewRecord
 
     protected function getHeaderActions(): array
     {
-        return [
-            EditAction::make(),
-        ];
+        return [];
     }
 }

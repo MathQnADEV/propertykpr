@@ -30,7 +30,7 @@ class MortgageRequestsTable
             ->columns([
                 ImageColumn::make('house.thumbnail'),
                 TextColumn::make('customer.nama_lengkap')
-                    ->label('Nasabah')
+                    ->label('Customer')
                     ->searchable(),
 
                 TextColumn::make('house.name'),

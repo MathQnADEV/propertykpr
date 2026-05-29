@@ -14,7 +14,7 @@ class BankApprovalInfolist
         return $schema
             ->components([
                 TextEntry::make('mortgageRequest.customer.nama_lengkap')
-                    ->label('Nasabah'),
+                    ->label('Customer'),
 
                 TextEntry::make('mortgageRequest.house.name')
                     ->label('Rumah'),

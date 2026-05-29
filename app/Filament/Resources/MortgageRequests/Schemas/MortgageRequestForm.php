@@ -6,7 +6,9 @@ use App\Models\House;
 use App\Models\Interest;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Placeholder;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
@@ -113,38 +115,61 @@ class MortgageRequestForm
                                         ->prefix('IDR')
                                         ->required(),
 
-                                    Select::make('dp_percentage')
-                                        ->label('DP (%)')
-                                        ->options([
-                                            5 => '5%',
-                                            10 => '10%',
-                                            15 => '15%',
-                                            20 => '20%',
-                                            40 => '40%',
-                                            50 => '50%',
-                                            60 => '60%',
-                                            80 => '80%',
-                                        ])
+                                    // Satu field — ketik "20%" untuk persen, atau "20000000" untuk nominal Rp
+                                    TextInput::make('dp_input')
+                                        ->label('DP (% atau Nominal Rp)')
+                                        ->placeholder('contoh: 20%  atau  20000000 — kosongkan jika bebas biaya')
+                                        ->hint('Tambahkan tanda % untuk persen, angka saja untuk nominal Rp')
                                         ->hidden(fn (callable $get) => $get('payment_type') === 'cash')
-                                        ->required(fn (callable $get) => $get('payment_type') !== 'cash')
+                                        ->nullable()
+                                        ->dehydrated(false)
+                                        ->afterStateHydrated(function ($state, $record, callable $set) {
+                                            // Pre-fill saat edit record yang sudah ada
+                                            if ($record && $record->dp_percentage > 0) {
+                                                $set('dp_input', $record->dp_percentage . '%');
+                                            } elseif ($record && $record->dp_total_amount > 0) {
+                                                $set('dp_input', (string) $record->dp_total_amount);
+                                            }
+                                        })
                                         ->live()
                                         ->afterStateUpdated(function ($state, callable $get, callable $set) {
-                                            $housePrice = $get('house_price') ?? 0;
-                                            $dpAmount = ($state / 100) * $housePrice;
-                                            $loanAmount = max($housePrice - $dpAmount, 0);
+                                            $housePrice = (float) ($get('house_price') ?? 0);
+                                            $value      = trim((string) ($state ?? ''));
 
+                                            if ($value === '' || $housePrice <= 0) {
+                                                $set('dp_percentage', 0);
+                                                $set('dp_total_amount', 0);
+                                                $set('loan_total_amount', round($housePrice));
+                                                $set('monthly_amount', 0);
+                                                $set('loan_interest_total_amount', 0);
+                                                return;
+                                            }
+
+                                            if (str_contains($value, '%')) {
+                                                // Mode persen — contoh: "20%"
+                                                $pct      = (float) str_replace(['%', ' '], '', $value);
+                                                $dpAmount = ($pct / 100) * $housePrice;
+                                                $set('dp_percentage', (int) round($pct));
+                                            } else {
+                                                // Mode nominal — contoh: "20000000"
+                                                $dpAmount = (float) str_replace(['.', ',', ' '], '', $value);
+                                                $pct      = $housePrice > 0 ? ($dpAmount / $housePrice) * 100 : 0;
+                                                $set('dp_percentage', (int) round($pct));
+                                            }
+
+                                            $loanAmount = max($housePrice - $dpAmount, 0);
                                             $set('dp_total_amount', round($dpAmount));
                                             $set('loan_total_amount', round($loanAmount));
 
                                             $durationYears = $get('duration') ?? 0;
-                                            $interestRate = $get('interest') ?? 0;
+                                            $interestRate  = $get('interest') ?? 0;
 
                                             if ($durationYears > 0 && $loanAmount > 0 && $interestRate > 0) {
-                                                $totalPayments = $durationYears * 12;
+                                                $totalPayments       = $durationYears * 12;
                                                 $monthlyInterestRate = $interestRate / 100 / 12;
 
                                                 // Amortization Formula
-                                                $numerator = $loanAmount * $monthlyInterestRate * pow(1 + $monthlyInterestRate, $totalPayments);
+                                                $numerator   = $loanAmount * $monthlyInterestRate * pow(1 + $monthlyInterestRate, $totalPayments);
                                                 $denominator = pow(1 + $monthlyInterestRate, $totalPayments) - 1;
                                                 $monthlyPayment = $denominator > 0 ? $numerator / $denominator : 0;
 
@@ -156,7 +181,19 @@ class MortgageRequestForm
                                             }
                                         }),
 
+                                    Textarea::make('notes')
+                                        ->label('Catatan')
+                                        ->placeholder('contoh: Free Biaya-biaya, DP gratis, dll.')
+                                        ->rows(2)
+                                        ->nullable()
+                                        ->columnSpanFull(),
+
                                     // Hidden calculated fields — values set via afterStateUpdated, saved to DB
+                                    TextInput::make('dp_percentage')
+                                        ->hidden()
+                                        ->numeric()
+                                        ->dehydrated(true),
+
                                     TextInput::make('interest')
                                         ->hidden()
                                         ->numeric()
