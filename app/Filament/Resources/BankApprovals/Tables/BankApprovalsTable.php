@@ -5,7 +5,6 @@ namespace App\Filament\Resources\BankApprovals\Tables;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
@@ -14,8 +13,8 @@ use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
-use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Table;
 
 class BankApprovalsTable
 {
@@ -45,6 +44,12 @@ class BankApprovalsTable
                 TextColumn::make('mortgageRequest.bank_name')
                     ->label('Bank')
                     ->searchable(),
+
+                TextColumn::make('mortgageRequest.payment_type')
+                    ->label('Tipe')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state === 'cash' ? 'Tunai' : 'KPR')
+                    ->color(fn ($state) => $state === 'cash' ? 'warning' : 'info'),
 
                 TextColumn::make('status')
                     ->label('Status')
@@ -105,8 +110,11 @@ class BankApprovalsTable
                             ->maxLength(500),
                     ])
                     ->requiresConfirmation()
-                    ->modalHeading('Setujui Persetujuan Bank')
-                    ->modalDescription('Yakin ingin menyetujui permohonan KPR ini dari sisi bank?')
+                    ->modalHeading('Setujui Persetujuan')
+                    ->modalDescription(fn ($record) => $record->mortgageRequest?->payment_type === 'cash'
+                        ? 'Yakin ingin menyetujui pembayaran tunai ini?'
+                        : 'Yakin ingin menyetujui permohonan KPR ini dari sisi bank?'
+                    )
                     ->action(function ($record, array $data) {
                         $record->update([
                             'status'      => 'Approved',
@@ -136,8 +144,11 @@ class BankApprovalsTable
                             ->maxLength(500),
                     ])
                     ->requiresConfirmation()
-                    ->modalHeading('Tolak Persetujuan Bank')
-                    ->modalDescription('Yakin ingin menolak permohonan KPR ini dari sisi bank?')
+                    ->modalHeading('Tolak Persetujuan')
+                    ->modalDescription(fn ($record) => $record->mortgageRequest?->payment_type === 'cash'
+                        ? 'Yakin ingin menolak pembayaran tunai ini?'
+                        : 'Yakin ingin menolak permohonan KPR ini dari sisi bank?'
+                    )
                     ->action(function ($record, array $data) {
                         $record->update([
                             'status'      => 'Rejected',

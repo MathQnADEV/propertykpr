@@ -23,6 +23,8 @@ class SalesStatsService
         return [
             'total_listings'      => $totalListings,
             'total_kpr'           => $base()->count(),
+            'total_kpr_count'     => $base()->where('payment_type', 'kpr')->count(),
+            'total_cash_count'    => $base()->where('payment_type', 'cash')->count(),
             'total_approved'      => $base()->where('status', 'Approved')->count(),
             'total_pending'       => $base()->where('status', 'Waiting for Bank')->count(),
             'total_rejected'      => $base()->where('status', 'Rejected')->count(),
