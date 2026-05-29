@@ -34,7 +34,8 @@ class MortgageRequest extends Model
         'status',
         'documents',
         'house_price',
-        'loan_interest_total_amount'
+        'loan_interest_total_amount',
+        'notes',
     ];
 
 

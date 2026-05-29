@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\BankApprovals\Pages;
 
 use App\Filament\Resources\BankApprovals\BankApprovalResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,9 +13,7 @@ class ListBankApprovals extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            CreateAction::make(),
-        ];
+        return [];
     }
 
     public function getTabs(): array

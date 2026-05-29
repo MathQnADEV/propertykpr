@@ -4,7 +4,6 @@ namespace App\Filament\Resources\BankApprovals;
 
 use App\Filament\Resources\BankApprovals\Pages\ListBankApprovals;
 use App\Filament\Resources\BankApprovals\Pages\ViewBankApproval;
-use App\Filament\Resources\BankApprovals\Schemas\BankApprovalForm;
 use App\Filament\Resources\BankApprovals\Schemas\BankApprovalInfolist;
 use App\Filament\Resources\BankApprovals\Tables\BankApprovalsTable;
 use App\Models\BankApproval;
@@ -30,11 +29,6 @@ class BankApprovalResource extends Resource
 
     protected static string | UnitEnum | null $navigationGroup = 'Transaksi';
     protected static ?int $navigationSort = 2;
-
-    public static function form(Schema $schema): Schema
-    {
-        return BankApprovalForm::configure($schema);
-    }
 
     public static function infolist(Schema $schema): Schema
     {

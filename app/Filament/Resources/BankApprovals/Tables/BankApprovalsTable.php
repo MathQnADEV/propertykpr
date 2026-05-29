@@ -32,7 +32,7 @@ class BankApprovalsTable
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('mortgageRequest.customer.nama_lengkap')
-                    ->label('Nasabah')
+                    ->label('Customer')
                     ->searchable()
                     ->sortable(),
 
