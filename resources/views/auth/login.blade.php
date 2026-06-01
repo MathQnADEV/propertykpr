@@ -33,7 +33,7 @@
                     {{-- <a href="#" class="hover:underline text-sm text-tedja-secondary">Lupa kata sandi</a> --}}
                 </div>
                 <button type="submit"
-                    class="rounded-full py-3 md:py-[14px] px-5 bg-tedja-green w-full text-center font-semibold text-sm md:text-base">
+                    class="rounded-full py-3 md:py-[14px] px-5 bg-tedja-green w-full text-center font-semibold text-sm md:text-base text-white">
                     Login
                 </button>
             </div>

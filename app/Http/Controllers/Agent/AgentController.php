@@ -610,11 +610,11 @@ class AgentController extends Controller
                 ->map(fn ($r) => tap($r, fn ($r) => $r->period_label = 'Minggu ' . \Carbon\Carbon::parse($r->period_start)->format('d M Y'))),
 
             'yearly' => (clone $baseQuery)
-                ->selectRaw('YEAR(created_at) as period_key, YEAR(created_at) as period_start, SUM(commission_amount) as total, COUNT(*) as deal_count')
+                ->selectRaw('YEAR(created_at) as period_key, MIN(created_at) as period_start, SUM(commission_amount) as total, COUNT(*) as deal_count')
                 ->groupByRaw('YEAR(created_at)')
                 ->orderByRaw('YEAR(created_at) DESC')
                 ->limit(5)->get()
-                ->map(fn ($r) => tap($r, fn ($r) => $r->period_label = 'Tahun ' . $r->period_start)),
+                ->map(fn ($r) => tap($r, fn ($r) => $r->period_label = 'Tahun ' . $r->period_key)),
 
             default => (clone $baseQuery)
                 ->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as period_key, MIN(created_at) as period_start, SUM(commission_amount) as total, COUNT(*) as deal_count')
