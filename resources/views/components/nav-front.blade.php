@@ -51,6 +51,15 @@
                     <a href="{{ route('front.browse') }}" class="hover:text-tedja-blue transition-all duration-300">Browse Properti</a>
                 </li>
                 <li>
+                    @if(Auth::user()->hasRole('agent'))
+                        <a href="{{ route('agent.dashboard') }}" class="hover:text-tedja-blue transition-all duration-300">Dashboard Agent</a>
+                    @elseif(Auth::user()->hasRole(['master', 'admin']))
+                        <a href="/admin" class="hover:text-tedja-blue transition-all duration-300">Dashboard Admin</a>
+                    @elseif(Auth::user()->hasRole('investor'))
+                        <a href="{{ route('investor.dashboard') }}" class="hover:text-tedja-blue transition-all duration-300">Dashboard Investor</a>
+                    @endif
+                </li>
+                <li>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="w-full text-left hover:text-tedja-blue transition-all duration-300">
@@ -106,6 +115,22 @@
                 class="rounded-xl px-3 py-2.5 font-semibold text-sm text-tedja-secondary hover:bg-[#F5F5F7] transition-colors">
                 Browse Properti
             </a>
+            @if(Auth::user()->hasRole('agent'))
+                <a href="{{ route('agent.dashboard') }}"
+                    class="rounded-xl px-3 py-2.5 font-semibold text-sm text-[#111111] hover:bg-[#F5F5F7] transition-colors">
+                    Dashboard Agent
+                </a>
+            @elseif(Auth::user()->hasRole(['master', 'admin']))
+                <a href="/admin"
+                    class="rounded-xl px-3 py-2.5 font-semibold text-sm text-[#111111] hover:bg-[#F5F5F7] transition-colors">
+                    Dashboard Admin
+                </a>
+            @elseif(Auth::user()->hasRole('investor'))
+                <a href="{{ route('investor.dashboard') }}"
+                    class="rounded-xl px-3 py-2.5 font-semibold text-sm text-[#111111] hover:bg-[#F5F5F7] transition-colors">
+                    Dashboard Investor
+                </a>
+            @endif
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit"
