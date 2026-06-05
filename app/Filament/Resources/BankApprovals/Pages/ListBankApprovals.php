@@ -20,9 +20,9 @@ class ListBankApprovals extends ListRecords
     {
         return [
             'all' => Tab::make('Semua'),
-            'kpr' => Tab::make('KPR (Kredit)')
+            'kredit' => Tab::make('Kredit (KPR/KPA/KPT/KPG)')
                 ->modifyQueryUsing(fn (Builder $query) =>
-                    $query->whereHas('mortgageRequest', fn ($q) => $q->where('payment_type', 'kpr'))
+                    $query->whereHas('mortgageRequest', fn ($q) => $q->whereIn('payment_type', ['kpr', 'kpa', 'kpt', 'kpg']))
                 ),
             'cash' => Tab::make('Cash (Tunai)')
                 ->modifyQueryUsing(fn (Builder $query) =>

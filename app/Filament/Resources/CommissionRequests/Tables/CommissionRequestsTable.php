@@ -128,6 +128,13 @@ class CommissionRequestsTable
                         'commission_amount' => 0,
                     ])
                     ->action(function (CommissionRequest $record, array $data): void {
+                        // Hapus permanen komisi lama yang sudah di-soft-delete
+                        // agar unique constraint tidak error saat insert baru.
+                        Commission::withTrashed()
+                            ->where('mortgage_request_id', $record->mortgage_request_id)
+                            ->whereNotNull('deleted_at')
+                            ->forceDelete();
+
                         Commission::create([
                             'mortgage_request_id' => $record->mortgage_request_id,
                             'agent_id'            => $record->agent_id,

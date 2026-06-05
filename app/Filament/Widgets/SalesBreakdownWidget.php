@@ -22,14 +22,17 @@ class SalesBreakdownWidget extends BaseWidget
             ->query(
                 User::role('agent')
                     ->withCount('houses as total_listings')
-                    ->withCount(['mortgageRequests as total_kpr'])
+                    // Per tipe pembayaran
+                    ->withCount(['mortgageRequests as total_kpr'  => fn (Builder $q) => $q->where('payment_type', 'kpr')])
+                    ->withCount(['mortgageRequests as total_kpa'  => fn (Builder $q) => $q->where('payment_type', 'kpa')])
+                    ->withCount(['mortgageRequests as total_kpt'  => fn (Builder $q) => $q->where('payment_type', 'kpt')])
+                    ->withCount(['mortgageRequests as total_kpg'  => fn (Builder $q) => $q->where('payment_type', 'kpg')])
+                    ->withCount(['mortgageRequests as total_cash' => fn (Builder $q) => $q->where('payment_type', 'cash')])
+                    ->withCount(['mortgageRequests as total_sewa' => fn (Builder $q) => $q->where('payment_type', 'sewa')])
+                    // Status approval
                     ->withCount(['mortgageRequests as total_approved' => fn (Builder $q) => $q->where('status', 'Approved')])
                     ->withCount(['mortgageRequests as total_pending'  => fn (Builder $q) => $q->where('status', 'Waiting for Bank')])
                     ->withCount(['mortgageRequests as total_rejected' => fn (Builder $q) => $q->where('status', 'Rejected')])
-                    ->withSum(
-                        ['mortgageRequests as total_loan_approved' => fn (Builder $q) => $q->where('status', 'Approved')],
-                        'loan_total_amount'
-                    )
                     ->orderBy('name')
             )
             ->columns([
@@ -42,10 +45,36 @@ class SalesBreakdownWidget extends BaseWidget
                     ->label('Properti')
                     ->alignCenter(),
 
+                // ── Tipe Pembayaran ──────────────────────
                 Tables\Columns\TextColumn::make('total_kpr')
-                    ->label('Total KPR')
+                    ->label('KPR')
+                    ->alignCenter()
+                    ->tooltip('Kredit Pemilikan Rumah'),
+
+                Tables\Columns\TextColumn::make('total_kpa')
+                    ->label('KPA')
+                    ->alignCenter()
+                    ->tooltip('Kredit Pemilikan Apartemen'),
+
+                Tables\Columns\TextColumn::make('total_kpt')
+                    ->label('KPT')
+                    ->alignCenter()
+                    ->tooltip('Kredit Pemilikan Tanah'),
+
+                Tables\Columns\TextColumn::make('total_kpg')
+                    ->label('KPG')
+                    ->alignCenter()
+                    ->tooltip('Kredit Pemilikan Gudang'),
+
+                Tables\Columns\TextColumn::make('total_cash')
+                    ->label('Cash')
                     ->alignCenter(),
 
+                Tables\Columns\TextColumn::make('total_sewa')
+                    ->label('Sewa')
+                    ->alignCenter(),
+
+                // ── Status ──────────────────────────────
                 Tables\Columns\TextColumn::make('total_approved')
                     ->label('Disetujui')
                     ->alignCenter()
@@ -60,12 +89,6 @@ class SalesBreakdownWidget extends BaseWidget
                     ->label('Ditolak')
                     ->alignCenter()
                     ->color('danger'),
-
-                Tables\Columns\TextColumn::make('total_loan_approved')
-                    ->label('Total Pinjaman (Disetujui)')
-                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state ?? 0, 0, ',', '.'))
-                    ->alignRight()
-                    ->color('primary'),
             ])
             ->headerActions([
                  Action::make('exportExcel')

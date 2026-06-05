@@ -31,7 +31,12 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'phone',
-        'photo'
+        'photo',
+        'instagram',
+        'facebook',
+        'whatsapp',
+        'investor_share_type',
+        'investor_share_value',
     ];
 
     /**
@@ -65,5 +70,11 @@ class User extends Authenticatable implements FilamentUser
     public function mortgageRequests()
     {
         return $this->hasManyThrough(MortgageRequest::class, House::class, 'agent_id', 'house_id');
+    }
+
+    /** Kota investasi (khusus role investor) */
+    public function investedCities()
+    {
+        return $this->belongsToMany(City::class, 'investor_cities', 'investor_id', 'city_id');
     }
 }

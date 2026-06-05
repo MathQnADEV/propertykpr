@@ -12,8 +12,10 @@
                 <h1 class="text-2xl font-bold text-[#060922]">Detail Pengajuan</h1>
                 @if(($mortgageRequest->payment_type ?? 'kpr') === 'cash')
                     <span class="text-xs font-bold bg-[#111111] text-white px-2.5 py-1 rounded-lg">CASH</span>
+                @elseif(($mortgageRequest->payment_type ?? '') === 'sewa')
+                    <span class="text-xs font-bold bg-[#555555] text-white px-2.5 py-1 rounded-lg">SEWA</span>
                 @else
-                    <span class="text-xs font-bold bg-[#111111]/10 text-[#111111] px-2.5 py-1 rounded-lg">KPR</span>
+                    <span class="text-xs font-bold bg-[#111111]/10 text-[#111111] px-2.5 py-1 rounded-lg">{{ strtoupper($mortgageRequest->payment_type ?? 'KPR') }}</span>
                 @endif
             </div>
             <p class="text-sm text-[#8F91A2] mt-0.5">{{ $mortgageRequest->house->name ?? 'N/A' }}</p>
@@ -68,7 +70,7 @@
                         </div>
                     </div>
                 @else
-                    <h3 class="font-bold text-[#060922] mb-4">Detail KPR</h3>
+                    <h3 class="font-bold text-[#060922] mb-4">Detail {{ strtoupper($mortgageRequest->payment_type ?? 'KPR') }}</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="p-4 rounded-xl bg-[#F8F8FA]">
                             <p class="text-xs text-[#8F91A2]">Uang Muka / DP</p>

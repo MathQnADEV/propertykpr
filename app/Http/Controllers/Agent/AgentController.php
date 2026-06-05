@@ -14,6 +14,7 @@ use App\Models\House;
 use App\Models\HouseFacility;
 use App\Models\HousePhoto;
 use App\Models\Interest;
+use App\Models\MortgageDocument;
 use App\Models\MortgageRequest;
 use App\Models\SystemNotification;
 use App\Models\User;
@@ -347,7 +348,10 @@ class AgentController extends Controller
 
     public function storeMortgageRequest(Request $request)
     {
-        $paymentType = $request->payment_type === 'cash' ? 'cash' : 'kpr';
+        $KREDIT_TYPES = ['kpr', 'kpa', 'kpt', 'kpg'];
+        $paymentType  = in_array($request->payment_type, $KREDIT_TYPES)
+            ? $request->payment_type
+            : ($request->payment_type === 'sewa' ? 'sewa' : 'cash');
 
         $commonCustomerRules = [
             'house_id'            => 'required|exists:houses,id',
@@ -364,10 +368,9 @@ class AgentController extends Controller
             'status_pernikahan'   => 'required|in:Belum Menikah,Menikah,Cerai',
         ];
 
-        if ($paymentType === 'kpr') {
+        if (in_array($paymentType, $KREDIT_TYPES)) {
             $request->validate(array_merge($commonCustomerRules, [
-                'interest_id'   => 'required|exists:interests,id',
-                'dp_percentage' => 'required|integer|in:5,10,15,20,40,50,60,80',
+                'interest_id' => 'required|exists:interests,id',
             ]));
         } else {
             $request->validate($commonCustomerRules);
@@ -391,26 +394,27 @@ class AgentController extends Controller
 
         $documentPath = $request->file('documents')->store('documents', 'public');
 
-        if ($paymentType === 'kpr') {
+        if (in_array($paymentType, $KREDIT_TYPES)) {
             $interest     = Interest::with('bank')->findOrFail($request->interest_id);
-            $dp           = $house->price * ($request->dp_percentage / 100);
+            $dpPct        = (float) ($request->dp_percentage ?? 0);
+            $dp           = $house->price * ($dpPct / 100);
             $loan         = $house->price - $dp;
             $n            = $interest->duration * 12;
             $r            = $interest->interest / 100 / 12;
             $monthly      = $r > 0
                 ? ($loan * $r * pow(1 + $r, $n)) / (pow(1 + $r, $n) - 1)
-                : $loan / $n;
+                : ($n > 0 ? $loan / $n : 0);
             $totalWithInt = $monthly * $n;
 
             MortgageRequest::create([
-                'payment_type'               => 'kpr',
+                'payment_type'               => $paymentType,
                 'customer_id'                => $customer->id,
                 'house_id'                   => $house->id,
                 'interest_id'                => $interest->id,
                 'interest'                   => $interest->interest,
                 'duration'                   => $interest->duration,
                 'bank_name'                  => $interest->bank->name,
-                'dp_percentage'              => $request->dp_percentage,
+                'dp_percentage'              => (int) round($dpPct),
                 'house_price'                => $house->price,
                 'dp_total_amount'            => (int) $dp,
                 'loan_total_amount'          => (int) $loan,
@@ -418,21 +422,23 @@ class AgentController extends Controller
                 'loan_interest_total_amount' => (int) $totalWithInt,
                 'status'                     => 'Waiting for Bank',
                 'documents'                  => $documentPath,
+                'notes'                      => $request->notes,
             ]);
 
             return redirect()->route('agent.payments')
-                ->with('success', 'Pengajuan KPR berhasil dibuat!');
+                ->with('success', 'Pengajuan ' . strtoupper($paymentType) . ' berhasil dibuat!');
         }
 
-        // Cash path
+        // Cash / Sewa path
+        $label = $paymentType === 'sewa' ? 'Sewa' : 'Cash';
         MortgageRequest::create([
-            'payment_type'               => 'cash',
+            'payment_type'               => $paymentType,
             'customer_id'                => $customer->id,
             'house_id'                   => $house->id,
             'interest_id'                => null,
             'interest'                   => 0,
             'duration'                   => 0,
-            'bank_name'                  => 'Cash',
+            'bank_name'                  => $label,
             'dp_percentage'              => 100,
             'house_price'                => $house->price,
             'dp_total_amount'            => $house->price,
@@ -441,6 +447,7 @@ class AgentController extends Controller
             'loan_interest_total_amount' => $house->price,
             'status'                     => 'Waiting for Bank',
             'documents'                  => $documentPath,
+            'notes'                      => $request->notes,
         ]);
 
         return redirect()->route('agent.payments')
@@ -501,7 +508,7 @@ class AgentController extends Controller
     {
         $agentHouseIds = House::where('agent_id', Auth::id())->withTrashed()->pluck('id');
 
-        $query = MortgageRequest::with(['house', 'customer'])
+        $query = MortgageRequest::with(['house', 'customer', 'mortgageDocuments'])
             ->whereIn('house_id', $agentHouseIds);
 
         if ($request->filled('search')) {
@@ -521,15 +528,42 @@ class AgentController extends Controller
         abort_if(!$agentHouseIds->contains($mortgageRequest->house_id), 403);
 
         $request->validate([
-            'document' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'document'      => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240',
+            'document_name' => 'required|string|max:100',
         ]);
 
-        $path = $request->file('document')->store('documents', 'public');
+        $path = $request->file('document')->store('documents', 'local');
 
-        $mortgageRequest->update(['documents' => $path]);
+        MortgageDocument::create([
+            'mortgage_request_id' => $mortgageRequest->id,
+            'name'                => $request->document_name,
+            'file_path'           => $path,
+        ]);
 
         return redirect()->route('agent.documents')
-            ->with('success', 'Dokumen berhasil diupload!');
+            ->with('success', 'Dokumen "' . $request->document_name . '" berhasil diupload!');
+    }
+
+    public function deleteDocument(MortgageDocument $document)
+    {
+        $agentHouseIds = House::where('agent_id', Auth::id())->withTrashed()->pluck('id');
+        abort_if(!$agentHouseIds->contains($document->mortgageRequest->house_id), 403);
+
+        \Illuminate\Support\Facades\Storage::disk('local')->delete($document->file_path);
+        $document->delete();
+
+        return back()->with('success', 'Dokumen berhasil dihapus.');
+    }
+
+    public function downloadDocument(MortgageDocument $document)
+    {
+        $agentHouseIds = House::where('agent_id', Auth::id())->withTrashed()->pluck('id');
+        abort_if(!$agentHouseIds->contains($document->mortgageRequest->house_id), 403);
+
+        return \Illuminate\Support\Facades\Storage::disk('local')->download(
+            $document->file_path,
+            $document->name . '.' . pathinfo($document->file_path, PATHINFO_EXTENSION)
+        );
     }
 
     // ─── DEALS ───
@@ -642,10 +676,33 @@ class AgentController extends Controller
             ->where('status', 'pending')
             ->count();
 
+        // ── Status per properti terjual ──────────────────────────────────────
+        $approvedBase = MortgageRequest::whereIn('house_id', $agentHouseIds)
+            ->where('status', 'Approved');
+
+        $statusKomisiCount   = (clone $approvedBase)->has('commission')->count();
+        $statusMenungguCount = (clone $approvedBase)->doesntHave('commission')
+            ->whereHas('commissionRequests', fn ($q) => $q->where('status', 'pending'))
+            ->count();
+        $statusBelumCount    = (clone $approvedBase)->doesntHave('commission')
+            ->whereDoesntHave('commissionRequests', fn ($q) => $q->where('status', 'pending'))
+            ->count();
+
+        $dealStatus = (clone $approvedBase)
+            ->with([
+                'house:id,name,thumbnail,price',
+                'customer:id,nama_lengkap',
+                'commission:id,mortgage_request_id,commission_amount',
+                'activePendingCommissionRequest',
+            ])
+            ->latest()
+            ->paginate(10, ['*'], 'status_page');
+
         return view('agent.commissions.index', compact(
             'tab', 'period', 'periodLabel',
             'totalAllTime', 'totalCurrentPeriod', 'totalDeals', 'totalCommission',
-            'breakdown', 'commissions', 'commissionRequests', 'pendingRequestCount'
+            'breakdown', 'commissions', 'commissionRequests', 'pendingRequestCount',
+            'dealStatus', 'statusKomisiCount', 'statusMenungguCount', 'statusBelumCount'
         ));
     }
 
@@ -659,7 +716,7 @@ class AgentController extends Controller
             ->where('status', 'Approved')
             ->doesntHave('commission')
             ->whereDoesntHave('commissionRequests', fn ($q) => $q->where('status', 'pending'))
-            ->with(['house:id,name,thumbnail,house_price', 'customer:id,nama_lengkap'])
+            ->with(['house:id,name,thumbnail,price', 'customer:id,nama_lengkap'])
             ->latest()
             ->paginate(20, ['*'], 'eligible_page');
 

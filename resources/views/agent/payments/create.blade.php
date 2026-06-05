@@ -34,20 +34,49 @@
 
                 {{-- Tipe Pembayaran --}}
                 <div class="bg-white rounded-2xl p-5 border border-[#F2F2F4]">
-                    <h2 class="font-bold text-[#060922] mb-3">Tipe Pembayaran</h2>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button type="button" id="btn-kpr"
-                            onclick="setPaymentType('kpr')"
+                    <h2 class="font-bold text-[#060922] mb-3">Tipe Transaksi</h2>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button type="button" id="btn-kredit"
+                            onclick="setMainType('kredit')"
                             class="flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all text-sm font-semibold">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
-                            KPR (Kredit)
+                            KPR / Kredit
                         </button>
                         <button type="button" id="btn-cash"
-                            onclick="setPaymentType('cash')"
+                            onclick="setMainType('cash')"
                             class="flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all text-sm font-semibold">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
                             Cash (Tunai)
                         </button>
+                        <button type="button" id="btn-sewa"
+                            onclick="setMainType('sewa')"
+                            class="flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all text-sm font-semibold">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            Sewa
+                        </button>
+                    </div>
+
+                    {{-- Sub-type kredit (muncul hanya saat KPR/Kredit dipilih) --}}
+                    <div id="kredit-subtype" class="hidden mt-3 pt-3 border-t border-[#F2F2F4]">
+                        <label class="block text-xs font-semibold text-[#8F91A2] mb-2">Tipe Kredit</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                            <button type="button" id="btn-kpr" onclick="setKreditType('kpr')"
+                                class="py-2 px-3 rounded-lg border-2 text-xs font-semibold transition-all">
+                                KPR <span class="font-normal text-[#8F91A2]">(Rumah)</span>
+                            </button>
+                            <button type="button" id="btn-kpa" onclick="setKreditType('kpa')"
+                                class="py-2 px-3 rounded-lg border-2 text-xs font-semibold transition-all">
+                                KPA <span class="font-normal text-[#8F91A2]">(Apartemen)</span>
+                            </button>
+                            <button type="button" id="btn-kpt" onclick="setKreditType('kpt')"
+                                class="py-2 px-3 rounded-lg border-2 text-xs font-semibold transition-all">
+                                KPT <span class="font-normal text-[#8F91A2]">(Tanah)</span>
+                            </button>
+                            <button type="button" id="btn-kpg" onclick="setKreditType('kpg')"
+                                class="py-2 px-3 rounded-lg border-2 text-xs font-semibold transition-all">
+                                KPG <span class="font-normal text-[#8F91A2]">(Gudang)</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -267,43 +296,77 @@ function formatRp(num) {
 }
 
 // ─── Payment type toggle ───
-function setPaymentType(type) {
-    document.getElementById('payment_type').value = type;
+const KREDIT_TYPES = ['kpr', 'kpa', 'kpt', 'kpg'];
 
+function setMainType(mainType) {
     const kprFields    = document.getElementById('kpr-fields');
     const simCard      = document.getElementById('simulation-card');
     const submitBtn    = document.getElementById('submit-btn');
-    const btnKpr       = document.getElementById('btn-kpr');
-    const btnCash      = document.getElementById('btn-cash');
     const interestSel  = document.getElementById('interest_id');
-    const dpSel        = document.getElementById('dp_percentage');
+    const dpInput      = document.getElementById('dp_input');
+    const kreditSub    = document.getElementById('kredit-subtype');
 
-    if (type === 'cash') {
-        kprFields.classList.add('hidden');
-        simCard.classList.add('hidden');
-        submitBtn.textContent = 'Ajukan Cash Sekarang';
-        btnCash.classList.add('border-[#060922]', 'bg-[#060922]', 'text-white');
-        btnCash.classList.remove('border-[#F2F2F4]', 'text-[#060922]');
-        btnKpr.classList.add('border-[#F2F2F4]', 'text-[#060922]');
-        btnKpr.classList.remove('border-[#060922]', 'bg-[#060922]', 'text-white');
-        interestSel.removeAttribute('required');
-        dpSel.removeAttribute('required');
-    } else {
-        kprFields.classList.remove('hidden');
-        submitBtn.textContent = 'Ajukan KPR Sekarang';
-        btnKpr.classList.add('border-[#060922]', 'bg-[#060922]', 'text-white');
-        btnKpr.classList.remove('border-[#F2F2F4]', 'text-[#060922]');
-        btnCash.classList.add('border-[#F2F2F4]', 'text-[#060922]');
-        btnCash.classList.remove('border-[#060922]', 'bg-[#060922]', 'text-white');
-        interestSel.setAttribute('required', '');
-        dpSel.setAttribute('required', '');
-        recalculate();
+    const allBtns = ['btn-kredit','btn-cash','btn-sewa'];
+    allBtns.forEach(id => {
+        const b = document.getElementById(id);
+        if (b) {
+            b.classList.remove('border-[#060922]','bg-[#060922]','text-white');
+            b.classList.add('border-[#F2F2F4]','text-[#060922]');
+        }
+    });
+
+    const active = document.getElementById('btn-' + mainType);
+    if (active) {
+        active.classList.add('border-[#060922]','bg-[#060922]','text-white');
+        active.classList.remove('border-[#F2F2F4]','text-[#060922]');
     }
+
+    if (mainType === 'kredit') {
+        kreditSub.classList.remove('hidden');
+        kprFields.classList.remove('hidden');
+        interestSel.setAttribute('required','');
+        if (dpInput) dpInput.removeAttribute('required');
+        // default ke KPR jika belum ada sub-type terpilih
+        const cur = document.getElementById('payment_type').value;
+        if (!KREDIT_TYPES.includes(cur)) setKreditType('kpr');
+        else refreshKreditBtn(cur);
+        submitBtn.textContent = 'Ajukan Transaksi Sekarang';
+        recalculate();
+    } else {
+        kreditSub.classList.add('hidden');
+        kprFields.classList.add('hidden');
+        if (simCard) simCard.classList.add('hidden');
+        document.getElementById('payment_type').value = mainType;
+        interestSel.removeAttribute('required');
+        submitBtn.textContent = mainType === 'cash'
+            ? 'Ajukan Cash Sekarang'
+            : 'Ajukan Sewa Sekarang';
+    }
+}
+
+function setKreditType(type) {
+    document.getElementById('payment_type').value = type;
+    refreshKreditBtn(type);
+    recalculate();
+}
+
+function refreshKreditBtn(active) {
+    ['kpr','kpa','kpt','kpg'].forEach(t => {
+        const b = document.getElementById('btn-' + t);
+        if (!b) return;
+        if (t === active) {
+            b.classList.add('border-[#060922]','bg-[#060922]','text-white');
+            b.classList.remove('border-[#F2F2F4]','text-[#8F91A2]');
+        } else {
+            b.classList.remove('border-[#060922]','bg-[#060922]','text-white');
+            b.classList.add('border-[#F2F2F4]','text-[#8F91A2]');
+        }
+    });
 }
 
 // ─── KPR simulation ───
 function recalculate() {
-    if (document.getElementById('payment_type').value === 'cash') return;
+    if (!KREDIT_TYPES.includes(document.getElementById('payment_type').value)) return;
 
     const houseId    = document.getElementById('house_id').value;
     const interestId = document.getElementById('interest_id').value;
@@ -354,7 +417,13 @@ document.getElementById('dp_percentage').addEventListener('change', recalculate)
 
 // Init on page load (handles old() value on validation error)
 document.addEventListener('DOMContentLoaded', function () {
-    setPaymentType(document.getElementById('payment_type').value || 'kpr');
+    const cur = document.getElementById('payment_type').value || 'kpr';
+    if (KREDIT_TYPES.includes(cur)) {
+        setMainType('kredit');
+        setKreditType(cur);
+    } else {
+        setMainType(cur);
+    }
 });
 </script>
 @endpush

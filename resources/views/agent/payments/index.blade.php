@@ -1,17 +1,17 @@
 ﻿@extends('agent.layouts.app')
 
-@section('title', 'Permintaan Pembayaran - Agent Panel')
+@section('title', 'Pengajuan Transaksi - Agent Panel')
 
 @section('content')
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-[#060922]">Permintaan Pembayaran</h1>
-            <p class="text-sm text-[#8F91A2] mt-1">Ajukan dan kelola pembayaran KPR</p>
+            <h1 class="text-2xl font-bold text-[#060922]">Pengajuan Transaksi</h1>
+            <p class="text-sm text-[#8F91A2] mt-1">Ajukan dan kelola transaksi properti</p>
         </div>
         <a href="{{ route('agent.payments.create') }}"
             class="inline-flex items-center gap-2 bg-[#111111] text-white font-semibold text-sm px-5 py-3 rounded-xl hover:bg-[#333333] transition-colors">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-            Ajukan Pembayaran Baru
+            Ajukan Transaksi Baru
         </a>
     </div>
 

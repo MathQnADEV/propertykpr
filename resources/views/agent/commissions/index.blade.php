@@ -19,7 +19,7 @@
     </div>
 
     {{-- Summary Cards --}}
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
         <div class="stat-card bg-[#060922] text-white p-5 rounded-2xl">
             <p class="text-xs text-white/60 mb-1">Total Komisi (All Time)</p>
             <p class="text-2xl font-bold">Rp {{ number_format($totalAllTime, 0, ',', '.') }}</p>
@@ -31,6 +31,43 @@
         <div class="bg-white border border-[#F2F2F4] p-5 rounded-2xl">
             <p class="text-xs text-[#8F91A2] mb-1">Jumlah Transaksi Berkomisi</p>
             <p class="text-2xl font-bold text-[#060922]">{{ $totalDeals }}</p>
+        </div>
+    </div>
+
+    {{-- Status Komisi Ringkas --}}
+    <div class="grid grid-cols-3 gap-3 mb-6">
+        <div class="bg-white border border-[#F2F2F4] rounded-2xl p-4 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-[#060922] flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+            <div>
+                <p class="text-xl font-bold text-[#060922]">{{ $statusKomisiCount }}</p>
+                <p class="text-[11px] text-[#8F91A2] leading-tight">Sudah Komisi</p>
+            </div>
+        </div>
+        <div class="bg-white border border-[#F2F2F4] rounded-2xl p-4 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-[#888888] flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div>
+                <p class="text-xl font-bold text-[#060922]">{{ $statusMenungguCount }}</p>
+                <p class="text-[11px] text-[#8F91A2] leading-tight">Menunggu Approval</p>
+            </div>
+        </div>
+        <div class="bg-white border {{ $statusBelumCount > 0 ? 'border-[#444444]/30' : 'border-[#F2F2F4]' }} rounded-2xl p-4 flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl {{ $statusBelumCount > 0 ? 'bg-[#444444]' : 'bg-[#F2F2F4]' }} flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 {{ $statusBelumCount > 0 ? 'text-white' : 'text-[#8F91A2]' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div>
+                <p class="text-xl font-bold {{ $statusBelumCount > 0 ? 'text-[#444444]' : 'text-[#060922]' }}">{{ $statusBelumCount }}</p>
+                <p class="text-[11px] text-[#8F91A2] leading-tight">Belum Diajukan</p>
+            </div>
         </div>
     </div>
 
@@ -49,6 +86,13 @@
             Pengajuan Komisi
             @if($pendingRequestCount > 0)
                 <span class="badge-pulse bg-[#888888] text-[#060922] text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $pendingRequestCount }}</span>
+            @endif
+        </a>
+        <a href="{{ route('agent.commissions', ['tab' => 'status']) }}"
+            class="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-colors {{ $tab === 'status' ? 'bg-[#060922] text-white' : 'bg-white text-[#060922] border border-[#F2F2F4] hover:bg-[#F2F2F4]' }}">
+            Status Properti
+            @if($statusBelumCount > 0)
+                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded-full {{ $tab === 'status' ? 'bg-white text-[#060922]' : 'bg-[#444444] text-white' }}">{{ $statusBelumCount }}</span>
             @endif
         </a>
     </div>
@@ -215,6 +259,87 @@
         @if($commissionRequests->hasPages())
             <div class="mt-6 flex justify-center">
                 {{ $commissionRequests->appends(['tab' => 'requests'])->links() }}
+            </div>
+        @endif
+    @endif
+
+    {{-- ═══ TAB: STATUS PROPERTI ═════════════════════════════════════════════ --}}
+    @if($tab === 'status')
+        <div class="space-y-3">
+            @forelse($dealStatus as $mr)
+                @php
+                    $hasCommission    = $mr->commission !== null;
+                    $hasPending       = !$hasCommission && $mr->activePendingCommissionRequest !== null;
+                    $belumDiajukan    = !$hasCommission && !$hasPending;
+                @endphp
+                <div class="agent-card bg-white rounded-2xl border border-[#F2F2F4] p-4 sm:p-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+
+                        {{-- Thumbnail --}}
+                        <div class="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100 hidden sm:block">
+                            @if($mr->house?->thumbnail)
+                                <img src="{{ Storage::url($mr->house->thumbnail) }}" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-[#8F91A2]/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- Info --}}
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-1 flex-wrap">
+                                <h3 class="font-bold text-[#060922] truncate">{{ $mr->house?->name ?? 'N/A' }}</h3>
+                                <span class="text-[9px] font-bold px-2 py-0.5 rounded-md bg-[#111111]/10 text-[#111111]">
+                                    {{ strtoupper($mr->payment_type) }}
+                                </span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-x-4 gap-y-1">
+                                <p class="text-xs text-[#8F91A2]">Pembeli: <span class="font-semibold text-[#060922]">{{ $mr->customer?->nama_lengkap ?? 'N/A' }}</span></p>
+                                <p class="text-xs text-[#8F91A2]">Harga: <span class="font-semibold text-[#060922]">Rp {{ number_format($mr->house_price, 0, ',', '.') }}</span></p>
+                            </div>
+                        </div>
+
+                        {{-- Status Badge + Nilai Komisi --}}
+                        <div class="flex-shrink-0 flex flex-col items-end gap-1.5">
+                            @if($hasCommission)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#060922] text-white">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                    Sudah Komisi
+                                </span>
+                                <p class="text-sm font-bold text-[#111111]">Rp {{ number_format($mr->commission->commission_amount, 0, ',', '.') }}</p>
+                            @elseif($hasPending)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#888888]/15 text-[#555555]">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    Menunggu Approval
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-[#F2F2F4] text-[#444444]">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                                    Belum Diajukan
+                                </span>
+                                <a href="{{ route('agent.commissions.request') }}"
+                                    class="text-[11px] font-semibold text-[#060922] underline underline-offset-2 hover:text-[#444444] transition-colors">
+                                    Ajukan sekarang →
+                                </a>
+                            @endif
+                        </div>
+
+                    </div>
+                </div>
+            @empty
+                <div class="text-center py-16 bg-white rounded-2xl border border-[#F2F2F4]">
+                    <div class="w-20 h-20 rounded-2xl bg-[#F2F2F4] flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-10 h-10 text-[#8F91A2]/40" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                    </div>
+                    <h3 class="font-bold text-[#060922] text-lg mb-1">Belum ada properti terjual</h3>
+                    <p class="text-sm text-[#8F91A2]">Properti yang sudah disetujui bank akan muncul di sini</p>
+                </div>
+            @endforelse
+        </div>
+        @if($dealStatus->hasPages())
+            <div class="mt-6 flex justify-center">
+                {{ $dealStatus->appends(['tab' => 'status'])->links() }}
             </div>
         @endif
     @endif
