@@ -33,6 +33,25 @@ class AgentProfileController extends Controller
         return redirect()->route('agent.profile')->with('success', 'Profile berhasil diperbarui!');
     }
 
+    public function updateSocial(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'instagram' => ['nullable', 'string', 'max:100'],
+            'facebook'  => ['nullable', 'string', 'max:100'],
+            'whatsapp'  => ['nullable', 'string', 'max:20', 'regex:/^[0-9]+$/'],
+        ], [
+            'whatsapp.regex' => 'Nomor WhatsApp hanya boleh berisi angka.',
+        ]);
+
+        $request->user()->update([
+            'instagram' => $request->instagram,
+            'facebook'  => $request->facebook,
+            'whatsapp'  => $request->whatsapp,
+        ]);
+
+        return redirect()->route('agent.profile')->with('social_success', 'Media sosial berhasil disimpan!');
+    }
+
     public function updatePassword(Request $request): RedirectResponse
     {
         $request->validate([

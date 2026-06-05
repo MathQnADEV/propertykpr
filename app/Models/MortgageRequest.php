@@ -44,6 +44,11 @@ class MortgageRequest extends Model
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
+    public function mortgageDocuments()
+    {
+        return $this->hasMany(MortgageDocument::class);
+    }
+
     public function registeredUser()
     {
         return $this->belongsTo(User::class, 'user_id');

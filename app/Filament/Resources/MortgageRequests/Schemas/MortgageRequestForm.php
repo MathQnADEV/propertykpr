@@ -28,19 +28,23 @@ class MortgageRequestForm
                             Select::make('payment_type')
                                 ->label('Tipe Pembayaran')
                                 ->options([
-                                    'kpr'  => 'KPR (Kredit)',
+                                    'kpr'  => 'KPR (Rumah)',
+                                    'kpa'  => 'KPA (Apartemen)',
+                                    'kpt'  => 'KPT (Tanah)',
+                                    'kpg'  => 'KPG (Gudang)',
                                     'cash' => 'Cash (Tunai)',
+                                    'sewa' => 'Sewa',
                                 ])
                                 ->default('kpr')
                                 ->required()
                                 ->live()
                                 ->afterStateUpdated(function ($state, callable $set) {
-                                    if ($state === 'cash') {
+                                    if (in_array($state, ['cash', 'sewa'])) {
                                         $set('interest_id', null);
-                                        $set('bank_name', 'Cash');
+                                        $set('bank_name', $state === 'cash' ? 'Cash' : 'Sewa');
                                         $set('duration', 0);
                                         $set('interest', 0);
-                                        $set('dp_percentage', 100);
+                                        $set('dp_percentage', $state === 'cash' ? 100 : 0);
                                     } else {
                                         $set('bank_name', '');
                                         $set('duration', null);
@@ -82,8 +86,8 @@ class MortgageRequestForm
                                         })
                                         ->searchable()
                                         ->preload()
-                                        ->required(fn (callable $get) => $get('payment_type') !== 'cash')
-                                        ->hidden(fn (callable $get) => $get('payment_type') === 'cash')
+                                        ->required(fn (callable $get) => !in_array($get('payment_type'), ['cash', 'sewa']))
+                                        ->hidden(fn (callable $get) => in_array($get('payment_type'), ['cash', 'sewa']))
                                         ->live()
                                         ->afterStateUpdated(function ($state, callable $set) {
                                             $interest = Interest::find($state);

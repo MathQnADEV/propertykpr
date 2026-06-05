@@ -19,8 +19,10 @@
                     <h3 class="font-bold text-[#060922]">{{ $pr->house->name ?? 'N/A' }}</h3>
                     @if(($pr->payment_type ?? 'kpr') === 'cash')
                         <span class="text-[9px] font-bold bg-[#111111] text-white px-2 py-0.5 rounded-md">CASH</span>
+                    @elseif(($pr->payment_type ?? '') === 'sewa')
+                        <span class="text-[9px] font-bold bg-[#555555] text-white px-2 py-0.5 rounded-md">SEWA</span>
                     @else
-                        <span class="text-[9px] font-bold bg-[#111111]/10 text-[#111111] px-2 py-0.5 rounded-md">KPR</span>
+                        <span class="text-[9px] font-bold bg-[#111111]/10 text-[#111111] px-2 py-0.5 rounded-md">{{ strtoupper($pr->payment_type ?? 'KPR') }}</span>
                     @endif
                 </div>
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">

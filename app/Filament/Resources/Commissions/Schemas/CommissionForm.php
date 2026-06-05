@@ -85,7 +85,9 @@ class CommissionForm
 
             // ── SECTION 2: Pilih Deal ─────────────────────────────────────────
             Section::make('Pilih Deal')
-                ->description('Hanya deal berstatus Approved yang belum memiliki komisi yang ditampilkan.')
+                ->description(fn ($record) => $record
+                    ? 'Deal yang terhubung ke komisi ini (tidak dapat diubah setelah komisi dibuat).'
+                    : 'Hanya deal berstatus Approved yang belum memiliki komisi yang ditampilkan.')
                 ->visible(fn (callable $get) => (bool) $get('_agent_id'))
                 ->columns(2)
                 ->schema([
@@ -104,12 +106,11 @@ class CommissionForm
                             }
 
                             if (! $record) {
+                                // CREATE: hanya tampilkan deal yang belum berkomisi
                                 $query->doesntHave('commission');
                             } else {
-                                $query->where(function ($q) use ($record) {
-                                    $q->doesntHave('commission')
-                                        ->orWhere('id', $record->mortgage_request_id);
-                                });
+                                // EDIT: hanya tampilkan deal ini saja (read-only)
+                                $query->where('id', $record->mortgage_request_id);
                             }
 
                             return $query->get()->mapWithKeys(fn ($mr) => [
@@ -118,6 +119,8 @@ class CommissionForm
                         })
                         ->searchable()
                         ->required()
+                        ->disabled(fn ($record) => (bool) $record) // Read-only saat edit
+                        ->dehydrated(true)
                         ->live()
                         ->afterStateUpdated(function ($state, callable $set) {
                             $mr = MortgageRequest::find($state);
@@ -133,14 +136,9 @@ class CommissionForm
                             }
                         })
                         ->afterStateHydrated(function ($state, callable $set) {
-                            if ($state) {
-                                $mr = MortgageRequest::with('house')->find($state);
-                                if ($mr) {
-                                    $set('_house_price',     $mr->house_price);
-                                    $set('_base_commission', round($mr->house_price * 0.025));
-                                    $set('_agent_id',        $mr->house?->agent_id);
-                                }
-                            }
+                            // _agent_id, _house_price, _base_commission di-set via
+                            // EditCommission::mutateFormDataBeforeFill agar tidak
+                            // men-trigger afterStateUpdated cascade yang mereset commission_amount.
                         }),
 
                     TextInput::make('_house_price')

@@ -11,14 +11,9 @@
             <div class="absolute w-full h-full bg-tedja-black/10"></div>
         </div>
         <div class="relative flex flex-col mt-[100px] md:mt-[244px] gap-4 md:gap-5 items-center px-4 md:px-0">
-            <p class="flex items-center gap-[6px] rounded-full py-[6px] px-3 bg-white border border-tedja-border">
-                <img src="{{ asset('assets/images/icons/crown.svg') }}" class="flex shrink-0 size-5" alt="icon">
-                <span class="font-semibold text-xs md:text-sm">Rumah Terbaik Pilihan Terpercaya</span>
-            </p>
-            <h1 class="font-extrabold text-[28px] md:text-[46px] leading-tight md:leading-[60px] text-center text-white">Anda Berhak Memiliki Rumah Impian</h1>
+            <h1 class="font-extrabold text-[28px] md:text-[46px] leading-tight md:leading-[60px] text-center text-white">Miliki Rumah Impian</h1>
             <p class="text-sm md:text-lg leading-7 md:leading-8 text-center text-white px-2 md:px-0">
-                Dibangun oleh para professional sehingga<br class="hidden md:block">
-                memberikan kecantikan sejati dan juga kehangatan bersama keluarga.
+                Temukan properti terbaik sesuai kebutuhan dan anggaran Anda.
             </p>
         </div>
         <form action="{{ route('front.search') }}"
@@ -124,8 +119,8 @@
 
     <section id="Testimonials" class="flex flex-col w-full max-w-[1280px] px-4 md:px-[135px] gap-[31px] mx-auto my-[50px] md:my-[70px]">
         <div class="flex flex-col gap-1 text-center">
-            <h2 class="font-bold text-xl md:text-[26px] leading-8 md:leading-10">Keluarga Bahagia</h2>
-            <p>Kami hadir membuatmu bahagia</p>
+            <h2 class="font-bold text-xl md:text-[26px] leading-8 md:leading-10">Cari Rumah</h2>
+            <p>Kami hadir membantu Anda menemukan rumah idaman</p>
         </div>
     </section>
 @endsection

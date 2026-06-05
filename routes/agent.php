@@ -13,6 +13,7 @@ Route::middleware(['auth', 'role:agent'])->prefix('agent')->name('agent.')->grou
     Route::get('/profile', [AgentProfileController::class, 'edit'])->name('profile');
     Route::patch('/profile', [AgentProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [AgentProfileController::class, 'updatePassword'])->name('profile.password');
+    Route::patch('/profile/social', [AgentProfileController::class, 'updateSocial'])->name('profile.social');
 
     // Listings
     Route::get('/listings', [AgentController::class, 'listings'])->name('listings');
@@ -32,6 +33,8 @@ Route::middleware(['auth', 'role:agent'])->prefix('agent')->name('agent.')->grou
     // Upload Proof & Documents
     Route::get('/documents', [AgentController::class, 'documents'])->name('documents');
     Route::post('/documents/{mortgageRequest}/upload', [AgentController::class, 'uploadDocument'])->name('documents.upload');
+    Route::delete('/documents/file/{document}', [AgentController::class, 'deleteDocument'])->name('documents.delete');
+    Route::get('/documents/file/{document}/download', [AgentController::class, 'downloadDocument'])->name('documents.download');
 
     // Deals (Sold / In Process / Failed)
     Route::get('/deals', [AgentController::class, 'deals'])->name('deals');

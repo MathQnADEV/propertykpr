@@ -133,6 +133,60 @@
                 </form>
             </div>
 
+            {{-- Media Sosial --}}
+            <div class="bg-white rounded-2xl p-6 border border-[#F2F2F4]">
+                <h2 class="font-bold text-[#060922] mb-1">Media Sosial</h2>
+                <p class="text-sm text-[#8F91A2] mb-5">Link ini akan tampil di kartu profil publik Anda untuk dihubungi pembeli.</p>
+
+                @if(session('social_success'))
+                    <div class="bg-[#F0F0F0] border border-[#CCCCCC] rounded-xl p-3 mb-4 text-sm text-[#333333]">
+                        {{ session('social_success') }}
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('agent.profile.social') }}" class="space-y-4">
+                    @csrf
+                    @method('PATCH')
+
+                    <div>
+                        <label class="block text-sm font-semibold text-[#060922] mb-1.5">Instagram</label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-[#F2F2F4] bg-[#F8F8FA] text-[#8F91A2] text-sm">instagram.com/</span>
+                            <input type="text" name="instagram" value="{{ old('instagram', $user->instagram) }}"
+                                placeholder="username"
+                                class="flex-1 px-4 py-3 rounded-r-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-[#060922] mb-1.5">Facebook</label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-[#F2F2F4] bg-[#F8F8FA] text-[#8F91A2] text-sm">facebook.com/</span>
+                            <input type="text" name="facebook" value="{{ old('facebook', $user->facebook) }}"
+                                placeholder="username atau link"
+                                class="flex-1 px-4 py-3 rounded-r-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-[#060922] mb-1.5">WhatsApp</label>
+                        <div class="flex">
+                            <span class="inline-flex items-center px-3 rounded-l-xl border border-r-0 border-[#F2F2F4] bg-[#F8F8FA] text-[#8F91A2] text-sm">+</span>
+                            <input type="text" name="whatsapp" value="{{ old('whatsapp', $user->whatsapp) }}"
+                                placeholder="6281234567890 (tanpa tanda +)"
+                                class="flex-1 px-4 py-3 rounded-r-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
+                        </div>
+                    </div>
+
+                    <div class="pt-1">
+                        <button type="submit"
+                            class="px-6 py-2.5 bg-[#060922] text-white text-sm font-semibold rounded-xl hover:bg-[#060922]/90 transition-colors">
+                            Simpan Media Sosial
+                        </button>
+                    </div>
+                </form>
+            </div>
+
         </div>
     </div>
 @endsection

@@ -38,11 +38,20 @@
                     <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-[#444444]">{{ $message }}</div>
                 @enderror
 
+                @if($eligibleDeals->total() > 1)
+                    <p class="text-xs text-[#8F91A2] mb-3">Klik salah satu kartu di bawah untuk memilih transaksi.</p>
+                @endif
+
                 <div class="space-y-3">
                     @foreach($eligibleDeals as $deal)
+                        @php
+                            // Auto-select jika hanya ada 1 deal (total, bukan per halaman)
+                            $isAutoSelected = $eligibleDeals->total() === 1;
+                            $isChecked      = old('mortgage_request_id') == $deal->id || ($isAutoSelected && !old('mortgage_request_id'));
+                        @endphp
                         <label class="block cursor-pointer">
                             <input type="radio" name="mortgage_request_id" value="{{ $deal->id }}"
-                                class="sr-only peer" {{ old('mortgage_request_id') == $deal->id ? 'checked' : '' }}>
+                                class="sr-only peer" {{ $isChecked ? 'checked' : '' }}>
                             <div class="flex items-center gap-4 p-4 rounded-xl border-2 border-[#F2F2F4] peer-checked:border-[#111111] peer-checked:bg-[#111111]/5 transition-all">
                                 <div class="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
                                     @if($deal->house?->thumbnail)
