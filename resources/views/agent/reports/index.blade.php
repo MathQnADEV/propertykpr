@@ -272,7 +272,7 @@
             {{-- Sudah berkomisi --}}
             <div class="rounded-2xl p-4" style="background: #F0FDF4;">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-semibold" style="color: #333333;">Sudah Berkomisi</span>
+                    <span class="text-xs font-semibold" style="color: #333333;">Sudah Terbayar</span>
                     <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background: #BBF7D0;">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #333333;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
@@ -280,13 +280,13 @@
                     </div>
                 </div>
                 <p class="text-3xl font-bold text-[#060922]">{{ $totalWithCommission }}</p>
-                <p class="text-xs mt-1" style="color: #333333;">deal sudah dibayar</p>
+                <p class="text-xs mt-1" style="color: #333333;">Komisi sudah diterima</p>
             </div>
 
             {{-- Belum berkomisi --}}
             <div class="rounded-2xl p-4" style="background: #FFF7ED;">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-semibold" style="color: #c2410c;">Belum Berkomisi</span>
+                    <span class="text-xs font-semibold" style="color: #c2410c;">Belum Terbayar</span>
                     <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background: #FED7AA;">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: #c2410c;">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -294,7 +294,7 @@
                     </div>
                 </div>
                 <p class="text-3xl font-bold text-[#060922]">{{ $totalWithoutCommission }}</p>
-                <p class="text-xs mt-1" style="color: #c2410c;">deal belum dibayar</p>
+                <p class="text-xs mt-1" style="color: #c2410c;">Komisi belum diterima</p>
             </div>
 
             {{-- Total Komisi Diterima --}}
@@ -324,7 +324,7 @@
                         style="width: {{ $commPct }}%; background: linear-gradient(90deg, #333333, #555555);{{-- was: #3F52FF → #6b7bff --}}"></div>
                 </div>
                 <span class="text-xs font-bold text-[#111111] flex-shrink-0">{{ $commPct }}%</span>
-                <span class="text-xs text-[#8F91A2] flex-shrink-0">sudah berkomisi</span>
+                <span class="text-xs text-[#8F91A2] flex-shrink-0">Total penerimaan</span>
             </div>
         @endif
     </div>

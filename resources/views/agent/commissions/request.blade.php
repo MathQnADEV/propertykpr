@@ -12,7 +12,7 @@
         </a>
         <div>
             <h1 class="text-2xl font-bold text-[#060922]">Ajukan Komisi</h1>
-            <p class="text-sm text-[#8F91A2] mt-0.5">Pilih transaksi yang sudah ACC bank untuk diajukan komisinya ke atasan</p>
+            <p class="text-sm text-[#8F91A2] mt-0.5">Jika transaksi telah disetujui silahkan ajukan komisi anda.</p>
         </div>
     </div>
 

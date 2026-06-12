@@ -92,7 +92,7 @@
         </form>
         <div class="relative flex w-full max-w-[640px]">
             <div class="fixed top-0 h-screen w-full max-w-[640px] overflow-hidden">
-                <img src="assets/images/backgrounds/login-banner.png" class="w-full h-full object-cover" alt="banner">
+                <img src="assets/images/backgrounds/login-banner.webp" class="w-full h-full object-cover" alt="banner">
                 <div class="absolute bottom-0 w-full px-[30px] pb-[30px]">
                     <div class="flex flex-col rounded-[30px] border border-tedja-border p-4 gap-[14px] bg-white">
                         <div class="flex">
