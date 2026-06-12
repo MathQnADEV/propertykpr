@@ -13,7 +13,7 @@
         <div class="relative flex flex-col mt-[100px] md:mt-[244px] gap-4 md:gap-5 items-center px-4 md:px-0">
             <h1 class="font-extrabold text-[28px] md:text-[46px] leading-tight md:leading-[60px] text-center text-white">Miliki Rumah Impian</h1>
             <p class="text-sm md:text-lg leading-7 md:leading-8 text-center text-white px-2 md:px-0">
-                Temukan properti terbaik sesuai kebutuhan dan anggaran Anda.
+                Temukan Properti Impian Anda.
             </p>
         </div>
         <form action="{{ route('front.search') }}"
