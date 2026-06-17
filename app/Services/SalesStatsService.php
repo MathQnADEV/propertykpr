@@ -8,6 +8,7 @@ use App\Models\MortgageRequest;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Enumerable;
+use Illuminate\Support\Facades\DB;
 
 class SalesStatsService
 {
@@ -52,7 +53,7 @@ class SalesStatsService
             ->pluck('cnt', 'agent_id');
 
         // Mortgage aggregates per agent via JOIN — single query (replaces N×5 queries)
-        $mortgages = \DB::table('mortgage_requests as mr')
+        $mortgages = DB::table('mortgage_requests as mr')
             ->join('houses as h', 'h.id', '=', 'mr.house_id')
             ->whereIn('h.agent_id', $agentIds)
             ->whereNull('mr.deleted_at')
@@ -153,7 +154,7 @@ class SalesStatsService
             ->groupBy('agent_id')
             ->pluck('cnt', 'agent_id');
 
-        $mortgages = \DB::table('mortgage_requests as mr')
+        $mortgages = DB::table('mortgage_requests as mr')
             ->join('houses as h', 'h.id', '=', 'mr.house_id')
             ->whereIn('h.agent_id', $agentIds)
             ->whereIn('h.city_id', $cityIds)
