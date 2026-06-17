@@ -89,15 +89,40 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-semibold text-[#060922] mb-1.5">Properti <span class="text-[#444444]">*</span></label>
-                            <select name="house_id" id="house_id" required
-                                class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
-                                <option value="">Pilih Properti</option>
-                                @foreach($houses as $house)
-                                    <option value="{{ $house->id }}" {{ old('house_id') == $house->id ? 'selected' : '' }}>
-                                        {{ $house->name }} — Rp {{ number_format($house->price, 0, '', '.') }}
-                                    </option>
-                                @endforeach
-                            </select>
+                            {{-- Searchable combobox (ketik untuk filter) --}}
+                            <div class="relative" id="house-combobox">
+                                <input type="hidden" name="house_id" id="house_id" value="{{ old('house_id') }}">
+                                <button type="button" id="house-trigger" onclick="toggleHouseDropdown()"
+                                    class="w-full flex items-center justify-between gap-2 px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm bg-white text-left focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all">
+                                    <span id="house-selected-label" class="truncate text-[#8F91A2]">Pilih Properti</span>
+                                    <svg class="w-4 h-4 text-[#8F91A2] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                                </button>
+                                <div id="house-dropdown" class="hidden absolute z-30 mt-1 w-full bg-white border border-[#F2F2F4] rounded-xl shadow-lg overflow-hidden">
+                                    <div class="p-2 border-b border-[#F2F2F4]">
+                                        <div class="relative">
+                                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8F91A2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                            <input type="text" id="house-search" placeholder="Cari nama properti / agent..." autocomplete="off"
+                                                oninput="filterHouses()"
+                                                class="w-full pl-9 pr-3 py-2 rounded-lg border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all">
+                                        </div>
+                                    </div>
+                                    <ul id="house-options" class="max-h-60 overflow-y-auto py-1">
+                                        @foreach($houses as $house)
+                                            <li class="house-option-item"
+                                                data-search="{{ strtolower($house->name . ' ' . ($house->agent->name ?? '')) }}">
+                                                <button type="button"
+                                                    onclick="selectHouse('{{ $house->id }}', this)"
+                                                    data-label="{{ $house->name }} — Rp {{ number_format($house->price, 0, '', '.') }}"
+                                                    class="w-full text-left px-4 py-2.5 hover:bg-[#F8F8FA] transition-colors">
+                                                    <span class="block text-sm font-medium text-[#060922]">{{ $house->name }}</span>
+                                                    <span class="block text-xs text-[#8F91A2]">Rp {{ number_format($house->price, 0, '', '.') }} · Agent: {{ $house->agent->name ?? '-' }}</span>
+                                                </button>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    <div id="house-noresult" class="hidden px-4 py-3 text-sm text-[#8F91A2] text-center">Properti tidak ditemukan</div>
+                                </div>
+                            </div>
                         </div>
 
                         {{-- KPR-only fields --}}
@@ -398,6 +423,48 @@ function recalculate() {
     simCard.classList.remove('hidden');
 }
 
+// ─── Searchable property combobox ───
+function toggleHouseDropdown(forceOpen) {
+    const dd = document.getElementById('house-dropdown');
+    const willOpen = forceOpen === true ? true : dd.classList.contains('hidden');
+    dd.classList.toggle('hidden', !willOpen);
+    if (willOpen) {
+        const search = document.getElementById('house-search');
+        search.value = '';
+        filterHouses();
+        setTimeout(() => search.focus(), 30);
+    }
+}
+
+function filterHouses() {
+    const q = document.getElementById('house-search').value.trim().toLowerCase();
+    let visible = 0;
+    document.querySelectorAll('#house-options .house-option-item').forEach(li => {
+        const match = li.dataset.search.includes(q);
+        li.style.display = match ? '' : 'none';
+        if (match) visible++;
+    });
+    document.getElementById('house-noresult').classList.toggle('hidden', visible > 0);
+}
+
+function selectHouse(id, btn) {
+    document.getElementById('house_id').value = id;
+    document.getElementById('house-selected-label').textContent = btn.dataset.label;
+    document.getElementById('house-selected-label').classList.remove('text-[#8F91A2]');
+    document.getElementById('house-selected-label').classList.add('text-[#060922]');
+    document.getElementById('house-dropdown').classList.add('hidden');
+    // Trigger handler lama (rebuild daftar bank + simulasi)
+    document.getElementById('house_id').dispatchEvent(new Event('change'));
+}
+
+// Tutup dropdown jika klik di luar
+document.addEventListener('click', (e) => {
+    const cb = document.getElementById('house-combobox');
+    if (cb && !cb.contains(e.target)) {
+        document.getElementById('house-dropdown').classList.add('hidden');
+    }
+});
+
 document.getElementById('house_id').addEventListener('change', function () {
     const houseId     = this.value;
     const interestSel = document.getElementById('interest_id');
@@ -412,11 +479,35 @@ document.getElementById('house_id').addEventListener('change', function () {
     }
     recalculate();
 });
+
+// Guard: pastikan properti dipilih sebelum submit (hidden input tak bisa pakai required)
+document.getElementById('main-form').addEventListener('submit', function (e) {
+    if (!document.getElementById('house_id').value) {
+        e.preventDefault();
+        toggleHouseDropdown(true);
+        document.getElementById('house-trigger').classList.add('ring-2','ring-[#444444]','border-[#444444]');
+    }
+});
 document.getElementById('interest_id').addEventListener('change', recalculate);
 document.getElementById('dp_percentage').addEventListener('change', recalculate);
 
 // Init on page load (handles old() value on validation error)
 document.addEventListener('DOMContentLoaded', function () {
+    // Restore properti terpilih (old value) ke label combobox + daftar bank
+    const oldHouseId = document.getElementById('house_id').value;
+    if (oldHouseId) {
+        const btn = document.querySelector(`#house-options button[onclick*="selectHouse('${oldHouseId}'"]`);
+        if (btn) {
+            document.getElementById('house-selected-label').textContent = btn.dataset.label;
+            document.getElementById('house-selected-label').classList.remove('text-[#8F91A2]');
+            document.getElementById('house-selected-label').classList.add('text-[#060922]');
+        }
+        document.getElementById('house_id').dispatchEvent(new Event('change'));
+        @if(old('interest_id'))
+            document.getElementById('interest_id').value = '{{ old('interest_id') }}';
+        @endif
+    }
+
     const cur = document.getElementById('payment_type').value || 'kpr';
     if (KREDIT_TYPES.includes(cur)) {
         setMainType('kredit');

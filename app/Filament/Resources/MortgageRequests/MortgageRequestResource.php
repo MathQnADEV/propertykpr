@@ -25,10 +25,10 @@ class MortgageRequestResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFolder;
 
-    protected static ?string $navigationLabel = 'Pengajuan KPR';
-    protected static ?string $modelLabel = 'Pengajuan KPR';
-    protected static ?string $pluralModelLabel = 'Pengajuan KPR';
-    protected static ?string $recordTitleAttribute = 'Pengajuan KPR';
+    protected static ?string $navigationLabel = 'Pengajuan Transaksi';
+    protected static ?string $modelLabel = 'Pengajuan Transaksi';
+    protected static ?string $pluralModelLabel = 'Pengajuan Transaksi';
+    protected static ?string $recordTitleAttribute = 'Pengajuan Transaksi';
 
     protected static string | UnitEnum | null $navigationGroup = 'Transaksi';
     protected static ?int $navigationSort = 1;

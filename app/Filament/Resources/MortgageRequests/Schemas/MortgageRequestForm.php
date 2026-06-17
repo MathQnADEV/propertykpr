@@ -4,15 +4,14 @@ namespace App\Filament\Resources\MortgageRequests\Schemas;
 
 use App\Models\House;
 use App\Models\Interest;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Placeholder;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
-use App\Models\Customer;
 use Filament\Forms\Components\FileUpload;
 
 class MortgageRequestForm
@@ -57,9 +56,38 @@ class MortgageRequestForm
                                 ->schema([
                                     Select::make('house_id')
                                         ->label('Properti')
-                                        ->options(House::query()->where('is_available', true)->pluck('name', 'id'))
+                                        ->placeholder('Cari nama properti / agent...')
                                         ->searchable()
-                                        ->preload()
+                                        // Tampilan awal: 50 listing tersedia (label: "Properti — Agent")
+                                        ->options(fn () => House::query()
+                                            ->where('is_available', true)
+                                            ->with('agent')
+                                            ->orderBy('name')
+                                            ->limit(50)
+                                            ->get()
+                                            ->mapWithKeys(fn (House $h) => [
+                                                $h->id => $h->name . ' — ' . ($h->agent->name ?? 'Tanpa Agent'),
+                                            ]))
+                                        // Pencarian server-side (anti-lemot untuk ratusan listing):
+                                        // cari berdasarkan nama properti ATAU nama agent, maks 50 hasil
+                                        ->getSearchResultsUsing(fn (string $search) => House::query()
+                                            ->where('is_available', true)
+                                            ->where(fn ($q) => $q
+                                                ->where('name', 'like', "%{$search}%")
+                                                ->orWhereHas('agent', fn ($a) => $a->where('name', 'like', "%{$search}%")))
+                                            ->with('agent')
+                                            ->orderBy('name')
+                                            ->limit(50)
+                                            ->get()
+                                            ->mapWithKeys(fn (House $h) => [
+                                                $h->id => $h->name . ' — ' . ($h->agent->name ?? 'Tanpa Agent'),
+                                            ])
+                                            ->toArray())
+                                        // Label saat sudah terpilih / saat edit
+                                        ->getOptionLabelUsing(function ($value): ?string {
+                                            $h = House::with('agent')->find($value);
+                                            return $h ? $h->name . ' — ' . ($h->agent->name ?? 'Tanpa Agent') : null;
+                                        })
                                         ->required()
                                         ->live()
                                         ->afterStateUpdated(function ($state, callable $set) {
@@ -126,7 +154,7 @@ class MortgageRequestForm
                                         ->hint('Tambahkan tanda % untuk persen, angka saja untuk nominal Rp')
                                         ->hidden(fn (callable $get) => $get('payment_type') === 'cash')
                                         ->nullable()
-                                        ->dehydrated(false)
+                                        ->dehydrated(true)
                                         ->afterStateHydrated(function ($state, $record, callable $set) {
                                             // Pre-fill saat edit record yang sudah ada
                                             if ($record && $record->dp_percentage > 0) {
@@ -226,74 +254,72 @@ class MortgageRequestForm
                         ]),
 
                     Step::make('Informasi Nasabah')
+                        ->description('Isi data calon pembeli — otomatis tersimpan sebagai data customer')
                         ->schema([
                             Grid::make(2)
                                 ->schema([
-                                    Select::make('customer_id')
-                                        ->label('Customer')
-                                        ->relationship('customer', 'nama_lengkap')
-                                        ->searchable()
-                                        ->preload()
+                                    TextInput::make('cust_nama_lengkap')
+                                        ->label('Nama Lengkap')
                                         ->required()
-                                        ->live()
-                                        ->columnSpanFull()
-                                        ->afterStateUpdated(function ($state, callable $set) {
-                                            $customer = Customer::find($state);
-                                            if ($customer) {
-                                                $set('_customer_nik', $customer->nik);
-                                                $set('_customer_phone', $customer->phone);
-                                                $set('_customer_email', $customer->email ?? '-');
-                                                $set('_customer_pekerjaan', $customer->pekerjaan);
-                                                $set('_customer_penghasilan', $customer->penghasilan_bulanan);
-                                                $set('_customer_alamat', $customer->alamat);
-                                            }
-                                        })
-                                        ->afterStateHydrated(function (callable $set, $state) {
-                                            if ($state) {
-                                                $customer = Customer::find($state);
-                                                if ($customer) {
-                                                    $set('_customer_nik', $customer->nik);
-                                                    $set('_customer_phone', $customer->phone);
-                                                    $set('_customer_email', $customer->email ?? '-');
-                                                    $set('_customer_pekerjaan', $customer->pekerjaan);
-                                                    $set('_customer_penghasilan', $customer->penghasilan_bulanan);
-                                                    $set('_customer_alamat', $customer->alamat);
-                                                }
-                                            }
-                                        }),
+                                        ->maxLength(255)
+                                        ->columnSpanFull(),
 
-                                    TextInput::make('_customer_nik')
+                                    TextInput::make('cust_nik')
                                         ->label('NIK')
-                                        ->readonly()
-                                        ->dehydrated(false),
+                                        ->required()
+                                        ->length(16)
+                                        ->placeholder('16 digit NIK'),
 
-                                    TextInput::make('_customer_phone')
+                                    TextInput::make('cust_phone')
                                         ->label('No. HP')
-                                        ->readonly()
-                                        ->dehydrated(false),
+                                        ->required()
+                                        ->tel()
+                                        ->maxLength(20)
+                                        ->placeholder('08xx-xxxx-xxxx'),
 
-                                    TextInput::make('_customer_email')
+                                    TextInput::make('cust_email')
                                         ->label('Email')
-                                        ->readonly()
-                                        ->dehydrated(false),
+                                        ->email()
+                                        ->nullable()
+                                        ->placeholder('opsional'),
 
-                                    TextInput::make('_customer_pekerjaan')
+                                    Select::make('cust_status_pernikahan')
+                                        ->label('Status Pernikahan')
+                                        ->options([
+                                            'Belum Menikah' => 'Belum Menikah',
+                                            'Menikah'       => 'Menikah',
+                                            'Cerai'         => 'Cerai',
+                                        ])
+                                        ->default('Belum Menikah')
+                                        ->required(),
+
+                                    TextInput::make('cust_tempat_lahir')
+                                        ->label('Tempat Lahir')
+                                        ->nullable()
+                                        ->maxLength(100),
+
+                                    DatePicker::make('cust_tanggal_lahir')
+                                        ->label('Tanggal Lahir')
+                                        ->nullable(),
+
+                                    TextInput::make('cust_pekerjaan')
                                         ->label('Pekerjaan')
-                                        ->readonly()
-                                        ->dehydrated(false),
+                                        ->required()
+                                        ->maxLength(100)
+                                        ->placeholder('e.g. Karyawan Swasta, PNS'),
 
-                                    TextInput::make('_customer_penghasilan')
+                                    TextInput::make('cust_penghasilan_bulanan')
                                         ->label('Penghasilan Bulanan')
-                                        ->readonly()
+                                        ->required()
                                         ->numeric()
-                                        ->prefix('IDR')
-                                        ->dehydrated(false),
+                                        ->minValue(0)
+                                        ->prefix('IDR'),
 
-                                    TextInput::make('_customer_alamat')
+                                    Textarea::make('cust_alamat')
                                         ->label('Alamat')
-                                        ->readonly()
-                                        ->columnSpanFull()
-                                        ->dehydrated(false),
+                                        ->required()
+                                        ->rows(2)
+                                        ->columnSpanFull(),
                                 ]),
                         ]),
 
@@ -307,7 +333,7 @@ class MortgageRequestForm
                             Select::make('status')
                                 ->label('Status Persetujuan')
                                 ->options([
-                                    'Waiting for Bank' => 'Proses Bank',
+                                    'Waiting for Bank' => 'Dalam Proses',
                                     'Approved' => 'Disetujui',
                                     'Rejected' => 'Ditolak',
                                 ])

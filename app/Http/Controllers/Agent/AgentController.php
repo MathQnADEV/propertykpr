@@ -86,8 +86,17 @@ class AgentController extends Controller
     // ─── LISTINGS ───
     public function listings(Request $request)
     {
-        $query = House::with(['category', 'city', 'photos'])
-            ->where('agent_id', Auth::id());
+        $viewAll = $request->get('view') === 'all';
+
+        $query = House::with(['category', 'city', 'photos', 'agent']);
+        if (!$viewAll) {
+            $query->where('agent_id', Auth::id());
+        }
+
+        // Filter per pemilik/agent (hanya di mode "Semua Listing")
+        if ($viewAll && $request->filled('agent')) {
+            $query->where('agent_id', $request->agent);
+        }
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
@@ -105,7 +114,15 @@ class AgentController extends Controller
         $categories = Category::all();
         $cities     = City::all();
 
-        return view('agent.listings.index', compact('listings', 'categories', 'cities'));
+        // Daftar pemilik listing (agent/admin/master) untuk dropdown filter
+        $owners = $viewAll
+            ? User::role(['agent', 'admin', 'master'])
+                ->whereHas('houses')
+                ->orderBy('name')
+                ->get(['id', 'name'])
+            : collect();
+
+        return view('agent.listings.index', compact('listings', 'categories', 'cities', 'viewAll', 'owners'));
     }
 
     public function createListing()
@@ -312,10 +329,7 @@ class AgentController extends Controller
     // ─── PAYMENT REQUESTS ───
     public function paymentRequests(Request $request)
     {
-        $agentHouseIds = House::where('agent_id', Auth::id())->withTrashed()->pluck('id');
-
-        $query = MortgageRequest::with(['house', 'customer', 'interestModel.bank'])
-            ->whereIn('house_id', $agentHouseIds);
+        $query = MortgageRequest::with(['house.agent', 'customer', 'interestModel.bank']);
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
@@ -339,8 +353,7 @@ class AgentController extends Controller
     public function createMortgageRequest()
     {
         $houses = House::where('is_available', true)
-            ->where('agent_id', Auth::id())
-            ->with('interest.bank')
+            ->with(['interest.bank', 'agent'])
             ->get();
 
         return view('agent.payments.create', compact('houses'));
@@ -377,7 +390,6 @@ class AgentController extends Controller
         }
 
         $house = House::findOrFail($request->house_id);
-        abort_if($house->agent_id !== Auth::id(), 403);
 
         $customer = Customer::create([
             'nama_lengkap'        => $request->nama_lengkap,
@@ -408,6 +420,7 @@ class AgentController extends Controller
 
             MortgageRequest::create([
                 'payment_type'               => $paymentType,
+                'user_id'                    => Auth::id(),
                 'customer_id'                => $customer->id,
                 'house_id'                   => $house->id,
                 'interest_id'                => $interest->id,
@@ -433,6 +446,7 @@ class AgentController extends Controller
         $label = $paymentType === 'sewa' ? 'Sewa' : 'Cash';
         MortgageRequest::create([
             'payment_type'               => $paymentType,
+            'user_id'                    => Auth::id(),
             'customer_id'                => $customer->id,
             'house_id'                   => $house->id,
             'interest_id'                => null,
@@ -456,9 +470,6 @@ class AgentController extends Controller
 
     public function showPaymentRequest(MortgageRequest $mortgageRequest)
     {
-        $agentHouseIds = House::where('agent_id', Auth::id())->withTrashed()->pluck('id');
-        abort_if(!$agentHouseIds->contains($mortgageRequest->house_id), 403);
-
         $mortgageRequest->load(['house', 'customer', 'interestModel.bank', 'installments']);
 
         return view('agent.payments.show', compact('mortgageRequest'));
@@ -472,8 +483,6 @@ class AgentController extends Controller
         ]);
 
         $mortgageRequest = MortgageRequest::with('house')->findOrFail($request->mortgage_request_id);
-        $agentHouseIds   = House::where('agent_id', Auth::id())->withTrashed()->pluck('id');
-        abort_if(!$agentHouseIds->contains($mortgageRequest->house_id), 403);
         abort_if($mortgageRequest->status !== 'Waiting for Bank', 422);
 
         // Notify all master users that the agent is requesting a review

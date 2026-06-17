@@ -40,7 +40,7 @@ class SalesStatsService
 
     public static function getAgentBreakdown(): array
     {
-        $agents   = User::role('agent')->select('id', 'name')->orderBy('name')->get();
+        $agents   = User::role(['agent', 'admin', 'master'])->select('id', 'name')->orderBy('name')->get();
         $agentIds = $agents->pluck('id')->all();
 
         if (empty($agentIds)) return [];
@@ -137,7 +137,7 @@ class SalesStatsService
             return self::getAgentBreakdown();
         }
 
-        $agents   = User::role('agent')
+        $agents   = User::role(['agent', 'admin', 'master'])
             ->whereHas('houses', fn ($q) => $q->whereIn('city_id', $cityIds))
             ->select('id', 'name')
             ->orderBy('name')
@@ -250,12 +250,12 @@ class SalesStatsService
 
     public static function getAgents(): Collection
     {
-        return User::role('agent')->select('id', 'name')->orderBy('name')->get();
+        return User::role(['agent', 'admin', 'master'])->select('id', 'name')->orderBy('name')->get();
     }
 
     public static function getAgentsByCity(Enumerable $cityIds): Collection
     {
-        return User::role('agent')
+        return User::role(['agent', 'admin', 'master'])
             ->whereHas('houses', fn ($q) => $q->whereIn('city_id', $cityIds))
             ->select('id', 'name')
             ->orderBy('name')

@@ -20,7 +20,7 @@ class SalesBreakdownWidget extends BaseWidget
         return $table
             ->heading('Rekap Per Agent')
             ->query(
-                User::role('agent')
+                User::role(['agent', 'admin', 'master'])
                     ->withCount('houses as total_listings')
                     // Per tipe pembayaran
                     ->withCount(['mortgageRequests as total_kpr'  => fn (Builder $q) => $q->where('payment_type', 'kpr')])
