@@ -64,8 +64,10 @@ class HouseForm
                 Fieldset::make('Informasi Tambahan')
                     ->components([
                         Select::make('agent_id')
-                            ->label('Agent')
-                            ->options(fn() => User::role('agent')->pluck('name', 'id'))
+                            ->label('Pemilik / Agent')
+                            ->helperText('Default: diri sendiri. Bisa diubah ke agent lain bila listing ditugaskan.')
+                            ->options(fn() => User::role(['agent', 'admin', 'master'])->orderBy('name')->pluck('name', 'id'))
+                            ->default(fn() => auth()->id())
                             ->searchable()
                             ->nullable()
                             ->placeholder('Belum ditugaskan'),

@@ -7,6 +7,7 @@ use App\Filament\Resources\Commissions\Pages\EditCommission;
 use App\Filament\Resources\Commissions\Pages\ListCommissions;
 use App\Filament\Resources\Commissions\Schemas\CommissionForm;
 use App\Filament\Resources\Commissions\Tables\CommissionsTable;
+use App\Filament\Concerns\ViewOnly;
 use App\Models\Commission;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -17,6 +18,10 @@ use UnitEnum;
 
 class CommissionResource extends Resource
 {
+    // Hanya master yang bisa buat/edit/hapus komisi langsung.
+    // Admin mengajukan lewat alur "Ajukan Komisi" → disetujui master.
+    use ViewOnly;
+
     protected static ?string $model = Commission::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBanknotes;

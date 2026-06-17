@@ -1,6 +1,6 @@
 ﻿@foreach($listings as $listing)
-    <div class="agent-card bg-white rounded-2xl border border-[#F2F2F4] overflow-hidden group">
-        <div class="relative h-40 overflow-hidden">
+    <div class="agent-card bg-white rounded-2xl border border-[#F2F2F4] overflow-hidden group flex flex-col">
+        <div class="relative h-40 overflow-hidden flex-shrink-0">
             @if($listing->thumbnail)
                 <img src="{{ Storage::url($listing->thumbnail) }}" alt="{{ $listing->name }}" loading="lazy"
                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -23,7 +23,7 @@
                 </div>
             @endif
         </div>
-        <div class="p-4">
+        <div class="p-4 flex flex-col flex-1">
             <h3 class="font-bold text-[#060922] truncate">{{ $listing->name }}</h3>
             <div class="flex items-center gap-1 mt-1">
                 <svg class="w-3.5 h-3.5 text-[#8F91A2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,6 +33,9 @@
                 </svg>
                 <p class="text-xs text-[#8F91A2]">{{ $listing->category->name ?? '-' }}, {{ $listing->city->name ?? '-' }}</p>
             </div>
+            @if(($viewAll ?? false) && $listing->agent_id !== auth()->id())
+                <p class="text-[10px] text-[#8F91A2] mt-1">Agent: <span class="font-semibold text-[#060922]">{{ $listing->agent->name ?? '-' }}</span></p>
+            @endif
             <p class="text-lg font-bold text-[#111111] mt-3">Rp {{ number_format($listing->price, 0, '', '.') }}</p>
             <div class="flex items-center gap-3 mt-3 text-xs text-[#8F91A2]">
                 <span class="flex items-center gap-1">
@@ -57,23 +60,29 @@
                     {{ $listing->land_area }} m²
                 </span>
             </div>
-            <div class="flex gap-2 mt-4">
-                <a href="{{ route('agent.listings.edit', $listing) }}"
-                    class="flex-1 text-center py-2 rounded-xl bg-[#060922] text-white text-sm font-semibold hover:bg-[#060922]/90 transition-colors">
-                    Edit
-                </a>
-                <form method="POST" action="{{ route('agent.listings.delete', $listing) }}"
-                    class="flex-shrink-0" onsubmit="return confirm('Yakin ingin menghapus listing ini?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                        class="p-2 rounded-xl border border-[#444444]/20 text-[#444444] hover:bg-[#444444]/5 transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                        </svg>
-                    </button>
-                </form>
+            <div class="flex gap-2 mt-auto pt-4">
+                @if($listing->agent_id === auth()->id())
+                    <a href="{{ route('agent.listings.edit', $listing) }}"
+                        class="flex-1 text-center py-2 rounded-xl bg-[#060922] text-white text-sm font-semibold hover:bg-[#060922]/90 transition-colors">
+                        Edit
+                    </a>
+                    <form method="POST" action="{{ route('agent.listings.delete', $listing) }}"
+                        class="flex-shrink-0" onsubmit="return confirm('Yakin ingin menghapus listing ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="p-2 rounded-xl border border-[#444444]/20 text-[#444444] hover:bg-[#444444]/5 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                        </button>
+                    </form>
+                @else
+                    <span class="flex-1 text-center py-2 rounded-xl bg-[#F2F2F4] text-[#8F91A2] text-sm font-semibold cursor-default">
+                        Listing Agent Lain
+                    </span>
+                @endif
             </div>
         </div>
     </div>

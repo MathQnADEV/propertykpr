@@ -27,6 +27,7 @@
                 </div>
                 <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
                     <p class="text-xs text-[#8F91A2]">Pembeli: <span class="font-semibold text-[#060922]">{{ $pr->customer->nama_lengkap ?? 'N/A' }}</span></p>
+                    <p class="text-xs text-[#8F91A2]">Agent: <span class="font-semibold text-[#060922]">{{ $pr->house->agent->name ?? 'N/A' }}</span></p>
                     @if(($pr->payment_type ?? 'kpr') === 'cash')
                         <p class="text-xs text-[#8F91A2]">Tipe: <span class="font-semibold text-[#060922]">Tunai</span></p>
                     @else

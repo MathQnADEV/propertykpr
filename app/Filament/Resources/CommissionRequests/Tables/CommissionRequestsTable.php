@@ -17,6 +17,8 @@ class CommissionRequestsTable
 {
     public static function configure(Table $table): Table
     {
+        $isMaster = fn(): bool => auth()->check() && auth()->user()->hasRole('master');
+
         return $table
             ->defaultSort('created_at', 'desc')
             ->columns([
@@ -146,7 +148,8 @@ class CommissionRequestsTable
 
                         $record->update(['status' => 'processed']);
                     })
-                    ->visible(fn (CommissionRequest $record) => $record->status === 'pending'),
+                    ->authorize($isMaster)
+                    ->visible(fn (CommissionRequest $record) => $record->status === 'pending' && auth()->user()?->hasRole('master')),
 
                 // ── Tolak ──────────────────────────────────────────────────
                 Action::make('reject')
@@ -164,7 +167,8 @@ class CommissionRequestsTable
                         'status'           => 'rejected',
                         'rejection_reason' => $data['rejection_reason'],
                     ]))
-                    ->visible(fn (CommissionRequest $record) => $record->status === 'pending'),
+                    ->authorize($isMaster)
+                    ->visible(fn (CommissionRequest $record) => $record->status === 'pending' && auth()->user()?->hasRole('master')),
             ]);
     }
 

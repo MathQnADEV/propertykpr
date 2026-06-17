@@ -33,7 +33,7 @@ class BankApprovalInfolist
                     ->label('Status Bank Approval')
                     ->badge()
                     ->formatStateUsing(fn($state) => match ($state) {
-                        'Waiting for Bank' => 'Proses Bank',
+                        'Waiting for Bank' => 'Dalam Proses',
                         'Approved'         => 'Disetujui',
                         'Rejected'         => 'Ditolak',
                         default            => $state,

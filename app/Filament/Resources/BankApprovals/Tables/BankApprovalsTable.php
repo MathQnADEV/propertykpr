@@ -55,7 +55,7 @@ class BankApprovalsTable
                     ->label('Status')
                     ->badge()
                     ->formatStateUsing(fn($state) => match ($state) {
-                        'Waiting for Bank' => 'Proses Bank',
+                        'Waiting for Bank' => 'Dalam Proses',
                         'Approved'         => 'Disetujui',
                         'Rejected'         => 'Ditolak',
                         default            => $state,
@@ -90,7 +90,7 @@ class BankApprovalsTable
                 SelectFilter::make('status')
                     ->label('Status')
                     ->options([
-                        'Waiting for Bank' => 'Proses Bank',
+                        'Waiting for Bank' => 'Dalam Proses',
                         'Approved'         => 'Disetujui',
                         'Rejected'         => 'Ditolak',
                     ]),
