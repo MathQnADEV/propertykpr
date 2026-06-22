@@ -16,10 +16,10 @@ class CityForm
                 Fieldset::make('Details')
                     ->components([
                         TextInput::make('name')
-                            ->required()
+                            ->nullable()
                             ->maxLength(255),
                         FileUpload::make('photo')
-                            ->required()
+                            ->nullable()
                             ->visibility('public')
                             ->image(),
                     ])->columnSpanFull(),

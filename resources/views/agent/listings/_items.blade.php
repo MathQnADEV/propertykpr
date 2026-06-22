@@ -1,6 +1,6 @@
-﻿@foreach($listings as $listing)
+@foreach($listings as $listing)
     <div class="agent-card bg-white rounded-2xl border border-[#F2F2F4] overflow-hidden group flex flex-col">
-        <div class="relative h-40 overflow-hidden flex-shrink-0">
+        <a href="{{ route('agent.listings.show', $listing) }}" class="block relative h-40 overflow-hidden flex-shrink-0">
             @if($listing->thumbnail)
                 <img src="{{ Storage::url($listing->thumbnail) }}" alt="{{ $listing->name }}" loading="lazy"
                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
@@ -22,9 +22,11 @@
                     <span class="bg-[#444444] text-white text-xs font-bold px-3 py-1 rounded-lg">Tidak Tersedia</span>
                 </div>
             @endif
-        </div>
+        </a>
         <div class="p-4 flex flex-col flex-1">
-            <h3 class="font-bold text-[#060922] truncate">{{ $listing->name }}</h3>
+            <a href="{{ route('agent.listings.show', $listing) }}" class="block">
+                <h3 class="font-bold text-[#060922] truncate hover:text-[#111111]">{{ $listing->name }}</h3>
+            </a>
             <div class="flex items-center gap-1 mt-1">
                 <svg class="w-3.5 h-3.5 text-[#8F91A2]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -36,7 +38,9 @@
             @if(($viewAll ?? false) && $listing->agent_id !== auth()->id())
                 <p class="text-[10px] text-[#8F91A2] mt-1">Agent: <span class="font-semibold text-[#060922]">{{ $listing->agent->name ?? '-' }}</span></p>
             @endif
-            <p class="text-lg font-bold text-[#111111] mt-3">Rp {{ number_format($listing->price, 0, '', '.') }}</p>
+            <a href="{{ route('agent.listings.show', $listing) }}" class="block">
+                <p class="text-lg font-bold text-[#111111] mt-3">Rp {{ number_format($listing->price, 0, '', '.') }}</p>
+            </a>
             <div class="flex items-center gap-3 mt-3 text-xs text-[#8F91A2]">
                 <span class="flex items-center gap-1">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,9 +83,10 @@
                         </button>
                     </form>
                 @else
-                    <span class="flex-1 text-center py-2 rounded-xl bg-[#F2F2F4] text-[#8F91A2] text-sm font-semibold cursor-default">
-                        Listing Agent Lain
-                    </span>
+                    <a href="{{ route('agent.payments.create', ['house_id' => $listing->id]) }}"
+                        class="flex-1 text-center py-2 rounded-xl bg-[#111111] text-white text-sm font-semibold hover:bg-[#333333] transition-colors">
+                        Ajukan Transaksi
+                    </a>
                 @endif
             </div>
         </div>

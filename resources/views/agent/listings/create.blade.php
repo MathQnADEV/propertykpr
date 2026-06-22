@@ -1,4 +1,4 @@
-﻿@extends('agent.layouts.app')
+@extends('agent.layouts.app')
 
 @section('title', 'Tambah Listing - Agent Panel')
 
@@ -32,7 +32,6 @@
     <form method="POST" action="{{ route('agent.listings.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {{-- Main Info --}}
             <div class="lg:col-span-2 space-y-6">
                 <div class="bg-white rounded-2xl p-5 border border-[#F2F2F4]">
                     <h2 class="font-bold text-[#060922] mb-4">Informasi Properti</h2>
@@ -60,39 +59,63 @@
                             <label class="block text-sm font-semibold text-[#060922] mb-1.5">Deskripsi <span class="text-[#444444]">*</span></label>
                             <textarea name="about" rows="4" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all resize-none" placeholder="Tulis deskripsi properti...">{{ old('about') }}</textarea>
                         </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Developer</label>
+                                <select name="developer_id" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
+                                    <option value="">Pilih Developer</option>
+                                    @foreach($developers as $dev)
+                                        <option value="{{ $dev->id }}" {{ old('developer_id') == $dev->id ? 'selected' : '' }}>{{ $dev->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Cluster</label>
+                                <select name="cluster_id" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
+                                    <option value="">Pilih Cluster</option>
+                                    @foreach($clusters as $cl)
+                                        <option value="{{ $cl->id }}" {{ old('cluster_id') == $cl->id ? 'selected' : '' }}>{{ $cl->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Tipe</label>
+                                <select name="type_id" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
+                                    <option value="">Pilih Tipe</option>
+                                    @foreach($types as $tp)
+                                        <option value="{{ $tp->id }}" {{ old('type_id') == $tp->id ? 'selected' : '' }}>{{ $tp->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kamar Tidur <span class="text-[#444444]">*</span></label>
-                                <input type="number" name="bedroom" value="{{ old('bedroom') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kamar Tidur</label>
+                                <input type="number" name="bedroom" value="{{ old('bedroom') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kamar Mandi <span class="text-[#444444]">*</span></label>
-                                <input type="number" name="bathroom" value="{{ old('bathroom') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kamar Mandi</label>
+                                <input type="number" name="bathroom" value="{{ old('bathroom') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Luas Tanah (m²) <span class="text-[#444444]">*</span></label>
-                                <input type="number" name="land_area" value="{{ old('land_area') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Luas Tanah (m²)</label>
+                                <input type="number" name="land_area" value="{{ old('land_area') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Luas Bangunan (m²) <span class="text-[#444444]">*</span></label>
-                                <input type="number" name="building_area" value="{{ old('building_area') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Luas Bangunan (m²)</label>
+                                <input type="number" name="building_area" value="{{ old('building_area') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
                             </div>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Daya Listrik (Watt) <span class="text-[#444444]">*</span></label>
-                                <input type="number" name="electric" value="{{ old('electric') }}" required min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Daya Listrik (Watt)</label>
+                                <input type="number" name="electric" value="{{ old('electric') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Status Ketersediaan <span class="text-[#444444]">*</span></label>
-                                <select name="is_available" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
-                                    <option value="1" {{ old('is_available', '1') == '1' ? 'selected' : '' }}>Available</option>
-                                    <option value="0" {{ old('is_available') == '0' ? 'selected' : '' }}>Not Available</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kategori <span class="text-[#444444]">*</span></label>
-                                <select name="category_id" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kategori</label>
+                                <select name="category_id" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
                                     <option value="">Pilih Kategori</option>
                                     @foreach($categories as $cat)
                                         <option value="{{ $cat->id }}" {{ old('category_id') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
@@ -100,8 +123,8 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kota <span class="text-[#444444]">*</span></label>
-                                <select name="city_id" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
+                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kota</label>
+                                <select name="city_id" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
                                     <option value="">Pilih Kota</option>
                                     @foreach($cities as $city)
                                         <option value="{{ $city->id }}" {{ old('city_id') == $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
@@ -109,24 +132,22 @@
                                 </select>
                             </div>
                         </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-[#060922] mb-1.5">Status Ketersediaan</label>
+                            <select name="is_available" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
+                                <option value="1" {{ old('is_available', '1') == '1' ? 'selected' : '' }}>Tersedia</option>
+                                <option value="0" {{ old('is_available') == '0' ? 'selected' : '' }}>Tidak Tersedia</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
-                {{-- Facilities --}}
                 <div class="bg-white rounded-2xl p-5 border border-[#F2F2F4]">
                     <h2 class="font-bold text-[#060922] mb-4">Fasilitas</h2>
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        @foreach($facilities as $facility)
-                            <label class="flex items-center gap-3 p-3 rounded-xl border border-[#F2F2F4] cursor-pointer hover:border-[#111111]/30 has-[:checked]:border-[#111111] has-[:checked]:bg-[#111111]/5 transition-all">
-                                <input type="checkbox" name="facilities[]" value="{{ $facility->id }}" class="w-4 h-4 rounded border-gray-300 text-[#111111] focus:ring-[#111111]" {{ in_array($facility->id, old('facilities', [])) ? 'checked' : '' }}>
-                                <span class="text-sm text-[#060922]">{{ $facility->name }}</span>
-                            </label>
-                        @endforeach
-                    </div>
+                    <textarea name="facilities" rows="4" placeholder="Masukkan fasilitas, pisahkan dengan koma. Contoh: Kolam Renang, Gym, Parkir Luas" class="w-full p-4 rounded-xl border border-[#F2F2F4] focus:border-[#111111] focus:ring-0 text-sm">{{ old('facilities') }}</textarea>
                 </div>
             </div>
 
-            {{-- Sidebar - Images --}}
             <div class="space-y-6">
                 <div class="bg-white rounded-2xl p-5 border border-[#F2F2F4]">
                     <h2 class="font-bold text-[#060922] mb-4">Thumbnail <span class="text-[#444444]">*</span></h2>
