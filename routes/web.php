@@ -38,3 +38,9 @@ Route::middleware(['auth', 'role:admin|master'])->prefix('admin')->name('admin.'
 require __DIR__.'/auth.php';
 require __DIR__ . '/agent.php';
 require __DIR__ . '/investor.php';
+
+require __DIR__.'/agent.php';
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/browse-properties', [App\Http\Controllers\Agent\AgentController::class, 'propertyBrowse'])->name('browse.properties');
+});

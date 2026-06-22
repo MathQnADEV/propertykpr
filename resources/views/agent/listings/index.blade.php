@@ -1,11 +1,9 @@
 @extends('agent.layouts.app')
 
-@section('title', 'Unggah Listing - Agent Panel')
+@section('title', 'Listing - Agent Panel')
 
 @section('content')
-    {{-- Style ditaruh inline di body (bukan @push) agar pasti ter-render --}}
     <style>
-        /* Flexbox lebar eksplisit: deterministik, mustahil "2 lalu 3". */
         #infinite-list.agent-listings-grid {
             display: flex;
             flex-wrap: wrap;
@@ -21,38 +19,31 @@
         }
     </style>
 
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-[#060922]">{{ $viewAll ? 'Semua Listing' : 'Unggah Listing' }}</h1>
-            <p class="text-sm text-[#8F91A2] mt-1">{{ $viewAll ? 'Seluruh listing dari semua agent' : 'Kelola listing properti Anda' }}</p>
-        </div>
-        <div class="flex items-center gap-2 flex-wrap">
-            {{-- Toggle: Listing Saya / Semua Listing --}}
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold text-[#060922]">{{ $viewAll ? 'Semua Listing' : 'Listing' }}</h1>
+        <p class="text-sm text-[#8F91A2] mt-1">{{ $viewAll ? 'Seluruh listing dari semua agent' : 'Kelola listing properti Anda' }}</p>
+        <div class="flex items-center gap-2 flex-wrap mt-4">
             <a href="{{ route('agent.listings') }}"
                class="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 rounded-xl border transition-colors {{ !$viewAll ? 'bg-[#060922] text-white border-[#060922]' : 'bg-white text-[#060922] border-[#F2F2F4] hover:bg-[#F2F2F4]' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                 Listing Saya
+            <a href="{{ route('agent.listings.create') }}" class="inline-flex items-center gap-2 bg-[#111111] text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#333333] transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                Tambah Listing
+            </a>
             </a>
             <a href="{{ route('agent.listings', ['view' => 'all']) }}"
                class="inline-flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 rounded-xl border transition-colors {{ $viewAll ? 'bg-[#060922] text-white border-[#060922]' : 'bg-white text-[#060922] border-[#F2F2F4] hover:bg-[#F2F2F4]' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
                 Semua Listing
             </a>
-            @if(!$viewAll)
-            <a href="{{ route('agent.listings.create') }}" class="inline-flex items-center gap-2 bg-[#111111] text-white font-semibold text-sm px-5 py-2.5 rounded-xl hover:bg-[#333333] transition-colors">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                Tambah Listing Baru
-            </a>
-            @endif
         </div>
     </div>
 
-    {{-- Filters --}}
     <div class="bg-white rounded-2xl p-4 border border-[#F2F2F4] mb-6">
         <form method="GET" action="{{ route('agent.listings') }}" class="flex flex-col sm:flex-row gap-3">
             @if($viewAll)
                 <input type="hidden" name="view" value="all" />
-                {{-- Dropdown pilih user/agent — auto-submit saat dipilih --}}
                 <select name="agent" onchange="this.form.submit()" class="pl-4 pr-10 py-2.5 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
                     <option value="">Semua User</option>
                     @foreach($owners as $owner)
@@ -81,7 +72,6 @@
         </form>
     </div>
 
-    {{-- Listings Grid --}}
     @if($listings->isEmpty())
         <div class="text-center py-16">
             <div class="w-20 h-20 rounded-2xl bg-[#F2F2F4] flex items-center justify-center mx-auto mb-4">

@@ -22,10 +22,10 @@ class BankApprovalResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingLibrary;
 
-    protected static ?string $navigationLabel = 'Persetujuan Bank';
-    protected static ?string $modelLabel = 'Persetujuan Bank';
-    protected static ?string $pluralModelLabel = 'Persetujuan Bank';
-    protected static ?string $recordTitleAttribute = 'Persetujuan Bank';
+    protected static ?string $navigationLabel = 'Persetujuan';
+    protected static ?string $modelLabel = 'Persetujuan';
+    protected static ?string $pluralModelLabel = 'Persetujuan';
+    protected static ?string $recordTitleAttribute = 'Persetujuan';
 
     protected static string | UnitEnum | null $navigationGroup = 'Transaksi';
     protected static ?int $navigationSort = 2;

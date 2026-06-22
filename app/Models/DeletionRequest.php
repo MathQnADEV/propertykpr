@@ -30,13 +30,14 @@ class DeletionRequest extends Model
         \App\Models\Category::class,
         \App\Models\City::class,
         \App\Models\Bank::class,
-        \App\Models\Facility::class,
+        \App\Models\Developer::class,
+        \App\Models\Cluster::class,
+        \App\Models\Type::class,
         \App\Models\Interest::class,
         \App\Models\HousePhoto::class,
         \App\Models\MortgageRequest::class,
         \App\Models\Installment::class,
     ];
-
 
     protected $casts = [
         'reviewed_at' => 'datetime',
