@@ -1,6 +1,6 @@
 ﻿@extends('agent.layouts.app')
 
-@section('title', 'Ajukan Pembayaran - Agent Panel')
+@section('title', 'Pengajuan Transaksi - Agent Panel')
 
 @section('content')
     <div class="flex items-center gap-3 mb-6">
@@ -8,7 +8,7 @@
             <svg class="w-5 h-5 text-[#060922]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
         </a>
         <div>
-            <h1 class="text-2xl font-bold text-[#060922]">Ajukan Pembayaran</h1>
+            <h1 class="text-2xl font-bold text-[#060922]">Pengajuan Transksi</h1>
             <p class="text-sm text-[#8F91A2] mt-0.5">Isi data properti dan data calon pembeli</p>
         </div>
     </div>
