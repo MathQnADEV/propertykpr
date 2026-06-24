@@ -59,12 +59,12 @@ class CommissionForm
                                 return [];
                             }
 
-                            $dealIds = MortgageRequest::where('status', 'Approved')
-                                ->whereHas('house', fn ($q) => $q->where('agent_id', $agentId))
-                                ->pluck('id');
+                            $baseDeals = MortgageRequest::where('status', 'Approved')
+                                ->whereHas('house', fn ($q) => $q->where('agent_id', $agentId));
 
-                            $totalDeals      = $dealIds->count();
-                            $totalValue      = (float) MortgageRequest::whereIn('id', $dealIds)->sum('house_price');
+                            $totalDeals      = $baseDeals->count();
+                            $totalValue      = (float) $baseDeals->sum('house_price');
+                            $dealIds         = $baseDeals->pluck('id');
                             $withComm        = Commission::whereIn('mortgage_request_id', $dealIds)->count();
                             $withoutComm     = $totalDeals - $withComm;
                             $totalCommAmount = (float) Commission::whereIn('mortgage_request_id', $dealIds)->sum('commission_amount');
