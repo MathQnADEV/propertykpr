@@ -252,7 +252,7 @@ class AgentController extends Controller
 
     public function createMortgageRequest()
     {
-        $houses = House::where('is_available', true)->with(['interest.bank', 'agent'])->get();
+        $houses = House::where('is_available', true)->with(['interest.bank', 'agent'])->limit(200)->get();
         return view('agent.payments.create', compact('houses'));
     }
 
@@ -364,16 +364,31 @@ class AgentController extends Controller
 
     public function deals(Request $request)
     {
-        $filter = $request->get('filter', 'all');
+        $filter        = $request->get('filter', 'all');
         $agentHouseIds = House::where('agent_id', Auth::id())->withTrashed()->pluck('id');
-        $query = MortgageRequest::with(['house', 'customer', 'interestModel.bank'])->whereIn('house_id', $agentHouseIds);
-        if ($filter === 'sold') $query->where('status', 'Approved');
+
+        $query = MortgageRequest::with(['house', 'customer', 'interestModel.bank'])
+            ->whereIn('house_id', $agentHouseIds);
+
+        if ($filter === 'sold')       $query->where('status', 'Approved');
         elseif ($filter === 'in_process') $query->where('status', 'Waiting for Bank');
         elseif ($filter === 'failed') $query->where('status', 'Rejected');
+
         $deals = $query->latest()->paginate(10);
-        $soldCount = MortgageRequest::whereIn('house_id', $agentHouseIds)->where('status', 'Approved')->count();
-        $inProcessCount = MortgageRequest::whereIn('house_id', $agentHouseIds)->where('status', 'Waiting for Bank')->count();
-        $failedCount = MortgageRequest::whereIn('house_id', $agentHouseIds)->where('status', 'Rejected')->count();
+
+        // Single query for all 3 counts
+        $counts = MortgageRequest::whereIn('house_id', $agentHouseIds)
+            ->selectRaw("
+                SUM(status = 'Approved') as sold,
+                SUM(status = 'Waiting for Bank') as in_process,
+                SUM(status = 'Rejected') as failed
+            ")
+            ->first();
+
+        $soldCount      = (int) ($counts->sold ?? 0);
+        $inProcessCount = (int) ($counts->in_process ?? 0);
+        $failedCount    = (int) ($counts->failed ?? 0);
+
         return view('agent.deals.index', compact('deals', 'filter', 'soldCount', 'inProcessCount', 'failedCount'));
     }
 

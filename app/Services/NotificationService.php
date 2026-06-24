@@ -73,32 +73,42 @@ class NotificationService
 
     public static function sendToRole(string $role, string $title, string $description = '', string $url = ''): void
     {
-        $users = User::role($role)->get();
-        foreach ($users as $user) {
-            SystemNotification::create([
-                'user_id'     => $user->id,
-                'type'        => 'broadcast',
-                'title'       => $title,
-                'description' => $description,
-                'url'         => $url,
-                'is_read'     => false,
-                'target_type' => $role,
-            ]);
-        }
+        $userIds = User::role($role)->pluck('id');
+        if ($userIds->isEmpty()) return;
+
+        $now  = now();
+        $rows = $userIds->map(fn ($id) => [
+            'user_id'     => $id,
+            'type'        => 'broadcast',
+            'title'       => $title,
+            'description' => $description,
+            'url'         => $url,
+            'is_read'     => false,
+            'target_type' => $role,
+            'created_at'  => $now,
+            'updated_at'  => $now,
+        ])->all();
+
+        SystemNotification::insert($rows);
     }
 
     public static function sendToUsers(array $userIds, string $title, string $description = '', string $url = ''): void
     {
-        foreach ($userIds as $userId) {
-            SystemNotification::create([
-                'user_id'     => $userId,
-                'type'        => 'direct',
-                'title'       => $title,
-                'description' => $description,
-                'url'         => $url,
-                'is_read'     => false,
-            ]);
-        }
+        if (empty($userIds)) return;
+
+        $now  = now();
+        $rows = array_map(fn ($id) => [
+            'user_id'     => $id,
+            'type'        => 'direct',
+            'title'       => $title,
+            'description' => $description,
+            'url'         => $url,
+            'is_read'     => false,
+            'created_at'  => $now,
+            'updated_at'  => $now,
+        ], $userIds);
+
+        SystemNotification::insert($rows);
     }
 
     public static function markAsRead(SystemNotification $notification): void
