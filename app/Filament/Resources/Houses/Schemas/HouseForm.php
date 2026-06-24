@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Houses\Schemas;
 
-use App\Models\Facility;
+use App\Models\Cluster;
+use App\Models\Developer;
+use App\Models\Type;
 use App\Models\User;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -11,6 +13,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Utilities\Get;
 
 class HouseForm
 {
@@ -40,7 +43,6 @@ class HouseForm
                             ->visibility('public')
                             ->required(),
 
-                        // repeater
                         Repeater::make('photos')
                             ->relationship('photos')
                             ->schema([
@@ -49,15 +51,34 @@ class HouseForm
                                     ->required(),
                             ]),
 
-                        Repeater::make('facilities')
-                            ->relationship('facilities')
-                            ->schema([
-                                Select::make('facility_id')
-                                    ->options(Facility::all()->pluck('name', 'id'))
-                                    ->searchable()
-                                    ->preload()
-                                    ->required(),
-                            ]),
+                        Select::make('developer_id')
+                            ->label('Developer')
+                            ->options(Developer::all()->pluck('name', 'id'))
+                            ->searchable()
+                            ->nullable()
+                            ->placeholder('Pilih Developer')
+                            ->live(),
+
+                        Select::make('cluster_id')
+                            ->label('Cluster')
+                            ->options(fn(Get $get) => Cluster::where('developer_id', $get('developer_id'))->pluck('name', 'id'))
+                            ->searchable()
+                            ->nullable()
+                            ->placeholder('Pilih Cluster')
+                            ->live(),
+
+                        Select::make('type_id')
+                            ->label('Tipe')
+                            ->options(fn(Get $get) => Type::where('cluster_id', $get('cluster_id'))->pluck('name', 'id'))
+                            ->searchable()
+                            ->nullable()
+                            ->placeholder('Pilih Tipe'),
+
+                        Textarea::make('facilities')
+                            ->label('Fasilitas')
+                            ->placeholder('Masukkan fasilitas, pisahkan dengan koma. Contoh: Kolam Renang, Gym, Parkir Luas')
+                            ->rows(4)
+                            ->autosize(),
 
                     ])->columnSpanFull(),
 

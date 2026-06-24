@@ -40,7 +40,7 @@ class HouseService
 
     public function getHouseDetails(House $house): House
     {
-        $house->load(['photos', 'facilities', 'facilities.facility', 'interest.bank']);
+        $house->load(['photos', 'interest.bank']);
         return $house;
     }
 }

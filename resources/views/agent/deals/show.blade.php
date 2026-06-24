@@ -213,12 +213,12 @@
             </div>
 
             {{-- Facilities --}}
-            @if($mortgageRequest->house && $mortgageRequest->house->facilities->count() > 0)
+            @if($mortgageRequest->house && $mortgageRequest->house->facilities)
                 <div class="bg-white rounded-2xl p-5 border border-[#F2F2F4]">
                     <h3 class="font-bold text-[#060922] mb-4">Fasilitas</h3>
                     <div class="flex flex-wrap gap-2">
-                        @foreach($mortgageRequest->house->facilities as $hf)
-                            <span class="px-3 py-1.5 rounded-lg bg-[#F8F8FA] text-xs font-semibold text-[#060922]">{{ $hf->facility->name ?? 'N/A' }}</span>
+                        @foreach(array_filter(array_map('trim', explode(',', $mortgageRequest->house->facilities))) as $f)
+                            <span class="px-3 py-1.5 rounded-lg bg-[#F8F8FA] text-xs font-semibold text-[#060922]">{{ $f }}</span>
                         @endforeach
                     </div>
                 </div>

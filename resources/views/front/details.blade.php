@@ -114,17 +114,19 @@
                 <p class="leading-7 md:leading-8 text-sm md:text-base">{{ $houseDetails->about }}</p>
             </div>
 
+            @if($houseDetails->facilities)
             <div id="Nerby-Facilities" class="flex flex-col gap-[14px]">
                 <h2 class="font-semibold text-xl md:text-[22px] leading-[33px]">Fasilitas Terdekat</h2>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 md:gap-5">
-                    @foreach ($houseDetails->facilities as $facility)
-                        <div class="flex flex-col min-h-[120px] md:min-h-[140px] rounded-[20px] border border-tedja-border p-4 md:p-5 gap-3 md:gap-5 bg-white">
-                            <img src="{{ Storage::url($facility->facility->photo) }}" class="size-7 md:size-8 flex shrink-0" loading="lazy" alt="icon">
-                            <p class="font-semibold text-sm md:text-base">{{ $facility->facility->name }}</p>
+                <div class="flex flex-wrap gap-3">
+                    @foreach(array_filter(array_map('trim', explode(',', $houseDetails->facilities))) as $facility)
+                        <div class="flex items-center gap-2 rounded-[14px] border border-tedja-border px-4 py-2.5 bg-white">
+                            <div class="w-2 h-2 rounded-full bg-tedja-blue shrink-0"></div>
+                            <p class="font-semibold text-sm">{{ $facility }}</p>
                         </div>
                     @endforeach
                 </div>
             </div>
+            @endif
 
             <div id="Location" class="flex flex-col gap-[14px]">
                 <h2 class="font-semibold text-xl md:text-[22px] leading-[33px]">Lokasi Strategis</h2>

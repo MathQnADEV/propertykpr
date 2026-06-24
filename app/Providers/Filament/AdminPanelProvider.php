@@ -2,13 +2,12 @@
 
 namespace App\Providers\Filament;
 
-// use AlizHarb\ActivityLog\ActivityLogPlugin;
+use AlizHarb\ActivityLog\ActivityLogPlugin;
 use Filament\Auth\Http\Responses\LogoutResponse;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-// use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -57,11 +56,10 @@ class AdminPanelProvider extends PanelProvider
                 FilamentInfoWidget::class,
             ])
             ->plugins([
-                // ActivityLogPlugin disembunyikan — sudah ada fitur Notifikasi
-                // ActivityLogPlugin::make()
-                //     ->label('Log Aktivitas')
-                //     ->pluralLabel('Log Aktivitas')
-                //     ->navigationGroup('Sistem'),
+                ActivityLogPlugin::make()
+                    ->label('Log Aktivitas')
+                    ->pluralLabel('Log Aktivitas')
+                    ->navigationGroup('Sistem'),
             ])
             ->middleware([
                 EncryptCookies::class,

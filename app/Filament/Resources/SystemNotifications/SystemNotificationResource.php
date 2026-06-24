@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\SystemNotifications;
 
-use App\Filament\Concerns\ViewOnly;
 use App\Filament\Resources\SystemNotifications\Pages\CreateSystemNotification;
 use App\Filament\Resources\SystemNotifications\Pages\EditSystemNotification;
 use App\Filament\Resources\SystemNotifications\Pages\ListSystemNotifications;
@@ -22,31 +21,22 @@ use UnitEnum;
 
 class SystemNotificationResource extends Resource
 {
-    use ViewOnly;
     protected static ?string $model = SystemNotification::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBell;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPaperAirplane;
 
+    protected static ?string $navigationLabel = 'Kirim Pesan';
+    protected static ?string $modelLabel = 'Pesan';
+    protected static ?string $pluralModelLabel = 'Kirim Pesan';
     protected static string | UnitEnum | null $navigationGroup = 'Sistem';
-    protected static ?string $recordTitleAttribute = 'Notifikasi';
+
+    protected static ?string $recordTitleAttribute = 'Pesan';
 
     protected static ?int $navigationSort = 90;
 
-    protected static ?string $label = 'Notifikasi';
-    protected static ?string $pluralLabel = 'Notifikasi';
-
     public static function getNavigationBadge(): ?string
     {
-        $count = static::getModel()::where('user_id', auth()->id())
-            ->where('is_read', false)
-            ->count();
-
-        return $count > 0 ? (string) $count : null;
-    }
-
-    public static function getNavigationBadgeColor(): string|array|null
-    {
-        return 'danger';
+        return null;
     }
 
     public static function form(Schema $schema): Schema

@@ -6,15 +6,16 @@ use App\Models\Bank;
 use App\Models\BankApproval;
 use App\Models\Category;
 use App\Models\City;
-use App\Models\Facility;
 use App\Models\House;
 use App\Models\HousePhoto;
 use App\Models\Installment;
 use App\Models\Interest;
 use App\Models\MortgageRequest;
 use App\Models\SystemNotification;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Activitylog\Models\Activity;
 
 class NotificationService
 {
@@ -26,7 +27,6 @@ class NotificationService
         Category::class        => 'Kategori',
         City::class            => 'Kota',
         Bank::class            => 'Bank',
-        Facility::class        => 'Fasilitas',
         Interest::class        => 'Bunga',
         HousePhoto::class      => 'Foto Rumah',
         MortgageRequest::class => 'Permohonan KPR',
@@ -34,20 +34,7 @@ class NotificationService
         BankApproval::class    => 'Persetujuan Bank',
     ];
 
-    private static array $resourceRoutes = [
-        House::class           => '/admin/houses',
-        Category::class        => '/admin/categories',
-        City::class            => '/admin/cities',
-        Bank::class            => '/admin/banks',
-        Facility::class        => '/admin/facilities',
-        Interest::class        => '/admin/interests',
-        HousePhoto::class      => '/admin/house-photos',
-        MortgageRequest::class => '/admin/mortgage-requests',
-        Installment::class     => '/admin/installments',
-        BankApproval::class    => '/admin/bank-approvals',
-    ];
-
-    public static function log(string $type, Model $model, string $customTitle = ''): ?SystemNotification
+    public static function log(string $type, Model $model, string $customTitle = ''): ?Activity
     {
         if (self::$skipLogging)
             return null;
@@ -63,22 +50,13 @@ class NotificationService
             default     => "{$user->name} {$type} {$label}: {$name}",
         };
 
-        $url = null;
-        if (in_array($type, ['created', 'updated'])) {
-            $route = self::$resourceRoutes[$model::class] ?? null;
-            if ($route) {
-                $url = rtrim(config('app.url'), '/') . "{$route}/{$model->id}/edit";
-            }
-        }
+        activity()
+            ->performedOn($model)
+            ->causedBy($user)
+            ->withProperties(['type' => $type, 'label' => $label, 'name' => $name])
+            ->log($title);
 
-        return SystemNotification::create([
-            'user_id'     => $user->id,
-            'type'        => $type,
-            'title'       => $title,
-            'description' => "{$title}\nWaktu: " . now()->format('d M Y H:i') . "\nOleh: {$user->name} ({$user->email})",
-            'url' => $url,
-            'is_read'     => false,
-        ]);
+        return null;
     }
 
     public static function notify(string $type, string $title, string $description = '', string $url = ''): SystemNotification
@@ -91,6 +69,36 @@ class NotificationService
             'url'         => $url,
             'is_read'     => false,
         ]);
+    }
+
+    public static function sendToRole(string $role, string $title, string $description = '', string $url = ''): void
+    {
+        $users = User::role($role)->get();
+        foreach ($users as $user) {
+            SystemNotification::create([
+                'user_id'     => $user->id,
+                'type'        => 'broadcast',
+                'title'       => $title,
+                'description' => $description,
+                'url'         => $url,
+                'is_read'     => false,
+                'target_type' => $role,
+            ]);
+        }
+    }
+
+    public static function sendToUsers(array $userIds, string $title, string $description = '', string $url = ''): void
+    {
+        foreach ($userIds as $userId) {
+            SystemNotification::create([
+                'user_id'     => $userId,
+                'type'        => 'direct',
+                'title'       => $title,
+                'description' => $description,
+                'url'         => $url,
+                'is_read'     => false,
+            ]);
+        }
     }
 
     public static function markAsRead(SystemNotification $notification): void

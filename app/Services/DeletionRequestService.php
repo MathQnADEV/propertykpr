@@ -12,7 +12,9 @@ class DeletionRequestService
         \App\Models\Category::class        => 'Kategori',
         \App\Models\City::class            => 'Kota',
         \App\Models\Bank::class            => 'Bank',
-        \App\Models\Facility::class        => 'Fasilitas',
+        \App\Models\Developer::class       => 'Developer',
+        \App\Models\Cluster::class         => 'Cluster',
+        \App\Models\Type::class            => 'Tipe',
         \App\Models\Interest::class        => 'Bunga',
         \App\Models\HousePhoto::class      => 'Foto Rumah',
         \App\Models\MortgageRequest::class => 'Permohonan KPR',
@@ -49,17 +51,12 @@ class DeletionRequestService
         $record = $request->getModelRecord();
         if (! $record) return false;
 
-        $record = $request->getModelRecord();
-        if (! $record) return false;
-
         NotificationService::$skipLogging = true;
         try {
             $record->delete();
         } finally {
             NotificationService::$skipLogging = false;
         }
-
-
 
         $request->update([
             'status'      => 'approved',
@@ -91,8 +88,6 @@ class DeletionRequestService
             "Hapus Ditolak: {$request->model_name}",
             "Master " . Auth::user()->name . " menolak penghapusan {$request->model_name}.",
         );
-
-
 
         return true;
     }

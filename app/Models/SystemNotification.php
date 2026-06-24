@@ -20,6 +20,8 @@ class SystemNotification extends Model
         'description',
         'url',
         'is_read',
+        'target_type',
+        'target_id',
     ];
 
     protected $casts = [

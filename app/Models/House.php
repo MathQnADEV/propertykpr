@@ -29,10 +29,17 @@ class House extends Model
         'electric',
         'land_area',
         'building_area',
+        'facilities',
         'is_available',
         'category_id',
         'city_id',
         'agent_id',
+        'developer_id',
+        'cluster_id',
+        'type_id',
+        'latitude',
+        'longitude',
+        'maps_url',
     ];
 
     public function setNameAttribute($value)
@@ -66,11 +73,26 @@ class House extends Model
         return $this->hasMany(Interest::class);
     }
 
-    public function facilities(){
+    public function houseFacilities(){
         return $this->hasMany(HouseFacility::class, 'house_id');
     }
 
     public function mortgageRequests(){
         return $this->hasMany(MortgageRequest::class);
+    }
+
+    public function developer()
+    {
+        return $this->belongsTo(Developer::class);
+    }
+
+    public function cluster()
+    {
+        return $this->belongsTo(Cluster::class);
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(Type::class);
     }
 }
