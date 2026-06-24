@@ -73,7 +73,7 @@ class House extends Model
         return $this->hasMany(Interest::class);
     }
 
-    public function facilities(){
+    public function houseFacilities(){
         return $this->hasMany(HouseFacility::class, 'house_id');
     }
 
