@@ -137,6 +137,13 @@ class MortgageRequestsTable
                         && ! $record->commissionRequests()->where('status', 'pending')->exists()
                     )
                     ->action(function (MortgageRequest $record, array $data) {
+                        // Cek ulang dalam satu transaksi untuk cegah double-submit
+                        $alreadyExists = $record->commissionRequests()
+                            ->where('status', 'pending')
+                            ->exists();
+
+                        if ($alreadyExists) return;
+
                         CommissionRequest::create([
                             'mortgage_request_id' => $record->id,
                             'agent_id'            => auth()->id(),

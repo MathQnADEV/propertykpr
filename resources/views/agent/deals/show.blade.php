@@ -41,27 +41,27 @@
             <div class="p-5">
                 <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
                     <div class="flex flex-col items-center p-3 rounded-xl bg-[#F8F8FA]">
-                        <span class="text-lg font-bold text-[#060922]">{{ $mortgageRequest->house->bedroom }}</span>
+                        <span class="text-lg font-bold text-[#060922]">{{ $mortgageRequest->house->bedroom ?? '-' }}</span>
                         <span class="text-[10px] text-[#8F91A2] font-semibold mt-0.5">KT</span>
                     </div>
                     <div class="flex flex-col items-center p-3 rounded-xl bg-[#F8F8FA]">
-                        <span class="text-lg font-bold text-[#060922]">{{ $mortgageRequest->house->bathroom }}</span>
+                        <span class="text-lg font-bold text-[#060922]">{{ $mortgageRequest->house->bathroom ?? '-' }}</span>
                         <span class="text-[10px] text-[#8F91A2] font-semibold mt-0.5">KM</span>
                     </div>
                     <div class="flex flex-col items-center p-3 rounded-xl bg-[#F8F8FA]">
-                        <span class="text-lg font-bold text-[#060922]">{{ $mortgageRequest->house->land_area }}</span>
+                        <span class="text-lg font-bold text-[#060922]">{{ $mortgageRequest->house->land_area ?? '-' }}</span>
                         <span class="text-[10px] text-[#8F91A2] font-semibold mt-0.5">m² Tanah</span>
                     </div>
                     <div class="flex flex-col items-center p-3 rounded-xl bg-[#F8F8FA]">
-                        <span class="text-lg font-bold text-[#060922]">{{ $mortgageRequest->house->building_area }}</span>
+                        <span class="text-lg font-bold text-[#060922]">{{ $mortgageRequest->house->building_area ?? '-' }}</span>
                         <span class="text-[10px] text-[#8F91A2] font-semibold mt-0.5">m² Bangunan</span>
                     </div>
                     <div class="flex flex-col items-center p-3 rounded-xl bg-[#F8F8FA]">
-                        <span class="text-lg font-bold text-[#060922]">{{ $mortgageRequest->house->electric }}</span>
+                        <span class="text-lg font-bold text-[#060922]">{{ $mortgageRequest->house->electric ?? '-' }}</span>
                         <span class="text-[10px] text-[#8F91A2] font-semibold mt-0.5">Watt</span>
                     </div>
                     <div class="flex flex-col items-center p-3 rounded-xl bg-[#F8F8FA]">
-                        <span class="text-lg font-bold text-[#060922]">{{ $mortgageRequest->house->certificate }}</span>
+                        <span class="text-lg font-bold text-[#060922]">{{ $mortgageRequest->house->certificate ?? '-' }}</span>
                         <span class="text-[10px] text-[#8F91A2] font-semibold mt-0.5">Sertifikat</span>
                     </div>
                 </div>

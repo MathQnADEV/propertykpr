@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title', $houseDetails->name . ' - X-Pro')
-@section('meta_description', 'Properti ' . $houseDetails->name . ' di ' . $houseDetails->city->name . '. ' . $houseDetails->bedroom . ' kamar tidur, LB ' . $houseDetails->building_area . ' m². Harga Rp ' . number_format($houseDetails->price, 0, '', '.') . '.')
+@section('meta_description', 'Properti ' . $houseDetails->name . ' di ' . $houseDetails->city->name . '. ' . ($houseDetails->bedroom ?? '-') . ' kamar tidur, LB ' . ($houseDetails->building_area ?? '-') . ' m². Harga Rp ' . number_format($houseDetails->price, 0, '', '.') . '.')
 @section('og_image', Storage::url($houseDetails->thumbnail))
 
 @section('content')
@@ -57,7 +57,9 @@
                     <p class="text-xs md:text-sm text-tedja-secondary">Kamar Tidur</p>
                     <div class="flex items-center gap-[6px]">
                         <img src="{{ asset('assets/images/icons/slider-vertical.svg') }}" class="size-5 md:size-6 flex shrink-0" alt="icon">
-                        <p class="font-semibold text-sm md:text-base">{{ $houseDetails->bedroom }} Kamar Tidur</p>
+                        <p class="font-semibold text-sm md:text-base">
+                            {{ $houseDetails->bedroom !== null ? $houseDetails->bedroom . ' Kamar Tidur' : '-' }}
+                        </p>
                     </div>
                 </div>
                 <div class="h-[50px] md:h-[60px] border border-tedja-border"></div>
@@ -65,7 +67,9 @@
                     <p class="text-xs md:text-sm text-tedja-secondary">Kamar Mandi</p>
                     <div class="flex items-center gap-[6px]">
                         <img src="{{ asset('assets/images/icons/slider-vertical.svg') }}" class="size-5 md:size-6 flex shrink-0" alt="icon">
-                        <p class="font-semibold text-sm md:text-base">{{ $houseDetails->bathroom }} Kamar Mandi</p>
+                        <p class="font-semibold text-sm md:text-base">
+                            {{ $houseDetails->bathroom !== null ? $houseDetails->bathroom . ' Kamar Mandi' : '-' }}
+                        </p>
                     </div>
                 </div>
                 <div class="h-[50px] md:h-[60px] border border-tedja-border"></div>
@@ -73,7 +77,7 @@
                     <p class="text-xs md:text-sm text-tedja-secondary">Sertifikat</p>
                     <div class="flex items-center gap-[6px]">
                         <img src="{{ asset('assets/images/icons/note-favorite.svg') }}" class="size-5 md:size-6 flex shrink-0" alt="icon">
-                        <p class="font-semibold text-sm md:text-base">{{ $houseDetails->certificate }}</p>
+                        <p class="font-semibold text-sm md:text-base">{{ $houseDetails->certificate ?? '-' }}</p>
                     </div>
                 </div>
                 <div class="h-[50px] md:h-[60px] border border-tedja-border"></div>
@@ -81,7 +85,9 @@
                     <p class="text-xs md:text-sm text-tedja-secondary">Luas Tanah</p>
                     <div class="flex items-center gap-[6px]">
                         <img src="{{ asset('assets/images/icons/maximize-3.svg') }}" class="size-5 md:size-6 flex shrink-0" alt="icon">
-                        <p class="font-semibold text-sm md:text-base">{{ $houseDetails->land_area }} M²</p>
+                        <p class="font-semibold text-sm md:text-base">
+                            {{ $houseDetails->land_area !== null ? $houseDetails->land_area . ' M²' : '-' }}
+                        </p>
                     </div>
                 </div>
                 <div class="h-[50px] md:h-[60px] border border-tedja-border"></div>
@@ -89,7 +95,9 @@
                     <p class="text-xs md:text-sm text-tedja-secondary">Luas Bangunan</p>
                     <div class="flex items-center gap-[6px]">
                         <img src="{{ asset('assets/images/icons/building-3.svg') }}" class="size-5 md:size-6 flex shrink-0" alt="icon">
-                        <p class="font-semibold text-sm md:text-base">{{ $houseDetails->building_area }} M²</p>
+                        <p class="font-semibold text-sm md:text-base">
+                            {{ $houseDetails->building_area !== null ? $houseDetails->building_area . ' M²' : '-' }}
+                        </p>
                     </div>
                 </div>
                 <div class="h-[50px] md:h-[60px] border border-tedja-border"></div>
@@ -97,7 +105,9 @@
                     <p class="text-xs md:text-sm text-tedja-secondary">Daya Listrik</p>
                     <div class="flex items-center gap-[6px]">
                         <img src="{{ asset('assets/images/icons/flash.svg') }}" class="size-5 md:size-6 flex shrink-0" alt="icon">
-                        <p class="font-semibold text-sm md:text-base">{{ $houseDetails->electric }} Watt</p>
+                        <p class="font-semibold text-sm md:text-base">
+                            {{ $houseDetails->electric !== null ? $houseDetails->electric . ' Watt' : '-' }}
+                        </p>
                     </div>
                 </div>
             </div>

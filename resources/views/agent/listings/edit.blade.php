@@ -47,12 +47,10 @@
                             <input type="number" name="price" value="{{ old('price', $house->price) }}" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-[#060922] mb-1.5">Sertifikat <span class="text-[#444444]">*</span></label>
-                            <select name="certificate" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
-                                <option value="SHM" {{ old('certificate', $house->certificate) === 'SHM' ? 'selected' : '' }}>SHM</option>
-                                <option value="SHGB" {{ old('certificate', $house->certificate) === 'SHGB' ? 'selected' : '' }}>SHGB</option>
-                                <option value="Patches" {{ old('certificate', $house->certificate) === 'Patches' ? 'selected' : '' }}>Patches</option>
-                            </select>
+                            <label class="block text-sm font-semibold text-[#060922] mb-1.5">Sertifikat</label>
+                            <input type="text" name="certificate" value="{{ old('certificate', $house->certificate) }}" maxlength="100"
+                                class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all"
+                                placeholder="Contoh: SHM, SHGB, dll" />
                         </div>
                     </div>
                     <div>

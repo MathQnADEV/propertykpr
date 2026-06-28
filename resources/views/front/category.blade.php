@@ -38,22 +38,22 @@
                         <div class="flex items-center rounded-[14px] border border-tedja-border p-[10px] gap-[6px]">
                             <img src="{{ asset('assets/images/icons/slider-vertical.svg') }}" class="size-5 flex shrink-0"
                                 loading="lazy" alt="icon">
-                            <p class="font-semibold text-sm">{{ $house->bedroom }} Bedrooms</p>
+                            <p class="font-semibold text-sm">{{ $house->bedroom !== null ? $house->bedroom . ' Bedrooms' : '-' }}</p>
                         </div>
                         <div class="flex items-center rounded-[14px] border border-tedja-border p-[10px] gap-[6px]">
                             <img src="{{ asset('assets/images/icons/slider-horizontal.svg') }}"
                                 class="size-5 flex shrink-0" loading="lazy" alt="icon">
-                            <p class="font-semibold text-sm">{{ $house->bathroom }} Bathrooms</p>
+                            <p class="font-semibold text-sm">{{ $house->bathroom !== null ? $house->bathroom . ' Bathrooms' : '-' }}</p>
                         </div>
                         <div class="flex items-center rounded-[14px] border border-tedja-border p-[10px] gap-[6px]">
                             <img src="{{ asset('assets/images/icons/note-favorite.svg') }}" class="size-5 flex shrink-0"
                                 loading="lazy" alt="icon">
-                            <p class="font-semibold text-sm">{{ $house->certificate }}</p>
+                            <p class="font-semibold text-sm">{{ $house->certificate ?? '-' }}</p>
                         </div>
                         <div class="flex items-center rounded-[14px] border border-tedja-border p-[10px] gap-[6px]">
                             <img src="{{ asset('assets/images/icons/maximize-3.svg') }}" class="size-5 flex shrink-0"
                                 loading="lazy" alt="icon">
-                            <p class="font-semibold text-sm">{{ $house->land_area }} M²</p>
+                            <p class="font-semibold text-sm">{{ $house->land_area !== null ? $house->land_area . ' M²' : '-' }}</p>
                         </div>
                     </div>
                 </div>
