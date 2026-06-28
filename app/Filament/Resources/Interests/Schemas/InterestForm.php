@@ -27,6 +27,9 @@ class InterestForm
                 TextInput::make('interest')
                     ->required()
                     ->numeric()
+                    ->step(0.01)
+                    ->minValue(0)
+                    ->maxValue(100)
                     ->prefix('%'),
 
                 TextInput::make('duration')

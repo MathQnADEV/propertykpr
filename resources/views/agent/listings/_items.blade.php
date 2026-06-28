@@ -14,7 +14,7 @@
             @endif
             <div class="absolute top-3 left-3">
                 <span class="bg-white/90 backdrop-blur-sm text-[#060922] text-[10px] font-semibold px-2.5 py-1 rounded-lg">
-                    {{ $listing->certificate }}
+                    {{ $listing->certificate ?? '-' }}
                 </span>
             </div>
             @if(!$listing->is_available)

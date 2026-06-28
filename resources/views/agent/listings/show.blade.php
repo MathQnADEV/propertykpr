@@ -83,7 +83,7 @@
         <div class="bg-white rounded-2xl p-6 border border-[#F2F2F4]">
             <h2 class="font-bold text-lg text-[#060922] mb-4">Detail Properti</h2>
             <div class="space-y-3">
-                <div class="flex justify-between"><span class="text-sm text-[#8F91A2]">Sertifikat</span><span class="text-sm font-semibold">{{ $house->certificate }}</span></div>
+                <div class="flex justify-between"><span class="text-sm text-[#8F91A2]">Sertifikat</span><span class="text-sm font-semibold">{{ $house->certificate ?? '-' }}</span></div>
                 <div class="flex justify-between"><span class="text-sm text-[#8F91A2]">Kamar Tidur</span><span class="text-sm font-semibold">{{ $house->bedroom ?: '-' }} Unit</span></div>
                 <div class="flex justify-between"><span class="text-sm text-[#8F91A2]">Kamar Mandi</span><span class="text-sm font-semibold">{{ $house->bathroom ?: '-' }} Unit</span></div>
                 <div class="flex justify-between"><span class="text-sm text-[#8F91A2]">Listrik</span><span class="text-sm font-semibold">{{ $house->electric ?: '-' }} Watts</span></div>

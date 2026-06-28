@@ -30,13 +30,10 @@ class HouseForm
                             ->required()
                             ->numeric()
                             ->prefix('IDR'),
-                        Select::make('certificate')
-                            ->options([
-                                'SHM' => 'SHM',
-                                'SHGB' => 'SHGB',
-                                'Patches' => 'Patches',
-                            ])
-                            ->required(),
+                        TextInput::make('certificate')
+                            ->nullable()
+                            ->maxLength(100)
+                            ->placeholder('Contoh: SHM, SHGB, dll'),
 
                         FileUpload::make('thumbnail')
                             ->image()
@@ -109,35 +106,37 @@ class HouseForm
                             ->required(),
 
                         TextInput::make('electric')
-                            ->required()
                             ->numeric()
+                            ->nullable()
                             ->prefix('Watts'),
 
                         TextInput::make('land_area')
-                            ->required()
                             ->numeric()
+                            ->nullable()
                             ->prefix('m²'),
 
                         TextInput::make('building_area')
-                            ->required()
                             ->numeric()
+                            ->nullable()
                             ->prefix('m²'),
 
                         TextInput::make('bedroom')
-                            ->required()
                             ->numeric()
+                            ->nullable()
                             ->prefix('Unit'),
 
                         TextInput::make('bathroom')
-                            ->required()
                             ->numeric()
+                            ->nullable()
                             ->prefix('Unit'),
+
                         Select::make('is_available')
                             ->options([
                                 1 => 'Tersedia',
                                 0 => 'Tidak Tersedia',
                             ])
-                            ->required(),
+                            ->nullable()
+                            ->placeholder('Pilih Status'),
 
                     ])->columnSpanFull(),
             ]);
