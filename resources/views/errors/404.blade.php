@@ -33,8 +33,13 @@
         {{-- Tombol aksi --}}
         <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
 
-            @php $prev = url()->previous(); @endphp
-            @if($prev && $prev !== url()->current())
+            @php
+                $prev   = url()->previous();
+                $isSafe = $prev
+                    && $prev !== url()->current()
+                    && str_starts_with($prev, url('/'));
+            @endphp
+            @if($isSafe)
                 <a href="{{ $prev }}"
                    class="inline-flex items-center justify-center gap-2 bg-[#060922] text-white font-semibold text-sm px-6 py-3 rounded-xl hover:bg-[#060922]/90 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

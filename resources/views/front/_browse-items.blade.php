@@ -16,19 +16,19 @@
                 <div class="grid grid-cols-2 gap-y-[10px] gap-x-3">
                     <div class="flex items-center rounded-[12px] border border-tedja-border p-[10px] gap-[6px]">
                         <img src="{{ asset('assets/images/icons/slider-vertical.svg') }}" class="size-5 flex shrink-0" loading="lazy" alt="icon">
-                        <p class="font-semibold text-sm">{{ $house->bedroom }} KT</p>
+                        <p class="font-semibold text-sm">{{ $house->bedroom !== null ? $house->bedroom . ' KT' : '- KT' }}</p>
                     </div>
                     <div class="flex items-center rounded-[12px] border border-tedja-border p-[10px] gap-[6px]">
                         <img src="{{ asset('assets/images/icons/slider-horizontal.svg') }}" class="size-5 flex shrink-0" loading="lazy" alt="icon">
-                        <p class="font-semibold text-sm">{{ $house->bathroom }} KM</p>
+                        <p class="font-semibold text-sm">{{ $house->bathroom !== null ? $house->bathroom . ' KM' : '- KM' }}</p>
                     </div>
                     <div class="flex items-center rounded-[12px] border border-tedja-border p-[10px] gap-[6px]">
                         <img src="{{ asset('assets/images/icons/note-favorite.svg') }}" class="size-5 flex shrink-0" loading="lazy" alt="icon">
-                        <p class="font-semibold text-sm">{{ $house->certificate }}</p>
+                        <p class="font-semibold text-sm">{{ $house->certificate ?? '-' }}</p>
                     </div>
                     <div class="flex items-center rounded-[12px] border border-tedja-border p-[10px] gap-[6px]">
                         <img src="{{ asset('assets/images/icons/maximize-3.svg') }}" class="size-5 flex shrink-0" loading="lazy" alt="icon">
-                        <p class="font-semibold text-sm">{{ $house->land_area }} M²</p>
+                        <p class="font-semibold text-sm">{{ $house->land_area !== null ? $house->land_area . ' M²' : '-' }}</p>
                     </div>
                 </div>
                 <p class="font-bold text-tedja-blue text-base md:text-lg mt-auto">
