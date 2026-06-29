@@ -104,6 +104,15 @@
                 <div>
                     <p class="font-semibold text-sm">{{ $house->agent->name ?? 'N/A' }}</p>
                     <p class="text-xs text-[#8F91A2]">{{ $house->agent->email ?? '' }}</p>
+                    @if($house->agent->whatsapp)
+                        <a href="https://wa.me/62{{ $house->agent->whatsapp }}" target="_blank" class="inline-flex items-center gap-1 text-xs text-green-600 mt-1">WhatsApp</a>
+                    @endif
+                    @if($house->agent->instagram)
+                        <a href="https://instagram.com/{{ $house->agent->instagram }}" target="_blank" class="inline-flex items-center gap-1 text-xs text-pink-600 mt-1">Instagram</a>
+                    @endif
+                    @if($house->agent->facebook)
+                        <a href="https://facebook.com/{{ $house->agent->facebook }}" target="_blank" class="inline-flex items-center gap-1 text-xs text-blue-600 mt-1">Facebook</a>
+                    @endif
                 </div>
             </div>
         </div>
