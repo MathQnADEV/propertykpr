@@ -6,7 +6,7 @@
 <div class="flex items-center gap-3 mb-6">
     <div>
         <h1 class="text-2xl font-bold text-[#060922]">Akun Saya</h1>
-        <p class="text-sm text-[#8F91A2] mt-0.5">Kelola informasi akun dan keamanan</p>
+        <p class="text-sm text-[#8F91A2] mt-0.5">Kelola informasi akun Anda</p>
     </div>
 </div>
 
@@ -25,12 +25,7 @@
                 <p class="text-sm text-[#8F91A2]">{{ $user->email }}</p>
                 <span class="mt-2 inline-block bg-[#F0F0F0] text-[#060922] text-xs font-semibold px-3 py-1 rounded-full">Agent</span>
             </div>
-            <div class="w-full pt-4 border-t border-[#F2F2F4] text-left space-y-2">
-                <div class="flex items-center gap-2 text-sm text-[#8F91A2]">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    <span>Bergabung {{ $user->created_at->translatedFormat('d F Y') }}</span>
-                </div>
-            </div>
+            <p class="text-xs text-[#8F91A2] italic">Nama & email hanya dapat diubah oleh Master</p>
         </div>
     </div>
 
@@ -50,29 +45,11 @@
         </div>
 
         <div class="bg-white rounded-2xl p-6 border border-[#F2F2F4]">
-            <h2 class="font-bold text-[#060922] mb-1">Informasi Profil</h2>
-            <p class="text-sm text-[#8F91A2] mb-5">Perbarui nama dan alamat email akun Anda.</p>
+            <h2 class="font-bold text-[#060922] mb-1">Ubah Password</h2>
+            <p class="text-sm text-[#8F91A2] mb-5">Pastikan akun Anda menggunakan password yang kuat dan aman.</p>
             @if(session('success'))
                 <div class="bg-[#F0F0F0] border border-[#CCCCCC] rounded-xl p-3 mb-4 text-sm text-[#333333]">{{ session('success') }}</div>
             @endif
-            <form method="POST" action="{{ route('agent.profile.update') }}" class="space-y-4">
-                @csrf
-                @method('PATCH')
-                <div>
-                    <label class="block text-sm font-semibold text-[#060922] mb-1.5">Nama Lengkap</label>
-                    <input type="text" name="name" value="{{ old('name', $user->name) }}" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-[#060922] mb-1.5">Alamat Email</label>
-                    <input type="email" name="email" value="{{ old('email', $user->email) }}" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
-                </div>
-                <button type="submit" class="px-6 py-2.5 bg-[#060922] text-white text-sm font-semibold rounded-xl hover:bg-[#060922]/90 transition-colors">Simpan Perubahan</button>
-            </form>
-        </div>
-
-        <div class="bg-white rounded-2xl p-6 border border-[#F2F2F4]">
-            <h2 class="font-bold text-[#060922] mb-1">Ubah Password</h2>
-            <p class="text-sm text-[#8F91A2] mb-5">Pastikan akun Anda menggunakan password yang kuat dan aman.</p>
             <form method="POST" action="{{ route('agent.profile.password') }}" class="space-y-4">
                 @csrf
                 @method('PUT')
