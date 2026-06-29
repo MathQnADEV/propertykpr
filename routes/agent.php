@@ -10,6 +10,7 @@ Route::middleware(['web', 'auth'])->prefix('agent')->name('agent.')->group(funct
     Route::patch('/profile', [AgentProfileController::class, 'update'])->name('profile.update');
     Route::put('/profile/password', [AgentProfileController::class, 'updatePassword'])->name('profile.password');
     Route::patch('/profile/social', [AgentProfileController::class, 'updateSocial'])->name('profile.social');
+    Route::patch("/agent/profile/photo", [AgentProfileController::class, "updatePhoto"])->name("profile.photo");
     Route::get('/listings', [AgentController::class, 'listings'])->name('listings');
     Route::get('/listings/create', [AgentController::class, 'createListing'])->name('listings.create');
     Route::post('/listings', [AgentController::class, 'storeListing'])->name('listings.store');
