@@ -47,69 +47,24 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-[#060922] mb-1.5">Sertifikat</label>
-                                <input type="text" name="certificate" value="{{ old('certificate') }}" maxlength="100"
-                                    class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all"
-                                    placeholder="Contoh: SHM, SHGB, dll" />
+                                <input type="text" name="certificate" value="{{ old('certificate') }}" maxlength="100" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" placeholder="Contoh: SHM, SHGB, dll" />
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-[#060922] mb-1.5">Deskripsi <span class="text-[#444444]">*</span></label>
                             <textarea name="about" rows="4" required class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all resize-none" placeholder="Tulis deskripsi properti...">{{ old('about') }}</textarea>
                         </div>
-
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Developer</label>
-                                <select name="developer_id" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
-                                    <option value="">Pilih Developer</option>
-                                    @foreach($developers as $dev)
-                                        <option value="{{ $dev->id }}" {{ old('developer_id') == $dev->id ? 'selected' : '' }}>{{ $dev->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Cluster</label>
-                                <select name="cluster_id" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
-                                    <option value="">Pilih Cluster</option>
-                                    @foreach($clusters as $cl)
-                                        <option value="{{ $cl->id }}" {{ old('cluster_id') == $cl->id ? 'selected' : '' }}>{{ $cl->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Tipe</label>
-                                <select name="type_id" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
-                                    <option value="">Pilih Tipe</option>
-                                    @foreach($types as $tp)
-                                        <option value="{{ $tp->id }}" {{ old('type_id') == $tp->id ? 'selected' : '' }}>{{ $tp->name }}</option>
-                                    @endforeach
-                                </select>
                             </div>
                         </div>
-
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kamar Tidur</label>
-                                <input type="number" name="bedroom" value="{{ old('bedroom') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kamar Mandi</label>
-                                <input type="number" name="bathroom" value="{{ old('bathroom') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Luas Tanah (m²)</label>
-                                <input type="number" name="land_area" value="{{ old('land_area') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Luas Bangunan (m²)</label>
-                                <input type="number" name="building_area" value="{{ old('building_area') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
-                            </div>
+                            <div><label class="block text-sm font-semibold text-[#060922] mb-1.5">Kamar Tidur</label><input type="number" name="bedroom" value="{{ old('bedroom') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" /></div>
+                            <div><label class="block text-sm font-semibold text-[#060922] mb-1.5">Kamar Mandi</label><input type="number" name="bathroom" value="{{ old('bathroom') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" /></div>
+                            <div><label class="block text-sm font-semibold text-[#060922] mb-1.5">Luas Tanah (m²)</label><input type="number" name="land_area" value="{{ old('land_area') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" /></div>
+                            <div><label class="block text-sm font-semibold text-[#060922] mb-1.5">Luas Bangunan (m²)</label><input type="number" name="building_area" value="{{ old('building_area') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" /></div>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold text-[#060922] mb-1.5">Daya Listrik (Watt)</label>
-                                <input type="number" name="electric" value="{{ old('electric') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
-                            </div>
+                            <div><label class="block text-sm font-semibold text-[#060922] mb-1.5">Daya Listrik (Watt)</label><input type="number" name="electric" value="{{ old('electric') }}" min="0" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" /></div>
                             <div>
                                 <label class="block text-sm font-semibold text-[#060922] mb-1.5">Kategori</label>
                                 <select name="category_id" class="w-full px-4 py-3 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] bg-white transition-all">
@@ -138,13 +93,11 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="bg-white rounded-2xl p-5 border border-[#F2F2F4]">
                     <h2 class="font-bold text-[#060922] mb-4">Fasilitas</h2>
-                    <textarea name="facilities" rows="4" placeholder="Masukkan fasilitas, pisahkan dengan koma. Contoh: Kolam Renang, Gym, Parkir Luas" class="w-full p-4 rounded-xl border border-[#F2F2F4] focus:border-[#111111] focus:ring-0 text-sm">{{ old('facilities') }}</textarea>
+                    <textarea name="facilities" rows="4" placeholder="Masukkan fasilitas, pisahkan dengan koma" class="w-full p-4 rounded-xl border border-[#F2F2F4] focus:border-[#111111] focus:ring-0 text-sm">{{ old('facilities') }}</textarea>
                 </div>
             </div>
-
             <div class="space-y-6">
                 <div class="bg-white rounded-2xl p-5 border border-[#F2F2F4]">
                     <h2 class="font-bold text-[#060922] mb-4">Thumbnail <span class="text-[#444444]">*</span></h2>
@@ -157,7 +110,6 @@
                     </div>
                     <input type="file" id="thumbnailInput" name="thumbnail" accept="image/*" class="hidden" onchange="previewImage(this, 'thumbnailPreview', 'thumbnailPlaceholder')" />
                 </div>
-
                 <div class="bg-white rounded-2xl p-5 border border-[#F2F2F4]">
                     <h2 class="font-bold text-[#060922] mb-4">Foto Tambahan</h2>
                     <div id="photosPreview" class="grid grid-cols-2 gap-2 mb-3"></div>
@@ -167,10 +119,7 @@
                         <input type="file" name="photos[]" accept="image/*" multiple class="hidden" onchange="previewMultiple(this)" />
                     </label>
                 </div>
-
-                <button type="submit" class="w-full py-3.5 bg-[#060922] text-white font-semibold rounded-xl hover:bg-[#060922]/90 transition-colors text-sm">
-                    Simpan Listing
-                </button>
+                <button type="submit" class="w-full py-3.5 bg-[#060922] text-white font-semibold rounded-xl hover:bg-[#060922]/90 transition-colors text-sm">Simpan Listing</button>
             </div>
         </div>
     </form>
@@ -195,7 +144,6 @@ function previewImage(input, previewId, placeholderId) {
         reader.readAsDataURL(input.files[0]);
     }
 }
-
 function previewMultiple(input) {
     const container = document.getElementById('photosPreview');
     if (input.files) {

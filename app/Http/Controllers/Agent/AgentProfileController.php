@@ -52,6 +52,25 @@ class AgentProfileController extends Controller
         return redirect()->route('agent.profile')->with('social_success', 'Media sosial berhasil disimpan!');
     }
 
+
+    public function updatePhoto(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ]);
+
+        $user = $request->user();
+
+        if ($user->photo) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($user->photo);
+        }
+
+        $path = $request->file('photo')->store('profiles', 'public');
+        $user->update(['photo' => $path]);
+
+        return redirect()->route('agent.profile')->with('photo_success', 'Foto profil berhasil diupload!');
+    }
+
     public function updatePassword(Request $request): RedirectResponse
     {
         $request->validate([
