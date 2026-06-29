@@ -77,34 +77,17 @@
         <header class="sticky top-0 z-30 bg-[#F8F8FA]/80 backdrop-blur-xl px-4 lg:px-8 py-4">
             <div class="flex items-center justify-between bg-white rounded-2xl px-4 lg:px-6 py-3 shadow-sm">
                 <button onclick="toggleSidebar()" class="lg:hidden p-2 -ml-2 rounded-xl hover:bg-gray-100"><svg class="w-6 h-6 text-[#060922]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-                <div class="hidden md:block relative flex-1 max-w-md">
-                    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8F91A2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <input type="text" placeholder="Cari listing, transaksi..." class="w-full pl-12 pr-4 py-2.5 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" />
-                </div>
+                <div class="hidden md:block relative flex-1 max-w-md"><svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#8F91A2]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg><input type="text" placeholder="Cari listing, transaksi..." class="w-full pl-12 pr-4 py-2.5 rounded-xl border border-[#F2F2F4] text-sm focus:outline-none focus:ring-2 focus:ring-[#111111]/20 focus:border-[#111111] transition-all" /></div>
                 <div class="flex items-center gap-3">
                     <div class="hidden sm:block text-right"><p class="text-xs text-[#8F91A2]">Halo,</p><p class="text-sm font-semibold text-[#060922]">{{ Auth::user()->name }}</p></div>
-                    @if(Auth::user()->photo)
-                        <img src="{{ Storage::url(Auth::user()->photo) }}" class="w-10 h-10 rounded-full object-cover" />
-                    @else
-                        <div class="w-10 h-10 rounded-full bg-[#060922] flex items-center justify-center text-white font-bold text-sm">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>
-                    @endif
+                    @if(Auth::user()->photo)<img src="{{ Storage::url(Auth::user()->photo) }}" class="w-10 h-10 rounded-full object-cover" />@else<div class="w-10 h-10 rounded-full bg-[#060922] flex items-center justify-center text-white font-bold text-sm">{{ strtoupper(substr(Auth::user()->name, 0, 1)) }}</div>@endif
                 </div>
             </div>
         </header>
-        @if(session('success'))
-            <div id="toast" class="toast fixed top-6 right-6 z-[100] bg-[#060922] text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 max-w-sm">
-                <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center"><svg class="w-4 h-4 text-[#060922]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg></div>
-                <p class="text-sm font-medium">{{ session('success') }}</p>
-                <button onclick="closeToast()" class="ml-auto text-white/60 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button>
-            </div>
-        @endif
+        @if(session('success'))<div id="toast" class="toast fixed top-6 right-6 z-[100] bg-[#060922] text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 max-w-sm"><div class="w-8 h-8 rounded-full bg-white flex items-center justify-center"><svg class="w-4 h-4 text-[#060922]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg></div><p class="text-sm font-medium">{{ session('success') }}</p><button onclick="closeToast()" class="ml-auto text-white/60 hover:text-white"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg></button></div>@endif
         <main class="page-enter px-4 lg:px-8 py-2">@yield('content')</main>
     </div>
-    <script>
-        function toggleSidebar() { document.getElementById('agentSidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('active'); }
-        function closeToast() { const t = document.getElementById('toast'); if (t) t.remove(); }
-        setTimeout(() => { const t = document.getElementById('toast'); if (t) closeToast(); }, 4000);
-    </script>
+    <script>function toggleSidebar(){document.getElementById('agentSidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('active');}function closeToast(){const t=document.getElementById('toast');if(t)t.remove();}setTimeout(()=>{const t=document.getElementById('toast');if(t)closeToast();},4000);</script>
     @stack('after-scripts')
 </body>
 </html>
